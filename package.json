@@ -1,0 +1,140 @@
+{
+  "name": "101obex-api-extension",
+  "displayName": "101OBeX API Extension",
+  "description": "101OBeX API support extension",
+  "version": "0.0.1",
+  "publisher": "101OBeX Corp",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "images/101icon.png",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "101obex-api-extension",
+          "title": "101OBeX API support extension",
+          "icon": "images/101icon.png"
+        }
+      ]
+    },
+    "views": {
+      "101obex-api-extension": [
+        {
+          "id": "package-organizations",
+          "name": "Organizations",
+          "type": "tree"
+        },
+        {
+          "id": "package-teams",
+          "name": "Developer Teams",
+          "type": "tree"
+        },
+        {
+          "id": "package-projects",
+          "name": "Projects",
+          "type": "tree"
+        },
+        {
+          "id": "package-APIs",
+          "name": "APIs",
+          "type": "tree"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "101obex-api-extension.refreshEntry-apis",
+        "title": "Refresh"
+
+      },
+      {
+        "command": "101obex-api-extension.refreshEntry-organizations",
+        "title": "Refresh"
+
+      },
+      {
+        "command": "101obex-api-extension.refreshEntry-projects",
+        "title": "Refresh"
+
+      },
+      {
+        "command": "101obex-api-extension.refreshEntry-teams",
+        "title": "Refresh"
+
+      }
+    ]
+,
+    "menus": {
+      "view/title": [
+        {
+          "command": "101obex-api-extension.refreshEntry-apis",
+          "when": "view == package-APIs",
+          "group": "navigation"
+        },
+        {
+          "command": "101obex-api-extension.refreshEntry-organizations",
+          "when": "view == package-organizations",
+          "group": "navigation"
+        },
+        {
+          "command": "101obex-api-extension.refreshEntry-teams",
+          "when": "view == package-teams",
+          "group": "navigation"
+        },
+        {
+          "command": "101obex-api-extension.refreshEntry-projects",
+          "when": "view == package-projects",
+          "group": "navigation"
+        }
+      ]
+    }
+
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "16.x",
+    "@types/request": "^2.48.8",
+    "@types/vscode": "^1.73.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "@vscode/test-electron": "^2.2.0",
+    "eslint": "^8.26.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "axios": "^1.2.0",
+    "request": "^2.88.2",
+    "requests": "^0.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/101OBeXCorp/101obex_vscode_extension.git"
+  }
+  
+}
