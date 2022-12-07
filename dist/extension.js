@@ -7451,7 +7451,7 @@ const axios_1 = __webpack_require__(3);
 const os = __webpack_require__(38);
 const url = "https://api.101obex.com:3001/info_extension?developer_token=";
 const userHomeDir = os.homedir();
-const configFile = userHomeDir + '/.101oblex/config.json';
+const configFile = userHomeDir + '/.101obex/config.json';
 const axiosConfig = {
     headers: {
         accept: 'application/json',
@@ -7464,7 +7464,7 @@ function activate(context) {
     fs.readFile(configFile, 'utf8', (err, data) => {
         if (err) {
             vscode.window.showErrorMessage('101OBeX Developer Token was not found. ' +
-                'Please use 101obexcli to get your developer token');
+                'Please use 101obexcli to get your 101OBeX Developer Token');
             nullRegistration(context, '101obex-api-extension.refreshEntry-organizations');
             nullRegistration(context, '101obex-api-extension.refreshEntry-teams');
             nullRegistration(context, '101obex-api-extension.refreshEntry-projects');
@@ -7532,7 +7532,15 @@ class TreeDataProviderTeams {
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         var responses = [];
         response.data.data[0].teams.forEach((element) => {
-            responses.push(new TreeItem(element["name"]));
+            var subresponses = [];
+            subresponses.push(new TreeItem(`Description: ${element["descripcion"]}`));
+            subresponses.push(new TreeItem(`Organization: ${element["organization_team"]}`));
+            var subsubresponses = [];
+            element.components.forEach((user_component) => {
+                subsubresponses.push(new TreeItem(user_component.email));
+            });
+            subresponses.push(new TreeItem("Components", subsubresponses));
+            responses.push(new TreeItem(element["name"], subresponses));
         });
         this.data = responses;
     }
@@ -7555,7 +7563,14 @@ class TreeDataProviderProjects {
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         var responses = [];
         response.data.data[0].authorizations.forEach((element) => {
-            responses.push(new TreeItem(element["token"]));
+            var subresponses = [];
+            subresponses.push(new TreeItem(`Description: ${element["description"]}`));
+            subresponses.push(new TreeItem(`Manager: ${element["username"]}`));
+            subresponses.push(new TreeItem(`Creation: ${element["creation_date"]}`));
+            subresponses.push(new TreeItem(`Country Code: ${element["country_code"]}`));
+            subresponses.push(new TreeItem(`Auth Token: ${element["token"]}`));
+            subresponses.push(new TreeItem(`Mode: ${element["Staging"] ? 'staging' : 'Productive'}`));
+            responses.push(new TreeItem(`${element["name"]}`, subresponses));
         });
         this.data = responses;
     }
@@ -7578,7 +7593,11 @@ class TreeDataProviderOrganization {
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         var responses = [];
         response.data.data[0].organizations.forEach((element) => {
-            responses.push(new TreeItem(element["name"]));
+            var subresponses = [];
+            subresponses.push(new TreeItem(`Description: ${element["description"]}`));
+            subresponses.push(new TreeItem(`Admin: ${element["username"]}`));
+            subresponses.push(new TreeItem(`Subscription type: ${element["subscription_name"]}`));
+            responses.push(new TreeItem(element["name"], subresponses));
         });
         this.data = responses;
     }
