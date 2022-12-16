@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		axios.get(url + dataObj.id_token, axiosConfig)
 			.then((response) => {
-				apis(context, response);
+				apis(context, response, context);
 				teams(context, response);
 				projects(context, response);
 				organizations(context, response);
@@ -75,7 +75,7 @@ class TreeDataProviderAPIs implements vscode.TreeDataProvider<TreeItem> {
 					response.data.data[0].services.forEach((subelement: any) => {
 						if (element.id === subelement.obex_category_id) {
 						subresponses.push(
-							new TreeItem(`${subelement["name"]} (${subelement["description"]})`));
+							new TreeItem(`${subelement["name"]} (${subelement["description"]})`,undefined,subelement["doc_file"]));
 						}
 					});
 					responses.push(new TreeItem(element["name"], subresponses));
@@ -233,19 +233,106 @@ class TreeDataProviderOrganization implements vscode.TreeDataProvider<TreeItem> 
 class TreeItem extends vscode.TreeItem {
 	children: TreeItem[]|undefined;
 	
-	constructor(label: string, children?: TreeItem[]) {
+	constructor(label: string, children?: TreeItem[], document?:string) {
 		
 	  super(
 		  label,
 		  children === undefined ? vscode.TreeItemCollapsibleState.None :
-								   vscode.TreeItemCollapsibleState.Collapsed);
+								   vscode.TreeItemCollapsibleState.Collapsed
+								   );
 	  this.children = children;
+	  this.description = document;
+	  
 	}
   }
 
-  function apis(context: { subscriptions: vscode.Disposable[]; }, response: AxiosResponse<any, any>){
+  function apis(context: { subscriptions: vscode.Disposable[]; }, response: AxiosResponse<any, any>, contexto: vscode.ExtensionContext){
 	var apisTreeProvider = new TreeDataProviderAPIs(response);
-	vscode.window.registerTreeDataProvider('package-APIs', apisTreeProvider);
+	
+	var tree = vscode.window.createTreeView('package-APIs', {
+		treeDataProvider: apisTreeProvider,
+	});
+
+	tree.onDidChangeSelection((selection) => {
+
+		let date_ob = new Date();
+		selection.selection.map((e) => {
+
+			var formatted = date_ob.toLocaleTimeString();
+
+			if (e.label?.toString().includes('('))	
+			{
+				console.log(e.description);
+				var document_file = `${e.description}.md`
+				var label = e.label?.toString();
+				var labels = label.split("(");
+				
+				//vscode.env.openExternal(
+				//	vscode.Uri.parse(
+				//		`https://developer.101obex.com/apis/login/${document_category}${document_file}`
+				//		));
+				
+				markdownPreview(document_file);
+
+				//markdownPreviewOnline(contexto,document_file,formatted);
+				//vscode.commands.executeCommand(`catCoding.start${document_file}${formatted}`);
+			}
+		}
+		);
+	});
+
+	async function markdownPreview(url:string) {
+		
+		await axios.get(`http://101obex.static.mooo.com/static/docs/${url}`, axiosConfig)
+		.then((response) => {
+
+			fs.writeFile(userHomeDir+'/.101obex/apidoc.md', response.data, (err) => {
+				if (err)
+					console.log(err);
+					else {
+
+					}
+				});
+			vscode.commands.executeCommand("markdown.showPreview",vscode.Uri.file(userHomeDir+'/.101obex/apidoc.md'));
+		});
+	}
+	
+
+	function  markdownPreviewOnline(context: vscode.ExtensionContext, url: string, timemark: string) {
+		
+		context.subscriptions.push(
+		  vscode.commands.registerCommand(`catCoding.start${url}${timemark}`, () => {
+
+			const panel = vscode.window.createWebviewPanel(
+			  'catCoding',
+			  '101OBeX API Documentation',
+			  vscode.ViewColumn.One,
+			  {
+				enableScripts: true
+			  }
+			);
+	  			
+			panel.webview.html = getWebviewContent(`get_signature.md`);
+		  })
+		);		
+	  }
+	  
+	  function getWebviewContent(url: string) {
+
+		return `
+		<!DOCTYPE html>
+			<!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
+			<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
+
+			<!-- Load the element definition -->
+			<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
+
+			<!-- Simply set the src attribute to your MD file and win -->
+			<zero-md src="http://101obex.static.mooo.com/static/docs/${url}"></zero-md>
+		`;
+	  }
+
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand('101obex-api-extension.refreshEntry-apis', () =>
 			apisTreeProvider.refresh())
@@ -254,7 +341,25 @@ class TreeItem extends vscode.TreeItem {
 
   function projects(context: { subscriptions: vscode.Disposable[]; }, response: AxiosResponse<any, any>){
 	var projectsTreeProvider = new TreeDataProviderProjects(response);
-	vscode.window.registerTreeDataProvider('package-projects', projectsTreeProvider);
+
+	var tree = vscode.window.createTreeView('package-projects', {
+		treeDataProvider: projectsTreeProvider,
+	});
+
+	tree.onDidChangeSelection((selection) => {
+
+		selection.selection.map((e) => {
+			
+			if (e.label?.toString().includes('Auth Token'))	
+			{
+				var label = e.label?.toString();
+				var labels = label.split(": ");
+				//console.log(labels[1]);
+			}
+		}
+		);
+	});
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand('101obex-api-extension.refreshEntry-projects', () =>
 			projectsTreeProvider.refresh())

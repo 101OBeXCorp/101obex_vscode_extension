@@ -16,7 +16,6 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-
     "viewsContainers": {
       "activitybar": [
         {
@@ -54,25 +53,24 @@
       {
         "command": "101obex-api-extension.refreshEntry-apis",
         "title": "Refresh"
-
       },
       {
         "command": "101obex-api-extension.refreshEntry-organizations",
         "title": "Refresh"
-
       },
       {
         "command": "101obex-api-extension.refreshEntry-projects",
         "title": "Refresh"
-
       },
       {
         "command": "101obex-api-extension.refreshEntry-teams",
         "title": "Refresh"
-
+      },
+      {
+        "command": "101obex-api-extension.deleteEntry",
+        "title": "Delete"
       }
-    ]
-,
+    ],
     "menus": {
       "view/title": [
         {
@@ -95,9 +93,14 @@
           "when": "view == package-projects",
           "group": "navigation"
         }
+      ],
+      "view/item/context": [
+        {
+          "command": "101obex-api-extension.deleteEntry",
+          "when": "view == package-teams"
+        }
       ]
     }
-
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
@@ -129,12 +132,13 @@
   },
   "dependencies": {
     "axios": "^1.2.0",
+    "node-datetime": "^2.1.2",
     "request": "^2.88.2",
     "requests": "^0.3.0"
   },
+  
   "repository": {
     "type": "git",
     "url": "https://github.com/101OBeXCorp/101obex_vscode_extension.git"
   }
-  
 }
