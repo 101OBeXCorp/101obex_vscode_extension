@@ -7463,6 +7463,9 @@ const axiosConfig = {
     data: {}
 };
 function activate(context) {
+    vscode.commands.registerCommand(`101obex-api-extension.viewOnlineDocumentation`, (e) => {
+        vscode.env.openExternal(vscode.Uri.parse(`https://developer.101obex.com/apis/login/${e.description}`));
+    });
     fs.readFile(configFile, 'utf8', (err, data) => {
         if (err) {
             vscode.window.showErrorMessage('101OBeX Developer Token was not found. ' +
@@ -7634,14 +7637,9 @@ function apis(context, response, contexto) {
         selection.selection.map((e) => {
             var formatted = date_ob.toLocaleTimeString();
             if (e.label?.toString().includes('(')) {
-                console.log(e.description);
                 var document_file = `${e.description}.md`;
                 var label = e.label?.toString();
                 var labels = label.split("(");
-                //vscode.env.openExternal(
-                //	vscode.Uri.parse(
-                //		`https://developer.101obex.com/apis/login/${document_category}${document_file}`
-                //		));
                 markdownPreview(document_file);
                 //markdownPreviewOnline(contexto,document_file,formatted);
                 //vscode.commands.executeCommand(`catCoding.start${document_file}${formatted}`);
@@ -7672,13 +7670,16 @@ function apis(context, response, contexto) {
         return `
 		<!DOCTYPE html>
 			<!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
-			<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js">
+			</script>
 
 			<!-- Load the element definition -->
-			<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
+			<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js">
+			</script>
 
 			<!-- Simply set the src attribute to your MD file and win -->
-			<zero-md src="http://101obex.static.mooo.com/static/docs/${url}"></zero-md>
+			<zero-md src="http://101obex.static.mooo.com/static/docs/${url}">
+			</zero-md>
 		`;
     }
     context.subscriptions.push(vscode.commands.registerCommand('101obex-api-extension.refreshEntry-apis', () => apisTreeProvider.refresh()));

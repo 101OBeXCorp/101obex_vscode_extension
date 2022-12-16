@@ -67,8 +67,8 @@
         "title": "Refresh"
       },
       {
-        "command": "101obex-api-extension.deleteEntry",
-        "title": "Delete"
+        "command": "101obex-api-extension.viewOnlineDocumentation",
+        "title": "View online Documentation"
       }
     ],
     "menus": {
@@ -96,8 +96,8 @@
       ],
       "view/item/context": [
         {
-          "command": "101obex-api-extension.deleteEntry",
-          "when": "view == package-teams"
+          "command": "101obex-api-extension.viewOnlineDocumentation",
+          "when": "view == package-APIs"
         }
       ]
     }

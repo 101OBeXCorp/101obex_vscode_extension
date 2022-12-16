@@ -17,6 +17,15 @@ const axiosConfig = {
 
 export function activate(context: vscode.ExtensionContext) {
 
+	vscode.commands.registerCommand(`101obex-api-extension.viewOnlineDocumentation`, (e) => {
+
+		vscode.env.openExternal(
+			vscode.Uri.parse(
+				`https://developer.101obex.com/apis/login/${e.description}`
+				));
+	});
+
+
 	fs.readFile(configFile, 'utf8', (err, data) => {
 		if (err) { 
 			vscode.window.showErrorMessage(
@@ -75,7 +84,11 @@ class TreeDataProviderAPIs implements vscode.TreeDataProvider<TreeItem> {
 					response.data.data[0].services.forEach((subelement: any) => {
 						if (element.id === subelement.obex_category_id) {
 						subresponses.push(
-							new TreeItem(`${subelement["name"]} (${subelement["description"]})`,undefined,subelement["doc_file"]));
+							new TreeItem(
+								`${subelement["name"]} (${subelement["description"]})`,
+								undefined,
+								subelement["doc_file"])
+								);
 						}
 					});
 					responses.push(new TreeItem(element["name"], subresponses));
@@ -246,7 +259,11 @@ class TreeItem extends vscode.TreeItem {
 	}
   }
 
-  function apis(context: { subscriptions: vscode.Disposable[]; }, response: AxiosResponse<any, any>, contexto: vscode.ExtensionContext){
+  function apis(
+		context: { subscriptions: vscode.Disposable[]; }, 
+		response: AxiosResponse<any, any>, 
+		contexto: vscode.ExtensionContext)
+		{
 	var apisTreeProvider = new TreeDataProviderAPIs(response);
 	
 	var tree = vscode.window.createTreeView('package-APIs', {
@@ -262,16 +279,9 @@ class TreeItem extends vscode.TreeItem {
 
 			if (e.label?.toString().includes('('))	
 			{
-				console.log(e.description);
 				var document_file = `${e.description}.md`
 				var label = e.label?.toString();
-				var labels = label.split("(");
-				
-				//vscode.env.openExternal(
-				//	vscode.Uri.parse(
-				//		`https://developer.101obex.com/apis/login/${document_category}${document_file}`
-				//		));
-				
+				var labels = label.split("(");					
 				markdownPreview(document_file);
 
 				//markdownPreviewOnline(contexto,document_file,formatted);
@@ -293,7 +303,10 @@ class TreeItem extends vscode.TreeItem {
 
 					}
 				});
-			vscode.commands.executeCommand("markdown.showPreview",vscode.Uri.file(userHomeDir+'/.101obex/apidoc.md'));
+			vscode.commands.executeCommand(
+				"markdown.showPreview",
+				vscode.Uri.file(userHomeDir+'/.101obex/apidoc.md')
+				);
 		});
 	}
 	
@@ -322,13 +335,16 @@ class TreeItem extends vscode.TreeItem {
 		return `
 		<!DOCTYPE html>
 			<!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
-			<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js">
+			</script>
 
 			<!-- Load the element definition -->
-			<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
+			<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js">
+			</script>
 
 			<!-- Simply set the src attribute to your MD file and win -->
-			<zero-md src="http://101obex.static.mooo.com/static/docs/${url}"></zero-md>
+			<zero-md src="http://101obex.static.mooo.com/static/docs/${url}">
+			</zero-md>
 		`;
 	  }
 
