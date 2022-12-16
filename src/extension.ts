@@ -18,10 +18,9 @@ const axiosConfig = {
 export function activate(context: vscode.ExtensionContext) {
 
 	vscode.commands.registerCommand(`101obex-api-extension.viewOnlineDocumentation`, (e) => {
-
 		vscode.env.openExternal(
 			vscode.Uri.parse(
-				`https://developer.101obex.com/apis/login/${e.description}`
+				`https://developer.101obex.com/apis/${e.tooltip}/${e.description}`
 				));
 	});
 
@@ -87,7 +86,8 @@ class TreeDataProviderAPIs implements vscode.TreeDataProvider<TreeItem> {
 							new TreeItem(
 								`${subelement["name"]} (${subelement["description"]})`,
 								undefined,
-								subelement["doc_file"])
+								subelement["doc_file"],
+								subelement["doc_category"])
 								);
 						}
 					});
@@ -246,7 +246,7 @@ class TreeDataProviderOrganization implements vscode.TreeDataProvider<TreeItem> 
 class TreeItem extends vscode.TreeItem {
 	children: TreeItem[]|undefined;
 	
-	constructor(label: string, children?: TreeItem[], document?:string) {
+	constructor(label: string, children?: TreeItem[], document?:string, api_category?:string) {
 		
 	  super(
 		  label,
@@ -255,6 +255,7 @@ class TreeItem extends vscode.TreeItem {
 								   );
 	  this.children = children;
 	  this.description = document;
+	  this.tooltip = api_category;
 	  
 	}
   }
