@@ -7664,7 +7664,7 @@ function apis(context, response, contexto) {
             const panel = vscode.window.createWebviewPanel('catCoding', '101OBeX API Documentation', vscode.ViewColumn.One, {
                 enableScripts: true
             });
-            panel.webview.html = getWebviewContent(`get_signature.md`);
+            panel.webview.html = getWebviewContent(url);
         }));
     }
     function getWebviewContent(url) {
@@ -7679,7 +7679,7 @@ function apis(context, response, contexto) {
 			</script>
 
 			<!-- Simply set the src attribute to your MD file and win -->
-			<zero-md src="http://101obex.static.mooo.com/static/docs/${url}">
+			<zero-md src="http://101obex.static.mooo.com/static/docs/${url}.md">
 			</zero-md>
 		`;
     }
