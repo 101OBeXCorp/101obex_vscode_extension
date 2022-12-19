@@ -14,7 +14,7 @@ const axiosConfig = {
 	},
 	data: {}
   };
-
+var TokenData: AxiosResponse<any, any>;
 export function activate(context: vscode.ExtensionContext) {
 
 	vscode.commands.registerCommand(`101obex-api-extension.viewOnlineDocumentation`, (e) => {
@@ -42,6 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		axios.get(url + dataObj.id_token, axiosConfig)
 			.then((response) => {
+				TokenData = response;
 				setActiveProject(response.data.data[0].authorizations[0].token);
 				apis(context, response, context);
 				teams(context, response);
@@ -364,17 +365,17 @@ class TreeItem extends vscode.TreeItem {
 	});
 
 	tree.onDidChangeSelection((selection) => {
-
+		var projToken: string = '';
 		selection.selection.map((e) => {
-			
 			if (e.label?.toString().includes('Auth Token'))	
 			{
 				var label = e.label?.toString();
 				var labels = label.split(": ");
-				setActiveProject(labels[1]);
+				projToken = labels[1]
 			}
 		}
 		);
+		setActiveProject(projToken);
 	});
 
 	context.subscriptions.push(
@@ -415,15 +416,15 @@ class TreeItem extends vscode.TreeItem {
   
 
   function setActiveProject(token: string){
-
-	var selecterProject = {'selecter_project': `${token}`};
-
-	fs.writeFile(userHomeDir+'/.101obex/selecterproject.json', JSON.stringify(selecterProject), (err) => {
+	var cod_pais;
+	TokenData.data.data[0].authorizations.forEach((entry: any)=>{
+		if (entry.token == token) cod_pais = entry.country_code;
+	})
+	var selectedProject = {'selected_project': `${token}`, "country_code": `${cod_pais}`};
+	fs.writeFile(userHomeDir+'/.101obex/selectedproject.json', JSON.stringify(selectedProject), (err) => {
 	if (err)
 		console.log(err);
 		else {
-
 		}
 	});
-
   }
