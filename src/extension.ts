@@ -42,6 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		axios.get(url + dataObj.id_token, axiosConfig)
 			.then((response) => {
+				setActiveProject(response.data.data[0].authorizations[0].token);
 				apis(context, response, context);
 				teams(context, response);
 				projects(context, response);
@@ -370,7 +371,7 @@ class TreeItem extends vscode.TreeItem {
 			{
 				var label = e.label?.toString();
 				var labels = label.split(": ");
-				//console.log(labels[1]);
+				setActiveProject(labels[1]);
 			}
 		}
 		);
@@ -412,3 +413,17 @@ class TreeItem extends vscode.TreeItem {
 		);
   }
   
+
+  function setActiveProject(token: string){
+
+	var selecterProject = {'selecter_project': `${token}`};
+
+	fs.writeFile(userHomeDir+'/.101obex/selecterproject.json', JSON.stringify(selecterProject), (err) => {
+	if (err)
+		console.log(err);
+		else {
+
+		}
+	});
+
+  }
