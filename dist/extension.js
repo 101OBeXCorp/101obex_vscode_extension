@@ -16759,7 +16759,7 @@ function activate(context) {
             const provider = new ChatGPTViewProvider(context.extensionUri);
             // Put configuration settings into the provider
             provider.setAuthenticationInfo({
-                apiKey: config.get('apiKey')
+                apiKey: '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' //config.get('apiKey')
             });
             provider.setSettings({
                 selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false,
@@ -16784,7 +16784,7 @@ function activate(context) {
             vscode.workspace.onDidChangeConfiguration((event) => {
                 if (event.affectsConfiguration('101obex-api-extension.apiKey')) {
                     const config = vscode.workspace.getConfiguration('101obex-api-extension');
-                    provider.setAuthenticationInfo({ apiKey: config.get('apiKey') });
+                    provider.setAuthenticationInfo({ apiKey: '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' /*config.get('apiKey')*/ });
                 }
                 else if (event.affectsConfiguration('101obex-api-extension.selectedInsideCodeblock')) {
                     const config = vscode.workspace.getConfiguration('101obex-api-extension');
@@ -16922,7 +16922,7 @@ class ChatGPTViewProvider {
         }
         // focus gpt activity from activity bar
         if (!this._view) {
-            await vscode.commands.executeCommand('chatg101obex-api-extensionpt.chatView.focus');
+            await vscode.commands.executeCommand('101obex-api-extension.chatView.focus');
         }
         else {
             this._view?.show?.(true);
@@ -17035,7 +17035,7 @@ class ChatGPTViewProvider {
 				</style>
 			</head>
 			<body>
-				<input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask ChatGPT something" id="prompt-input" />
+				<input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask Marieta something" id="prompt-input" />
 				
 				<div id="response" class="pt-4 text-sm">
 				</div>

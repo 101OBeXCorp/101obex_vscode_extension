@@ -2,7 +2,7 @@
   "name": "101obex-api-extension",
   "displayName": "101OBeX API Extension",
   "description": "101OBeX API support extension",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "101OBeX Corp",
   "engines": {
     "vscode": "^1.73.0"
@@ -159,31 +159,31 @@
       },
       {
         "command": "101obex-api-extension.explain",
-        "title": "ChatGPT: Explain selection"
+        "title": "Marieta: Explain selection"
       },
       {
         "command": "101obex-api-extension.refactor",
-        "title": "ChatGPT: Refactor selection"
+        "title": "Marieta: Refactor selection"
       },
       {
         "command": "101obex-api-extension.findProblems",
-        "title": "ChatGPT: Find problems"
+        "title": "Marieta: Find problems"
       },
       {
         "command": "101obex-api-extension.optimize",
-        "title": "ChatGPT: Optimize selection"
+        "title": "Marieta: Optimize selection"
       },
       {
         "command": "101obex-api-extension.documentation",
-        "title": "ChatGPT: Write documentation"
+        "title": "Marieta: Write documentation"
       },
       {
         "command": "101obex-api-extension.resetConversation",
-        "title": "Reset ChatGPT conversation"
+        "title": "Reset Marieta conversation"
       },
       {
         "command": "101obex-api-extension.tryAgain",
-        "title": "Retry ChatGPT request"
+        "title": "Retry Marieta request"
       }
     ],
     "menus": {
