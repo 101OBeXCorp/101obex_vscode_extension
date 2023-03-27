@@ -53,25 +53,9 @@ export function activate(context: vscode.ExtensionContext) {
 				teams(context, response);
 				projects(context, response);
 				organizations(context, response);
-				})
-			.catch((error) => {
-				if ('success' in error.response.data) {
-				vscode.window.showErrorMessage(
-							'Your Token is not a valid Token.'
-						);
-					} 
-				else{
-					vscode.window.showErrorMessage(
-							'101OBeX Server is not responding.'
-						);
-					} 
-				nullRegistration(context,'101obex-api-extension.refreshEntry-organizations');
-				nullRegistration(context,'101obex-api-extension.refreshEntry-teams');
-				nullRegistration(context,'101obex-api-extension.refreshEntry-projects');
-				nullRegistration(context,'101obex-api-extension.refreshEntry-apis');
-				
-				//// CHAT GPT
-				
+
+				/// CHAT GPT
+
 				console.log('activating extension "chatgpt"');
 				// Get the settings from the extension's configuration
 				const config = vscode.workspace.getConfiguration('101obex-api-extension');
@@ -145,6 +129,26 @@ export function activate(context: vscode.ExtensionContext) {
 
 				/////
 
+				////
+
+
+				})
+			.catch((error) => {
+				if ('success' in error.response.data) {
+				vscode.window.showErrorMessage(
+							'Your Token is not a valid Token.'
+						);
+					} 
+				else{
+					vscode.window.showErrorMessage(
+							'101OBeX Server is not responding.'
+						);
+					} 
+				nullRegistration(context,'101obex-api-extension.refreshEntry-organizations');
+				nullRegistration(context,'101obex-api-extension.refreshEntry-teams');
+				nullRegistration(context,'101obex-api-extension.refreshEntry-projects');
+				nullRegistration(context,'101obex-api-extension.refreshEntry-apis');
+				
 				});	
 		}
 	

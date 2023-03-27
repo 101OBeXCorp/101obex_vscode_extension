@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "101obex-api-extension-AI",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"typescript.tsc.autoDetect": "off"
+	}
+}
