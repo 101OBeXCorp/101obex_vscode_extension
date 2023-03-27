@@ -20,5 +20,17 @@ This extension has the purpose of facilitating the developer, the management of 
 
 Initial version, advisory only.
 
+### 0.0.2
+
+Show online APIs documentation.
+
+### 0.0.3
+
+Project selection.
+
+### 0.0.4
+
+Integration with Marieta ChatGPT-3 IA.
+
 
 
