@@ -65,7 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
 			
 				// Put configuration settings into the provider
 				provider.setAuthenticationInfo({
-					apiKey: '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'//config.get('apiKey')
+					apiKey: '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'//config.get('apiKey')
 				});
 				provider.setSettings({
 					selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false,
@@ -108,7 +108,7 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
 					if (event.affectsConfiguration('101obex-api-extension.apiKey')) {
 						const config = vscode.workspace.getConfiguration('101obex-api-extension');
-						provider.setAuthenticationInfo({apiKey: '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'/*config.get('apiKey')*/});
+						provider.setAuthenticationInfo({apiKey: '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'/*config.get('apiKey')*/});
 					} else if (event.affectsConfiguration('101obex-api-extension.selectedInsideCodeblock')) {
 						const config = vscode.workspace.getConfiguration('101obex-api-extension');
 						provider.setSettings({ selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false });

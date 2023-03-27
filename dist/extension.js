@@ -16759,7 +16759,7 @@ function activate(context) {
             const provider = new ChatGPTViewProvider(context.extensionUri);
             // Put configuration settings into the provider
             provider.setAuthenticationInfo({
-                apiKey: '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' //config.get('apiKey')
+                apiKey: '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' //config.get('apiKey')
             });
             provider.setSettings({
                 selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false,
@@ -16784,7 +16784,7 @@ function activate(context) {
             vscode.workspace.onDidChangeConfiguration((event) => {
                 if (event.affectsConfiguration('101obex-api-extension.apiKey')) {
                     const config = vscode.workspace.getConfiguration('101obex-api-extension');
-                    provider.setAuthenticationInfo({ apiKey: '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' /*config.get('apiKey')*/ });
+                    provider.setAuthenticationInfo({ apiKey: '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' /*config.get('apiKey')*/ });
                 }
                 else if (event.affectsConfiguration('101obex-api-extension.selectedInsideCodeblock')) {
                     const config = vscode.workspace.getConfiguration('101obex-api-extension');
