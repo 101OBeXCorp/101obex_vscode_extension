@@ -8,6 +8,7 @@ import path = require('path');
 type AuthInfo = {apiKey?: string};
 type Settings = {selectedInsideCodeblock?: boolean, codeblockWithLanguageId?: false, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
 
+var SelectedDevToken = ''
 var CONTEXT="";
 
 const url = "https://hesperidium.101obex.mooo.com:3001/info_extension?developer_token=";
@@ -63,7 +64,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 				/// CHAT GPT
 
-				console.log('activating extension "chatgpt"');
 				// Get the settings from the extension's configuration
 				const config = vscode.workspace.getConfiguration('101obex-api-extension');
 			
@@ -109,16 +109,14 @@ export function activate(context: vscode.ExtensionContext) {
 						prompt = "Optimize the following code if there is anything to improve, if not say so:";
 					}
 					
-					provider.search(prompt);
-
-					console.log(prompt);
+					provider.escriberespuesta(prompt);
 				};
 			
 				// Register the commands that can be called from the extension's package.json
 				context.subscriptions.push(
 					vscode.commands.registerCommand('101obex-api-extension.ask', () => 
 						vscode.window.showInputBox({ prompt: 'What do you want to do?' })
-						.then((value) => provider.search(value))
+						.then((value) => provider.escriberespuesta(value))
 					),
 					vscode.commands.registerCommand('101obex-api-extension.explain', () => commandHandler('promptPrefix.explain')),
 					vscode.commands.registerCommand('101obex-api-extension.refactor', () => commandHandler('promptPrefix.refactor')),
@@ -225,18 +223,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		return this._settings;
 	}
 
-	// This private method initializes a new ChatGPTAPI instance
-	private _newAPI() {
-		console.log("New API");
-		if (!this._authInfo || !this._authInfo?.apiKey) {
-			console.warn("API key not set, please go to extension settings (read README.md for more info)");
-		}else{
-			this._chatGPTAPI = new ChatGPTAPI({
-				apiKey: this._authInfo.apiKey
-			});
-		}
-	}
-
 	public resolveWebviewView(
 		webviewView: vscode.WebviewView,
 		context: vscode.WebviewViewResolveContext,
@@ -273,11 +259,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					}
 				case 'prompt':
 					{
-						//this.search(data.value);
-						//console.log(data.value);
-						this.escriberespuesta(data.value);
-
-						
+						this.escriberespuesta(data.value);	
 					}
 			}
 		});
@@ -290,12 +272,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			prompt = '';
 		};
 
-		// Check if the ChatGPTAPI instance is defined
-		/*
-		if (!this._chatGPTAPI) {
-			this._newAPI();
-		}
-*/
 		// focus gpt activity from activity bar
 		if (!this._view) {
 			await vscode.commands.executeCommand('101obex-api-extension.chatView.focus');
@@ -317,6 +293,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			// If there is a selection, add the prompt and the selected text to the search prompt
 			if (this._settings.selectedInsideCodeblock) {
 				searchPrompt = `${prompt}\n\`\`\`${languageId}\n${selectedText}\n\`\`\``;
+				var resulquery = require('querystring').escape(searchPrompt);
+				searchPrompt = resulquery.replace(/\'/g,"\\'");
 			} else {
 				searchPrompt = `${prompt}\n${selectedText}\n`;
 			}
@@ -326,14 +304,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		}
 		this._fullPrompt = searchPrompt;
 
-		searchPrompt = CONTEXT + searchPrompt;
-
-		if (!this._chatGPTAPI && false) {
-			response = '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"';
-		} else {
-			// If successfully signed in
-			console.log("sendMessage");
-
 			// Make sure the prompt is shown
 			this._view?.webview.postMessage({ type: 'setPrompt', value: ''/*this._prompt*/ });
 			this._view?.webview.postMessage({ type: 'addResponse', value: '**'+this._prompt+'**'+'\n...' });
@@ -342,6 +312,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			this._currentMessageNumber++;
 
 			const agent = this._chatGPTAPI;
+			var totalResponse = '';
 			var partialResponse;
 			var net = require('net');
 			try {
@@ -352,62 +323,39 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					this._view.webview.postMessage({ type: 'addResponse', value: partialResponse });
 				}
 				response =  partialResponse;
+				totalResponse = partialResponse;
 
-				client.connect(8090, 'hesperidium.101obex.mooo.com', function() {
+				client.connect(8090, 'hesperidium.101obex.mooo.com', () => {
+					if (this._view){
+					}
+					// '742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a',
 					client.write(`{
-						'token':'742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a',
-						'prompt':'${prompt}',
+						'token': '${SelectedDevToken}', 
+						'prompt':'${searchPrompt.toString()}',
 						'context':'101obex',
 						'api':'chatcompletion',
 						'model':'gpt-3.5-turbo'
 					}`);
 				});
-				client.on('data', function(this: any, data : any) {
+				client.on('data', (data : any) => {
 					var tt = data.toString();
-					console.log(tt);
+					totalResponse = totalResponse + tt;
+
 					if (data != "END") {
-						this._view.webview.postMessage({ type: 'addResponse', value: data });
+						if (this._view){
+							this._view.webview.postMessage({ type: 'addResponse', value: totalResponse.toString() });
+						}
 					}  else 
 					{
 						client.destroy();
 					}
-				//	client.destroy();
 				});
-				/*
-				// Send the search prompt to the ChatGPTAPI instance and store the response
-				let currentMessageNumber = this._currentMessageNumber;
-				const res = await agent.sendMessage(searchPrompt, {
-					onProgress: (partialResponse) => {
-						if (partialResponse.text == '') partialResponse.text = '**'+this._prompt+'**'+'\n\n';
-						// If the message number has changed, don't show the partial response
-						if (this._currentMessageNumber !== currentMessageNumber) {
-							return;
-						}
-						console.log("onProgress");
-						if (this._view && this._view.visible) {
-							response = partialResponse.text;
-							this._view.webview.postMessage({ type: 'addResponse', value: partialResponse.text });
-						}
-					},
-					timeoutMs: (this._settings.timeoutLength || 60) * 1000,
-					...this._conversation
-				});
-
-				if (this._currentMessageNumber !== currentMessageNumber) {
-					return;
-				}
-
-				response = res.text;
-				if (this._settings.keepConversation){
-					this._conversation = {
-						parentMessageId: res.id
-					};
-				}*/
+				
 			} catch (e:any) {
 				console.error(e);
 				response += `\n\n---\n[ERROR] ${e}`;
 			}
-		}
+		
 
 		// Saves the response
 		this._response = response;
@@ -415,7 +363,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		// Show the view and send a message to the webview with the response
 		if (this._view) {
 			this._view.show?.(true);
-			this._view.webview.postMessage({ type: 'addResponse', value: response });
+			this._view.webview.postMessage({ type: 'addResponse', value: totalResponse });
 		}
 	}
 
@@ -430,112 +378,6 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		this._fullPrompt = '';
 		this._view?.webview.postMessage({ type: 'setPrompt', value: '' });
 		this._view?.webview.postMessage({ type: 'addResponse', value: '' });
-	}
-
-
-	public async search(prompt?:string) {
-		this._prompt = prompt;
-		if (!prompt) {
-			prompt = '';
-		};
-
-		// Check if the ChatGPTAPI instance is defined
-		if (!this._chatGPTAPI) {
-		//	this._newAPI();
-		}
-
-		// focus gpt activity from activity bar
-		if (!this._view) {
-			await vscode.commands.executeCommand('101obex-api-extension.chatView.focus');
-		} else {
-			this._view?.show?.(true);
-		}
-		
-		let response = '';
-		this._response = '';
-		// Get the selected text of the active editor
-		const selection = vscode.window.activeTextEditor?.selection;
-		const selectedText = vscode.window.activeTextEditor?.document.getText(selection);
-		// Get the language id of the selected text of the active editor
-		// If a user does not want to append this information to their prompt, leave it as an empty string
-		const languageId = (this._settings.codeblockWithLanguageId ? vscode.window.activeTextEditor?.document?.languageId : undefined) || "";
-		let searchPrompt = '';
-
-		if (selection && selectedText) {
-			// If there is a selection, add the prompt and the selected text to the search prompt
-			if (this._settings.selectedInsideCodeblock) {
-				searchPrompt = `${prompt}\n\`\`\`${languageId}\n${selectedText}\n\`\`\``;
-			} else {
-				searchPrompt = `${prompt}\n${selectedText}\n`;
-			}
-		} else {
-			// Otherwise, just use the prompt if user typed it
-			searchPrompt = prompt;
-		}
-		this._fullPrompt = searchPrompt;
-
-		searchPrompt = CONTEXT + searchPrompt;
-
-		if (!this._chatGPTAPI) {
-			response = '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"';
-		} else {
-			// If successfully signed in
-			console.log("sendMessage");
-
-			// Make sure the prompt is shown
-			this._view?.webview.postMessage({ type: 'setPrompt', value: ''/*this._prompt*/ });
-			this._view?.webview.postMessage({ type: 'addResponse', value: '**'+this._prompt+'**'+'\n...' });
-
-			// Increment the message number
-			this._currentMessageNumber++;
-
-			const agent = this._chatGPTAPI;
-
-			try {
-
-				// Send the search prompt to the ChatGPTAPI instance and store the response
-				let currentMessageNumber = this._currentMessageNumber;
-				const res = await agent.sendMessage(searchPrompt, {
-					onProgress: (partialResponse) => {
-						if (partialResponse.text == '') partialResponse.text = '**'+this._prompt+'**'+'\n\n';
-						// If the message number has changed, don't show the partial response
-						if (this._currentMessageNumber !== currentMessageNumber) {
-							return;
-						}
-						console.log("onProgress");
-						if (this._view && this._view.visible) {
-							response = partialResponse.text;
-							this._view.webview.postMessage({ type: 'addResponse', value: partialResponse.text });
-						}
-					},
-					timeoutMs: (this._settings.timeoutLength || 60) * 1000,
-					...this._conversation
-				});
-
-				if (this._currentMessageNumber !== currentMessageNumber) {
-					return;
-				}
-
-				response = res.text;
-				if (this._settings.keepConversation){
-					this._conversation = {
-						parentMessageId: res.id
-					};
-				}
-			} catch (e:any) {
-				console.error(e);
-				response += `\n\n---\n[ERROR] ${e}`;
-			}
-		}
-
-		// Saves the response
-		this._response = response;
-
-		// Show the view and send a message to the webview with the response
-		if (this._view) {
-			this._view.show?.(true);
-			this._view.webview.postMessage({ type: 'addResponse', value: response });
-		}
 	}
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
@@ -705,6 +547,7 @@ class TreeDataProviderProjects implements vscode.TreeDataProvider<TreeItem> {
 					subresponses.push(new TreeItem(`Creation: ${element["creation_date"]}`));
 					subresponses.push(new TreeItem(`Country Code: ${element["country_code"]}`));
 					subresponses.push(new TreeItem(`Auth Token: ${element["token"]}`));
+					//if (SelectedDevToken === '') SelectedDevToken = element["token"];
 					subresponses.push(new TreeItem(`Mode: ${element["Staging"] ? 'staging':'Productive'}`));
 					responses.push(new TreeItem(`${element["name"]}`, subresponses));
 				});
@@ -959,6 +802,7 @@ class TreeItem extends vscode.TreeItem {
 		if (entry.token == token) cod_pais = entry.country_code;
 	})
 	var selectedProject = {'selected_project': `${token}`, "country_code": `${cod_pais}`};
+	SelectedDevToken = token;
 	fs.writeFile(userHomeDir+'/.101obex/selectedproject.json', JSON.stringify(selectedProject), (err) => {
 	if (err)
 		console.log(err);
@@ -966,3 +810,4 @@ class TreeItem extends vscode.TreeItem {
 		}
 	});
   }
+
