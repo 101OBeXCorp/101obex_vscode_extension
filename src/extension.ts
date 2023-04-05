@@ -3,14 +3,17 @@ import * as fs from 'fs';
 import axios, { AxiosResponse } from 'axios';
 import os = require("os");
 import { ChatGPTAPI } from 'chatgpt';
+import path = require('path');
 
 type AuthInfo = {apiKey?: string};
 type Settings = {selectedInsideCodeblock?: boolean, codeblockWithLanguageId?: false, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
 
+var CONTEXT="";
 
 const url = "https://hesperidium.101obex.mooo.com:3001/info_extension?developer_token=";
 const userHomeDir = os.homedir();
 const configFile = userHomeDir+'/.101obex/config.json';
+const contextFile = userHomeDir+'/context.txt';
 const axiosConfig = {
 	headers: {
 		accept: 'application/json',
@@ -29,6 +32,9 @@ export function activate(context: vscode.ExtensionContext) {
 				));
 	});
 
+	fs.readFile(contextFile, 'utf8', (err, data) => {
+		CONTEXT = data.toString();
+	});
 
 	fs.readFile(configFile, 'utf8', (err, data) => {
 		if (err) { 
@@ -49,10 +55,11 @@ export function activate(context: vscode.ExtensionContext) {
 			.then((response) => {
 				TokenData = response;
 				setActiveProject(response.data.data[0].authorizations[0].token);
+				organizations(context, response);
 				apis(context, response, context);
 				teams(context, response);
 				projects(context, response);
-				organizations(context, response);
+				
 
 				/// CHAT GPT
 
@@ -65,7 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
 			
 				// Put configuration settings into the provider
 				provider.setAuthenticationInfo({
-					apiKey: config.get('apiKey')
+					apiKey: ''//config.get('apiKey')
 				});
 				provider.setSettings({
 					selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false,
@@ -85,8 +92,26 @@ export function activate(context: vscode.ExtensionContext) {
 			
 				const commandHandler = (command:string) => {
 					const config = vscode.workspace.getConfiguration('101obex-api-extension');
-					const prompt = config.get(command) as string;
+					var prompt = config.get(command) as string;
+					if (prompt == 'Explain what this code does: ') {
+						prompt = "Explain what this code does:";
+					}
+					if (prompt == "Refactor this code and explain what's changed: ") {
+						prompt = "Refactor this code and explain what's changed:";
+					}
+					if (prompt == "Find problems with the following code, fix them and explain what was wrong (Do not change anything else, if there are no problems say so): ") {
+						prompt = "Find problems with the following code, fix them and explain what was wrong (Do not change anything else, if there are no problems say so):";
+					}
+					if (prompt == "Write documentation for the following code: ") {
+						prompt = "Write documentation for the following code:";
+					}
+					if (prompt == "Optimize the following code if there is anything to improve, if not say so: ") {
+						prompt = "Optimize the following code if there is anything to improve, if not say so:";
+					}
+					
 					provider.search(prompt);
+
+					console.log(prompt);
 				};
 			
 				// Register the commands that can be called from the extension's package.json
@@ -108,7 +133,7 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
 					if (event.affectsConfiguration('101obex-api-extension.apiKey')) {
 						const config = vscode.workspace.getConfiguration('101obex-api-extension');
-						provider.setAuthenticationInfo({apiKey: config.get('apiKey')});
+						provider.setAuthenticationInfo({apiKey: ''/*config.get('apiKey')*/});
 					} else if (event.affectsConfiguration('101obex-api-extension.selectedInsideCodeblock')) {
 						const config = vscode.workspace.getConfiguration('101obex-api-extension');
 						provider.setSettings({ selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false });
@@ -248,10 +273,149 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					}
 				case 'prompt':
 					{
-						this.search(data.value);
+						//this.search(data.value);
+						//console.log(data.value);
+						this.escriberespuesta(data.value);
+
+						
 					}
 			}
 		});
+	}
+
+	public async escriberespuesta(prompt: any){
+		
+		this._prompt = prompt;
+		if (!prompt) {
+			prompt = '';
+		};
+
+		// Check if the ChatGPTAPI instance is defined
+		if (!this._chatGPTAPI) {
+			this._newAPI();
+		}
+
+		// focus gpt activity from activity bar
+		if (!this._view) {
+			await vscode.commands.executeCommand('101obex-api-extension.chatView.focus');
+		} else {
+			this._view?.show?.(true);
+		}
+		
+		let response = '';
+		this._response = '';
+		// Get the selected text of the active editor
+		const selection = vscode.window.activeTextEditor?.selection;
+		const selectedText = vscode.window.activeTextEditor?.document.getText(selection);
+		// Get the language id of the selected text of the active editor
+		// If a user does not want to append this information to their prompt, leave it as an empty string
+		const languageId = (this._settings.codeblockWithLanguageId ? vscode.window.activeTextEditor?.document?.languageId : undefined) || "";
+		let searchPrompt = '';
+
+		if (selection && selectedText) {
+			// If there is a selection, add the prompt and the selected text to the search prompt
+			if (this._settings.selectedInsideCodeblock) {
+				searchPrompt = `${prompt}\n\`\`\`${languageId}\n${selectedText}\n\`\`\``;
+			} else {
+				searchPrompt = `${prompt}\n${selectedText}\n`;
+			}
+		} else {
+			// Otherwise, just use the prompt if user typed it
+			searchPrompt = prompt;
+		}
+		this._fullPrompt = searchPrompt;
+
+		searchPrompt = CONTEXT + searchPrompt;
+
+		if (!this._chatGPTAPI) {
+			response = '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"';
+		} else {
+			// If successfully signed in
+			console.log("sendMessage");
+
+			// Make sure the prompt is shown
+			this._view?.webview.postMessage({ type: 'setPrompt', value: ''/*this._prompt*/ });
+			this._view?.webview.postMessage({ type: 'addResponse', value: '**'+this._prompt+'**'+'\n...' });
+
+			// Increment the message number
+			this._currentMessageNumber++;
+
+			const agent = this._chatGPTAPI;
+			var partialResponse;
+			var net = require('net');
+			try {
+				var client = new net.Socket();
+
+				partialResponse = '**'+this._prompt+'**'+'\n\n';
+				if (this._view && this._view.visible) {
+					this._view.webview.postMessage({ type: 'addResponse', value: partialResponse });
+				}
+				response =  partialResponse;
+
+				client.connect(8090, 'hesperidium.101obex.mooo.com', function() {
+					client.write(`{
+						'token':'742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a',
+						'prompt':'${prompt}',
+						'context':'101obex',
+						'api':'chatcompletion',
+						'model':'gpt-3.5-turbo'
+					}`);
+				});
+				client.on('data', function(this: any, data : any) {
+					var tt = data.toString();
+					console.log(tt);
+					if (data != "END") {
+						this._view.webview.postMessage({ type: 'addResponse', value: data });
+					}  else 
+					{
+						client.destroy();
+					}
+				//	client.destroy();
+				});
+				/*
+				// Send the search prompt to the ChatGPTAPI instance and store the response
+				let currentMessageNumber = this._currentMessageNumber;
+				const res = await agent.sendMessage(searchPrompt, {
+					onProgress: (partialResponse) => {
+						if (partialResponse.text == '') partialResponse.text = '**'+this._prompt+'**'+'\n\n';
+						// If the message number has changed, don't show the partial response
+						if (this._currentMessageNumber !== currentMessageNumber) {
+							return;
+						}
+						console.log("onProgress");
+						if (this._view && this._view.visible) {
+							response = partialResponse.text;
+							this._view.webview.postMessage({ type: 'addResponse', value: partialResponse.text });
+						}
+					},
+					timeoutMs: (this._settings.timeoutLength || 60) * 1000,
+					...this._conversation
+				});
+
+				if (this._currentMessageNumber !== currentMessageNumber) {
+					return;
+				}
+
+				response = res.text;
+				if (this._settings.keepConversation){
+					this._conversation = {
+						parentMessageId: res.id
+					};
+				}*/
+			} catch (e:any) {
+				console.error(e);
+				response += `\n\n---\n[ERROR] ${e}`;
+			}
+		}
+
+		// Saves the response
+		this._response = response;
+
+		// Show the view and send a message to the webview with the response
+		if (this._view) {
+			this._view.show?.(true);
+			this._view.webview.postMessage({ type: 'addResponse', value: response });
+		}
 	}
 
 
@@ -309,15 +473,17 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		}
 		this._fullPrompt = searchPrompt;
 
+		searchPrompt = CONTEXT + searchPrompt;
+
 		if (!this._chatGPTAPI) {
 			response = '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"';
 		} else {
 			// If successfully signed in
 			console.log("sendMessage");
-			
+
 			// Make sure the prompt is shown
-			this._view?.webview.postMessage({ type: 'setPrompt', value: this._prompt });
-			this._view?.webview.postMessage({ type: 'addResponse', value: '...' });
+			this._view?.webview.postMessage({ type: 'setPrompt', value: ''/*this._prompt*/ });
+			this._view?.webview.postMessage({ type: 'addResponse', value: '**'+this._prompt+'**'+'\n...' });
 
 			// Increment the message number
 			this._currentMessageNumber++;
@@ -325,10 +491,12 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			const agent = this._chatGPTAPI;
 
 			try {
+
 				// Send the search prompt to the ChatGPTAPI instance and store the response
 				let currentMessageNumber = this._currentMessageNumber;
 				const res = await agent.sendMessage(searchPrompt, {
 					onProgress: (partialResponse) => {
+						if (partialResponse.text == '') partialResponse.text = '**'+this._prompt+'**'+'\n\n';
 						// If the message number has changed, don't show the partial response
 						if (this._currentMessageNumber !== currentMessageNumber) {
 							return;
@@ -385,6 +553,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				<script src="${showdownUri}"></script>
 				<script src="${microlightUri}"></script>
 				<style>
+
 				.code {
 					white-space: pre;
 				}
@@ -392,6 +561,18 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					padding-top: 0.3rem;
 					padding-bottom: 0.3rem;
 				}
+				input{
+					line-height: 18px !important;
+					background-color: #3c3c3c; 
+					border-color: #3c3c3c;
+					border-style:solid; 
+					border-width:1px;
+				}
+				input:focus {
+					outline: none !important;
+					border:1px solid #107fd5 !important;
+					textcolor: white !important;
+				  }
 				/* overrides vscodes style reset, displays as if inside web browser */
 				ul, ol {
 					list-style: initial !important;
@@ -403,7 +584,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				</style>
 			</head>
 			<body>
-				<input class="h-10 w-full text-white bg-stone-700 p-4 text-sm" placeholder="Ask Marieta something" id="prompt-input" />
+				<input style="margin-top:10px; width:100%; height:27px; padding-left: 5px;" class="" placeholder="Ask Marieta something" id="prompt-input" />
 				
 				<div id="response" class="pt-4 text-sm">
 				</div>
@@ -477,12 +658,12 @@ class TreeDataProviderTeams implements vscode.TreeDataProvider<TreeItem> {
 					subresponses.push(new TreeItem(`Organization: ${element["organization_team"]}`));
 					var subsubresponses: TreeItem[] = [];
 					element.components.forEach((user_component: any)=>{
-						subsubresponses.push(new TreeItem(user_component.email));
+						subsubresponses.push(new TreeItem(user_component.email,[],'DEVELOPERS'));
 
 					})
 
 					subresponses.push(new TreeItem("Components", subsubresponses));
-					responses.push(new TreeItem(element["name"], subresponses));
+					responses.push(new TreeItem(element["name"], subresponses,'TEAMS'));
 				});
 				this.data = responses;
 
@@ -564,7 +745,7 @@ class TreeDataProviderOrganization implements vscode.TreeDataProvider<TreeItem> 
 					subresponses.push(new TreeItem(`Description: ${element["description"]}`));
 					subresponses.push(new TreeItem(`Admin: ${element["username"]}`));
 					subresponses.push(new TreeItem(`Subscription type: ${element["subscription_name"]}`));
-					responses.push(new TreeItem(element["name"], subresponses));
+					responses.push(new TreeItem(element["name"], subresponses,'ORGANIZATIONS'));
 				});
 				this.data = responses;
 	}
@@ -603,7 +784,18 @@ class TreeItem extends vscode.TreeItem {
 	  this.children = children;
 	  this.description = document;
 	  this.tooltip = api_category;
-	  
+	  this.iconPath = this.children === undefined ? vscode.ThemeIcon.File: vscode.ThemeIcon.Folder;
+	  this.iconPath = this.description === 'ORGANIZATIONS' ? path.join(__filename, '..', '..', 'images', 'home.svg') :  this.iconPath
+	  this.description = this.description === 'ORGANIZATIONS' ? "" : this.description
+
+	  this.iconPath = this.description === 'TEAMS' ? path.join(__filename, '..', '..', 'images', 'organization.svg') :  this.iconPath
+	  this.description = this.description === 'TEAMS' ? "" : this.description
+
+	  this.iconPath = this.description === 'DEVELOPERS' ? path.join(__filename, '..', '..', 'images', 'person.svg') :  this.iconPath
+	  this.description = this.description === 'DEVELOPERS' ? "" : this.description
+
+	this.iconPath = this.tooltip !== undefined ? path.join(__filename, '..', '..', 'images', 'code.svg') :  this.iconPath
+
 	}
   }
 

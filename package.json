@@ -2,7 +2,7 @@
   "name": "101obex-api-extension",
   "displayName": "101OBeX API Extension",
   "description": "101OBeX API support extension",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "publisher": "101OBeX Corp",
   "engines": {
     "vscode": "^1.73.0"
@@ -135,19 +135,23 @@
     "commands": [
       {
         "command": "101obex-api-extension.refreshEntry-apis",
-        "title": "Refresh"
+        "title": "Refresh",
+        "icon": "$(refresh)" 
       },
       {
         "command": "101obex-api-extension.refreshEntry-organizations",
-        "title": "Refresh"
+        "title": "Refresh",
+        "icon": "$(refresh)"
       },
       {
         "command": "101obex-api-extension.refreshEntry-projects",
-        "title": "Refresh"
+        "title": "Refresh",
+        "icon": "$(refresh)"
       },
       {
         "command": "101obex-api-extension.refreshEntry-teams",
-        "title": "Refresh"
+        "title": "Refresh",
+        "icon": "$(refresh)"
       },
       {
         "command": "101obex-api-extension.viewOnlineDocumentation",
