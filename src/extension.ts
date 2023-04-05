@@ -214,7 +214,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	// Set the API key and create a new API instance based on this key
 	public setAuthenticationInfo(authInfo: AuthInfo) {
 		this._authInfo = authInfo;
-		this._newAPI();
+		//this._newAPI();
 	}
 
 	public setSettings(settings: Settings) {
@@ -291,10 +291,11 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 		};
 
 		// Check if the ChatGPTAPI instance is defined
+		/*
 		if (!this._chatGPTAPI) {
 			this._newAPI();
 		}
-
+*/
 		// focus gpt activity from activity bar
 		if (!this._view) {
 			await vscode.commands.executeCommand('101obex-api-extension.chatView.focus');
@@ -327,7 +328,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 		searchPrompt = CONTEXT + searchPrompt;
 
-		if (!this._chatGPTAPI) {
+		if (!this._chatGPTAPI && false) {
 			response = '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"';
 		} else {
 			// If successfully signed in
@@ -440,7 +441,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 		// Check if the ChatGPTAPI instance is defined
 		if (!this._chatGPTAPI) {
-			this._newAPI();
+		//	this._newAPI();
 		}
 
 		// focus gpt activity from activity bar

@@ -15203,7 +15203,7 @@ class Body {
 			return formData;
 		}
 
-		const {toFormData} = await __webpack_require__.e(/* import() */ 1).then(__webpack_require__.bind(__webpack_require__, 93));
+		const {toFormData} = await __webpack_require__.e(/* import() */ 1).then(__webpack_require__.bind(__webpack_require__, 92));
 		return toFormData(this.body, ct);
 	}
 
@@ -16568,7 +16568,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (/^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i);
 
 /***/ }),
-/* 92 */
+/* 92 */,
+/* 93 */
 /***/ ((module) => {
 
 "use strict";
@@ -16874,7 +16875,7 @@ class ChatGPTViewProvider {
     // Set the API key and create a new API instance based on this key
     setAuthenticationInfo(authInfo) {
         this._authInfo = authInfo;
-        this._newAPI();
+        //this._newAPI();
     }
     setSettings(settings) {
         this._settings = { ...this._settings, ...settings };
@@ -16937,9 +16938,11 @@ class ChatGPTViewProvider {
         }
         ;
         // Check if the ChatGPTAPI instance is defined
+        /*
         if (!this._chatGPTAPI) {
             this._newAPI();
         }
+*/
         // focus gpt activity from activity bar
         if (!this._view) {
             await vscode.commands.executeCommand('101obex-api-extension.chatView.focus');
@@ -16971,9 +16974,7 @@ class ChatGPTViewProvider {
         }
         this._fullPrompt = searchPrompt;
         searchPrompt = CONTEXT + searchPrompt;
-        if (!this._chatGPTAPI) {
-            response = '[ERROR] "API key not set or wrong, please go to extension settings to set it (read README.md for more info)"';
-        }
+        if (!this._chatGPTAPI && false) {}
         else {
             // If successfully signed in
             console.log("sendMessage");
@@ -16984,7 +16985,7 @@ class ChatGPTViewProvider {
             this._currentMessageNumber++;
             const agent = this._chatGPTAPI;
             var partialResponse;
-            var net = __webpack_require__(92);
+            var net = __webpack_require__(93);
             try {
                 var client = new net.Socket();
                 partialResponse = '**' + this._prompt + '**' + '\n\n';
@@ -17075,7 +17076,7 @@ class ChatGPTViewProvider {
         ;
         // Check if the ChatGPTAPI instance is defined
         if (!this._chatGPTAPI) {
-            this._newAPI();
+            //	this._newAPI();
         }
         // focus gpt activity from activity bar
         if (!this._view) {
