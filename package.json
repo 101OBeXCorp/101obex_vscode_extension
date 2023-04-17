@@ -2,7 +2,7 @@
   "name": "101obex-api-extension",
   "displayName": "101OBeX API Extension",
   "description": "101OBeX API support extension",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "publisher": "101OBeX Corp",
   "engines": {
     "vscode": "^1.73.0"

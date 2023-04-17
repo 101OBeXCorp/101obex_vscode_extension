@@ -5,11 +5,18 @@ import os = require("os");
 import { ChatGPTAPI } from 'chatgpt';
 import path = require('path');
 
+var TEST = 1;
+
 type AuthInfo = {apiKey?: string};
 type Settings = {selectedInsideCodeblock?: boolean, codeblockWithLanguageId?: false, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
 
-var SelectedDevToken = ''
-var CONTEXT="";
+var SelectedOrganization = '';
+var DevOrganization = '';
+var SelectedDevToken = '';
+var DevToken = '';
+var CONTEXT = "";
+
+var consultando = false;
 
 const url = "https://hesperidium.101obex.mooo.com:3001/info_extension?developer_token=";
 const userHomeDir = os.homedir();
@@ -52,14 +59,17 @@ export function activate(context: vscode.ExtensionContext) {
 
 		var dataObj = JSON.parse( data.replace(/\'/g,"\"") );
 
+		if (TEST==1) dataObj.id_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1MmRlMjdmNTE1NzM3NTM5NjAwZDg5YjllZTJlNGVkNTM1ZmI1MTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgwNzE4ODU4MTA0MzU5OTg4ODIiLCJoZCI6IndheW5ub3ZhdGUuY29tIiwiZW1haWwiOiJyYWZhLnJ1aXpAd2F5bm5vdmF0ZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Il9GTk5wSlRvNEd5X2NaYS10d0hUVVEiLCJuYW1lIjoiUmFmYWVsIFJ1aXoiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUVkRlRwNG4xaF9RbUoxelhUd3NUdDNBRTdkVVVRUGhkTlFaN0hRek5zQVdrZz1zOTYtYyIsImdpdmVuX25hbWUiOiJSYWZhZWwiLCJmYW1pbHlfbmFtZSI6IlJ1aXoiLCJsb2NhbGUiOiJlcyIsImlhdCI6MTY3MDk1Mjc2NCwiZXhwIjoxNjcwOTU2MzY0fQ.uFMoDEhjZW-FKxnBg9BVxp_sSrjcrvw5_sxMOQZrREvJjv11W2GxLuQfMjMTtTPXhDCa8GeQOlzCllWxQRlOr3irEdu19y4qJQT1ut0RSi7pEIb6E6KcsdiAZtRSlA-6feIuj2u9gC2HXnGvBHtlO3FhWw4Et1zl_menGTCLOMqeq6v2QiMOfFlFzzE2t1TSo5_Be9AZQNfB7E1SLGHnbKXdR9ij9yqwMD2spjpxvnw4l4k5q23eS5Zz0Qz_WNm5PBgqF5NJwTeky-7-Aeq-ulUSnQ3qY-SsmQJunyt_miiwDyVOQkEWNDMRF4FJPuXDGJatWEeCsKXWe877pL4nVA';
+
 		axios.get(url + dataObj.id_token, axiosConfig)
 			.then((response) => {
 				TokenData = response;
 				setActiveProject(response.data.data[0].authorizations[0].token);
-				organizations(context, response);
+				setActiveOrganization(response.data.data[0].organizations[0].name);
+				organizations(context, response, true);
 				apis(context, response, context);
-				teams(context, response);
-				projects(context, response);
+				teams(context, response, true);
+				projects(context, response, false);
 				
 
 				/// CHAT GPT
@@ -266,7 +276,9 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	}
 
 	public async escriberespuesta(prompt: any){
-		
+
+		if (!consultando){
+			
 		this._prompt = prompt;
 		if (!prompt) {
 			prompt = '';
@@ -315,6 +327,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 			var totalResponse = '';
 			var partialResponse;
 			var net = require('net');
+			consultando = true;
 			try {
 				var client = new net.Socket();
 
@@ -342,12 +355,33 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					totalResponse = totalResponse + tt;
 
 					if (data != "END") {
+						
+						if (!data.includes('[ERROR]')){
+						
 						if (this._view){
 							this._view.webview.postMessage({ type: 'addResponse', value: totalResponse.toString() });
 						}
+					} else {
+						var erromessage = ''+data;
+						erromessage = erromessage.replace('[ERROR] ','')
+						vscode.window.showErrorMessage(erromessage);
+						console.log("ERROR")
+						console.log(erromessage);
+						client.destroy();
+						consultando = false;
+						totalResponse = '';
+						if (this._view){
+							this._view.webview.postMessage({ type: 'addResponse', value: totalResponse.toString() });
+						}
+					}
+
+
+
 					}  else 
 					{
+						console.log("FINALIZADO")
 						client.destroy();
+						consultando = false;
 					}
 				});
 				
@@ -359,12 +393,17 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 		// Saves the response
 		this._response = response;
-
+			
 		// Show the view and send a message to the webview with the response
 		if (this._view) {
 			this._view.show?.(true);
 			this._view.webview.postMessage({ type: 'addResponse', value: totalResponse });
 		}
+
+
+	}
+
+
 	}
 
 
@@ -496,6 +535,7 @@ class TreeDataProviderTeams implements vscode.TreeDataProvider<TreeItem> {
 				
 				var responses: TreeItem[] = [];
 				response.data.data[0].teams.forEach((element: any) => {
+					if (element.id_organization == SelectedOrganization){
 					var subresponses: TreeItem[] = [];
 					subresponses.push(new TreeItem(`Description: ${element["descripcion"]}`));
 					subresponses.push(new TreeItem(`Organization: ${element["organization_team"]}`));
@@ -507,6 +547,7 @@ class TreeDataProviderTeams implements vscode.TreeDataProvider<TreeItem> {
 
 					subresponses.push(new TreeItem("Components", subsubresponses));
 					responses.push(new TreeItem(element["name"], subresponses,'TEAMS'));
+				}
 				});
 				this.data = responses;
 
@@ -537,7 +578,7 @@ class TreeDataProviderProjects implements vscode.TreeDataProvider<TreeItem> {
 
 	data!: TreeItem[];
 	
-	constructor(response: AxiosResponse<any, any>) {
+	constructor(response: AxiosResponse<any, any>, control: boolean) {
 				
 				var responses: TreeItem[] = [];
 				response.data.data[0].authorizations.forEach((element: any) => {
@@ -547,9 +588,32 @@ class TreeDataProviderProjects implements vscode.TreeDataProvider<TreeItem> {
 					subresponses.push(new TreeItem(`Creation: ${element["creation_date"]}`));
 					subresponses.push(new TreeItem(`Country Code: ${element["country_code"]}`));
 					subresponses.push(new TreeItem(`Auth Token: ${element["token"]}`));
-					//if (SelectedDevToken === '') SelectedDevToken = element["token"];
+					
 					subresponses.push(new TreeItem(`Mode: ${element["Staging"] ? 'staging':'Productive'}`));
-					responses.push(new TreeItem(`${element["name"]}`, subresponses));
+					if (!control){
+					if (element["token"] == SelectedDevToken) {
+						responses.push(new TreeItem(`>>${element["name"]}`, subresponses,'PROJECT'));
+					} else {
+						responses.push(new TreeItem(`${element["name"]}`, subresponses,'PROJECT'));
+					}
+				} else {
+					if (SelectedDevToken!=''){
+					if (element["token"] == SelectedDevToken){
+
+						responses.push(new TreeItem(`>>${element["name"]}`, subresponses,'PROJECT'))
+				} else {
+						responses.push(new TreeItem(`${element["name"]}`, subresponses,'PROJECT'))
+					}
+
+				} else {
+					if (element["token"] == DevToken) {
+						responses.push(new TreeItem(`>>${element["name"]}`, subresponses,'PROJECT'));
+					} else {
+						responses.push(new TreeItem(`${element["name"]}`, subresponses,'PROJECT'));
+					}
+
+				}
+				}
 				});
 				this.data = responses;
 	}
@@ -629,8 +693,19 @@ class TreeItem extends vscode.TreeItem {
 	  this.description = document;
 	  this.tooltip = api_category;
 	  this.iconPath = this.children === undefined ? vscode.ThemeIcon.File: vscode.ThemeIcon.Folder;
-	  this.iconPath = this.description === 'ORGANIZATIONS' ? path.join(__filename, '..', '..', 'images', 'home.svg') :  this.iconPath
-	  this.description = this.description === 'ORGANIZATIONS' ? "" : this.description
+
+	  if (this.description === 'ORGANIZATIONS'){
+		
+		if (this.label==DevOrganization){
+			//this.description = 'Active'
+			this.iconPath = this.description === 'ORGANIZATIONS' ? path.join(__filename, '..', '..', 'images', 'home_selected.png') :  this.iconPath
+			this.description = 'Active';
+		} else {
+			
+			this.iconPath = this.description === 'ORGANIZATIONS' ? path.join(__filename, '..', '..', 'images', 'home.svg') :  this.iconPath
+			this.description = '';
+		}
+	  }
 
 	  this.iconPath = this.description === 'TEAMS' ? path.join(__filename, '..', '..', 'images', 'organization.svg') :  this.iconPath
 	  this.description = this.description === 'TEAMS' ? "" : this.description
@@ -638,7 +713,16 @@ class TreeItem extends vscode.TreeItem {
 	  this.iconPath = this.description === 'DEVELOPERS' ? path.join(__filename, '..', '..', 'images', 'person.svg') :  this.iconPath
 	  this.description = this.description === 'DEVELOPERS' ? "" : this.description
 
-	this.iconPath = this.tooltip !== undefined ? path.join(__filename, '..', '..', 'images', 'code.svg') :  this.iconPath
+	  this.iconPath = this.tooltip !== undefined ? path.join(__filename, '..', '..', 'images', 'code.svg') :  this.iconPath
+	  
+		if (this.description == 'PROJECT'){
+			this.description = '';
+			if (this.label?.toString().includes('>>')) {
+				this.label = this.label.toString().replace('>>','');
+				this.iconPath = path.join(__filename, '..', '..', 'images', 'default_folder.svg');
+				this.description = 'Active'
+		}
+		}	  
 
 	}
   }
@@ -738,8 +822,15 @@ class TreeItem extends vscode.TreeItem {
 			);
   }
 
-  function projects(context: { subscriptions: vscode.Disposable[]; }, response: AxiosResponse<any, any>){
-	var projectsTreeProvider = new TreeDataProviderProjects(response);
+  function projects(context: { subscriptions: vscode.Disposable[]; }, response: AxiosResponse<any, any>, control: boolean){
+	
+	var tt = {}
+	
+	if (control) {
+		var projectsTreeProvider =  new TreeDataProviderProjects(response, control); } 
+	else {
+		var projectsTreeProvider = new TreeDataProviderProjects(response, control);
+	}
 
 	var tree = vscode.window.createTreeView('package-projects', {
 		treeDataProvider: projectsTreeProvider,
@@ -757,6 +848,11 @@ class TreeItem extends vscode.TreeItem {
 		}
 		);
 		setActiveProject(projToken);
+		if (projToken!='')
+			{
+				projects(context, response, true);
+				projectsTreeProvider.refresh();
+			}
 	});
 
 	context.subscriptions.push(
@@ -765,23 +861,55 @@ class TreeItem extends vscode.TreeItem {
 			);
   }
 
-  function teams(context: { subscriptions: vscode.Disposable[]; }, response: AxiosResponse<any, any>){
+  function teams(context: { subscriptions: vscode.Disposable[]; }, response: AxiosResponse<any, any>, nuevo: boolean){
 	var teamsTreeProvider = new TreeDataProviderTeams(response);
 	vscode.window.registerTreeDataProvider('package-teams', teamsTreeProvider);
+	if (nuevo){
 	context.subscriptions.push(
 		vscode.commands.registerCommand('101obex-api-extension.refreshEntry-teams', () =>
 			teamsTreeProvider.refresh())
 			);
+	}
   }
 
 
-  function organizations(context: { subscriptions: vscode.Disposable[]; }, response: AxiosResponse<any, any>){
+  function organizations(context: { subscriptions: vscode.Disposable[]; }, response: AxiosResponse<any, any>, nuevo: boolean){
 	var organizationsTreeProvider = new TreeDataProviderOrganization(response);
 	vscode.window.registerTreeDataProvider('package-organizations', organizationsTreeProvider);
+
+	
+	var tree2 = vscode.window.createTreeView('package-organizations', {
+		treeDataProvider: organizationsTreeProvider,
+	});
+
+	tree2.onDidChangeSelection((selection) => {
+		var projToken: string = '';
+		selection.selection.map((e) => {
+			if (!e.label?.toString().includes(':'))	
+			{
+				var label = e.label?.toString();
+				
+				projToken = label || '';
+			}
+		}
+		);
+		setActiveOrganization(projToken);
+		if (projToken!='')
+			{
+				teams(context, response, false);
+				organizations(context, response, false);
+				organizationsTreeProvider.refresh();
+			}
+	
+	});
+
+
+	if (nuevo){
 	context.subscriptions.push(
 		vscode.commands.registerCommand('101obex-api-extension.refreshEntry-organizations', () =>
 			organizationsTreeProvider.refresh())
 			);
+	}
   }
 
   function nullRegistration(context: { subscriptions: vscode.Disposable[]; }, target: string){
@@ -801,13 +929,37 @@ class TreeItem extends vscode.TreeItem {
 	TokenData.data.data[0].authorizations.forEach((entry: any)=>{
 		if (entry.token == token) cod_pais = entry.country_code;
 	})
+
 	var selectedProject = {'selected_project': `${token}`, "country_code": `${cod_pais}`};
 	SelectedDevToken = token;
+	if (token!='') DevToken = SelectedDevToken;
 	fs.writeFile(userHomeDir+'/.101obex/selectedproject.json', JSON.stringify(selectedProject), (err) => {
 	if (err)
 		console.log(err);
 		else {
 		}
 	});
+
+	
+  }
+
+  function setActiveOrganization(organization: string){
+
+	if (organization=='') return;
+	var cod_org;
+	TokenData.data.data[0].organizations.forEach((entry: any)=>{
+		if (entry.name == organization) cod_org = entry.id;
+	})
+	var selectedOrganization = {'selected_organization': `${cod_org}`};
+	SelectedOrganization = cod_org || '0';
+	if (organization!='') DevOrganization = organization;
+	fs.writeFile(userHomeDir+'/.101obex/selectedorganization.json', JSON.stringify(selectedOrganization), (err) => {
+	if (err)
+		console.log(err);
+		else {
+		}
+	});
+
+	
   }
 
