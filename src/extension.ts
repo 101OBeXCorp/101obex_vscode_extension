@@ -5,7 +5,7 @@ import os = require("os");
 import { ChatGPTAPI } from 'chatgpt';
 import path = require('path');
 
-var TEST = 1;
+var TEST = 0;
 
 type AuthInfo = {apiKey?: string};
 type Settings = {selectedInsideCodeblock?: boolean, codeblockWithLanguageId?: false, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
