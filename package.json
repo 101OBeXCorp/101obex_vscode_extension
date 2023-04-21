@@ -49,6 +49,14 @@
       {
         "command": "101obex-api-extension.viewOnlineDocumentation",
         "title": "View online Documentation"
+      },
+      {
+        "command": "101obex-api-extension.RemoveConnection",
+        "title": "Remove Connection"
+      },
+      {
+        "command": "101obex-api-extension.RemoveService",
+        "title": "Remove Service"
       }
     ],
     "menus": {
@@ -62,7 +70,15 @@
       "view/item/context": [
         {
           "command": "101obex-api-extension.viewOnlineDocumentation",
-          "when": "view == package-connectors"
+          "when": "view == package-connectors && viewItem == DOCU"
+        },
+        {
+          "command": "101obex-api-extension.RemoveConnection",
+          "when": "view == package-connectors && viewItem == CONECT"
+        },
+        {
+          "command": "101obex-api-extension.RemoveService",
+          "when": "view == package-connectors && viewItem == SERV"
         }
       ]
     }

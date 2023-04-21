@@ -131,11 +131,16 @@ var TokenData: AxiosResponse<any, any>;
 export function activate(context: vscode.ExtensionContext) {
 
 	vscode.commands.registerCommand(`101obex-api-extension.viewOnlineDocumentation`, (e) => {
-		vscode.env.openExternal(
-			vscode.Uri.parse(
-				`https://developer.101obex.com/apis/${e.tooltip}/${e.description}`
-				));
+		
+			vscode.env.openExternal(
+				vscode.Uri.parse(
+					`https://developer.101obex.com/apis/${e.tooltip}/${e.description}`
+					));
+			
 	});
+
+
+
 
 	fs.readFile(contextFile, 'utf8', (err, data) => {
 		CONTEXT = data.toString();
@@ -172,6 +177,46 @@ export function activate(context: vscode.ExtensionContext) {
 				context.subscriptions.push(vscode.commands.registerCommand('react-webview.start-3270', () => {
 					ReactPanel.createOrShow(context.extensionPath, '3270');
 				}));
+
+				vscode.commands.registerCommand(`101obex-api-extension.RemoveConnection`, (e) => {
+					var arr: { name: string; description: string; ip: string; username: string; password: string; services: { name: string; }[]; }[] = [];
+					con1.apis[0].connections.forEach((connn: any) => {
+						
+						if (connn.name+` (${connn.description})` == e.label){
+			
+							arr = con1.apis[0].connections.filter(function(item) {
+								return item !== connn
+							})
+						}
+			
+					})
+					con1.apis[0].connections = arr;
+					Connectors(context, response)
+				});
+
+				vscode.commands.registerCommand(`101obex-api-extension.RemoveService`, (e) => {
+					var arr:any;
+					
+					var ind = 0;
+					var cont = 0;
+					con1.apis[0].connections.forEach((pooo:any)=>{
+						if (pooo.name==e.label) ind = cont;
+						cont++;
+					})
+					
+					con1.apis[0].connections[ind].services.forEach((connn: any) => {
+						
+						if (connn.name == e.label){
+			
+							arr = con1.apis[0].connections[ind].services.filter(function(item) {
+								return item !== connn
+							})
+						}
+			
+					})
+					con1.apis[0].connections[ind].services = arr;
+					Connectors(context, response)
+				});
 
 				})
 			.catch((error) => {
@@ -364,11 +409,20 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 												new TreeItem(
 													`${subelement["name"]} (${subelement["description"]})`,
 													sub_sub_responses,
-													subelement["doc_file"],
-													subelement["doc_category"])
+													'',
+													element.model+'|connection')
 													);
 											
 										});
+										if (element.model === 'IBM3270'){
+										subresponses6.push(
+											new TreeItem(
+												`+`,
+												undefined,
+												'add connection',
+												element.model)
+												);
+											}
 										responses6.push(new TreeItem(element.model, subresponses6,'','API_CONNECTOR'));
 										
 										
@@ -506,6 +560,16 @@ class TreeItem extends vscode.TreeItem {
 			this.iconPath = ''; //path.join(__filename, '..', '..', 'images', 'service-icon.png');
 			//this.description = `\$(gear)`
 		}
+		if (this.description == 'add connection'){
+			this.iconPath = ''; //path.join(__filename, '..', '..', 'images', 'service-icon.png');
+			//this.description = `\$(gear)`
+		}
+		if (this.tooltip?.toString().split('|')[1]=='connection'){
+			this.contextValue = 'CONECT'
+		}
+		if (this.tooltip?.toString()=='IBM3270'){
+			this.contextValue = 'SERV'
+		}
 	}
   }
 
@@ -544,10 +608,72 @@ class TreeItem extends vscode.TreeItem {
 						  
 					  }});
 					  var conne = e.tooltip?.toString().split('|')[0]
+					  var inde = 0;
+					  var conta = 0;
+					  con1.apis[0].connections.forEach((connecti: any)=>{
+						if (connecti.name == conne) inde = conta;
+						conta ++;
+					  });
 
 					  console.log(con1);
 
-					  con1.apis[0].connections[0].services.push({'name': toHost||'new_service'});
+					  con1.apis[0].connections[inde].services.push({'name': toHost||'new_service'});
+
+					  console.log(toHost);
+					  Connectors(context,response);
+				}
+
+			}
+
+			if (e.description?.toString() == 'add connection'){
+				if (e.tooltip?.toString() == 'IBM3270') {
+
+					let toHost = await vscode.window.showInputBox({
+						placeHolder: "Name of the connection",
+						validateInput: text => {
+						  //vscode.window.showInformationMessage(`Validating: ${text}`);  // you don't need this
+						  return text === text ? null : 'Not 123!';  // return null if validates
+						  
+					  }});
+					  let toHost2 = await vscode.window.showInputBox({
+						placeHolder: "Description",
+						validateInput: text => {
+						  //vscode.window.showInformationMessage(`Validating: ${text}`);  // you don't need this
+						  return text === text ? null : 'Not 123!';  // return null if validates
+						  
+					  }});
+					  let toHost3 = await vscode.window.showInputBox({
+						placeHolder: "ip",
+						validateInput: text => {
+						  //vscode.window.showInformationMessage(`Validating: ${text}`);  // you don't need this
+						  return text === text ? null : 'Not 123!';  // return null if validates
+						  
+					  }});
+					  let toHost4 = await vscode.window.showInputBox({
+						placeHolder: "username",
+						validateInput: text => {
+						  //vscode.window.showInformationMessage(`Validating: ${text}`);  // you don't need this
+						  return text === text ? null : 'Not 123!';  // return null if validates
+						  
+					  }});
+					  let toHost5 = await vscode.window.showInputBox({
+						placeHolder: "password",
+						validateInput: text => {
+						  //vscode.window.showInformationMessage(`Validating: ${text}`);  // you don't need this
+						  return text === text ? null : 'Not 123!';  // return null if validates
+						  
+					  }});
+					  var mode = e.tooltip?.toString()
+
+					  con1.apis[0].connections.push(
+							{
+								name: toHost || 'new connection',
+								description: toHost2 || '',
+								ip: toHost3 || '127.0.0.1',
+								username: toHost4 || 'username',
+								password: toHost5 || 'password',
+								services: []
+							});
 
 					  console.log(toHost);
 					  Connectors(context,response);
