@@ -2,8 +2,105 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import axios, { AxiosResponse } from 'axios';
 import os = require("os");
-import { ChatGPTAPI } from 'chatgpt';
 import path = require('path');
+
+
+var con1 = {
+	apis : [
+		{
+			model:	'IBM3270',
+			connections: [
+				{
+					'name':'conexion_prueba', 
+					'description':'localhost',
+					'ip':'127.0.0.1',
+					'username':'admin',
+					'password':'*****',
+					'services': [
+						{'name':'test'}
+					]
+				}
+			]
+		},
+		{					
+			model:	'IBM3090',
+			connections: []
+		},
+		{					
+			model:	'MQS',
+			connections: []
+		},
+	],
+	erp : [
+		{
+			model:	'SAP',
+			connections: []
+		},
+		{					
+			model:	'ORACLE ',
+			connections: []
+		}
+	],
+	databases : [
+		{
+			model:	'DB2',
+			connections: []
+		},
+		{					
+			model:	'SQL',
+			connections: []
+		},
+		{					
+			model:	'ORACLE',
+			connections: []
+		},
+	],
+	finnancials : 
+		{
+		core_banking:
+			[
+				{
+					model:	'ANTA',
+					connections: []
+				},
+				{
+					model:	'INFICAJA',
+					connections: []
+				},
+
+			],
+		
+		open_banking:
+			[
+				{
+					model:	'BELVO',
+					connections: []
+				}
+			],
+		
+		baas:
+			[
+				{
+					model:	'BAAS01',
+					connections: []
+				}
+			],
+		
+		payment_methods:
+			[
+				{
+					model:	'STRIPE',
+					connections: []
+				},
+				{
+					model:	'PAYPAL',
+					connections: []
+				}
+			]
+	},
+
+		
+}
 
 var TEST = 1;
 
@@ -67,10 +164,14 @@ export function activate(context: vscode.ExtensionContext) {
 		//		apis(context, response, context);
 		//		teams(context, response, true);
 		//		projects(context, response, false);
-				console.log("REGISTRANDO")
-		context.subscriptions.push(vscode.commands.registerCommand('react-webview.start', () => {
-			ReactPanel.createOrShow(context.extensionPath);
-		}));
+
+				Connectors(context, response);
+				context.subscriptions.push(vscode.commands.registerCommand('react-webview.start', () => {
+					ReactPanel.createOrShow(context.extensionPath, '3270');
+				}));
+				context.subscriptions.push(vscode.commands.registerCommand('react-webview.start-3270', () => {
+					ReactPanel.createOrShow(context.extensionPath, '3270');
+				}));
 
 				})
 			.catch((error) => {
@@ -98,29 +199,211 @@ export function deactivate() {}
 
 
 
-class TreeDataProviderAPIs implements vscode.TreeDataProvider<TreeItem> {
+class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 
 	data!: TreeItem[];
 	
 	constructor(response: AxiosResponse<any, any>) {
-	
-				var responses: TreeItem[] = [];
-				response.data.data[0].apis.forEach((element: any) => {
+		///////////////////////////////
+		
+		
+		var res_data_array = con1
+		var res_data = { data: [
+			res_data_array
+		]}
+		var res = { data : res_data}
+		/////////////////////////////
+
+		var category: TreeItem[] = [];
+				
+			var responses: TreeItem[] = [];
+				res.data.data[0].databases.forEach((element: any) => {
+					//console.log(element)
 					var subresponses: TreeItem[] = [];
-					response.data.data[0].services.forEach((subelement: any) => {
-						if (element.id === subelement.obex_category_id) {
+
+					element.connections.forEach((subelement: any) => {
+
+
+
 						subresponses.push(
+							
+							new TreeItem(
+								`${subelement["name"]} (${subelement["description"]})`,
+								undefined,
+								'',
+								'')
+								);
+						
+					});
+					responses.push(new TreeItem(element.model, subresponses,'','DB_CONNECTOR'));
+					
+					
+				});
+
+				var financials: TreeItem[] = []; 
+
+				//
+				var financial: TreeItem[] = []; 
+				var responses2: TreeItem[] = [];
+
+				res.data.data[0].finnancials.core_banking.forEach((element: any) => {
+					//console.log(element)
+					var subresponses2: TreeItem[] = [];
+					element.connections.forEach((subelement: any) => {
+						
+						subresponses2.push(
+							new TreeItem(
+								`${subelement["name"]} (${subelement["description"]})`,
+								undefined,
+								'',
+								'')
+								);
+						
+					});
+					responses2.push(new TreeItem(element.model, subresponses2,'','CORE_BANKING'));
+					
+					
+				});
+				financials.push(new TreeItem('CORE BANKING',responses2));
+				
+				
+				//
+				var open_banking: TreeItem[] = []; 
+				var responses3: TreeItem[] = [];
+
+				res.data.data[0].finnancials.open_banking.forEach((element: any) => {
+					//console.log(element)
+					var subresponses3: TreeItem[] = [];
+					element.connections.forEach((subelement: any) => {
+						
+						subresponses3.push(
 							new TreeItem(
 								`${subelement["name"]} (${subelement["description"]})`,
 								undefined,
 								subelement["doc_file"],
 								subelement["doc_category"])
 								);
-						}
+						
 					});
-					responses.push(new TreeItem(element["name"], subresponses));
+					responses3.push(new TreeItem(element.model, subresponses3,'','CORE_BANKING'));
+					
+					
 				});
-				this.data = responses;
+				financials.push(new TreeItem('OPEN BANKING',responses3));
+				//
+
+				//
+				var responses4: TreeItem[] = [];
+
+				res.data.data[0].finnancials.baas.forEach((element: any) => {
+					var subresponses4: TreeItem[] = [];
+					element.connections.forEach((subelement: any) => {
+						
+						subresponses4.push(
+							new TreeItem(
+								`${subelement["name"]} (${subelement["description"]})`,
+								undefined,
+								subelement["doc_file"],
+								subelement["doc_category"])
+								);
+						
+					});
+					responses4.push(new TreeItem(element.model, subresponses4,'','CORE_BANKING'));
+				});
+				financials.push(new TreeItem('BAAS',responses4));
+				//
+
+
+								//
+								var responses5: TreeItem[] = [];
+
+								res.data.data[0].finnancials.payment_methods.forEach((element: any) => {
+									var subresponses5: TreeItem[] = [];
+									element.connections.forEach((subelement: any) => {
+										
+										subresponses5.push(
+											new TreeItem(
+												`${subelement["name"]} (${subelement["description"]})`,
+												undefined,
+												subelement["doc_file"],
+												subelement["doc_category"])
+												);
+										
+									});
+									responses5.push(new TreeItem(element.model, subresponses5,'','CORE_BANKING'));
+								});
+								financials.push(new TreeItem('PAYMENT METHODS',responses5));
+								//
+
+								
+				
+								var responses6: TreeItem[] = [];
+									res.data.data[0].apis.forEach((element: any) => {
+										//console.log(element)
+										var subresponses6: TreeItem[] = [];
+										element.connections.forEach((subelement: any) => {
+
+											var sub_sub_responses: TreeItem[] = [];
+
+											sub_sub_responses.push(new TreeItem(`ip: ${subelement.ip}`,undefined,'',''));
+											sub_sub_responses.push(new TreeItem(`username: ${subelement.username}`,undefined,'',''));
+											sub_sub_responses.push(new TreeItem(`password: ${subelement.password}`,undefined,'',''));
+
+											var sub_sub_sub_responses: TreeItem[] = [];
+											subelement.services.forEach((sub_sub_element: any) =>{
+												sub_sub_sub_responses.push(new TreeItem(`${sub_sub_element['name']}`,undefined,'config',element.model))
+											})
+
+
+											sub_sub_sub_responses.push(new TreeItem(`+`,undefined,'add service',subelement.name + '|' + element.model))
+
+
+											sub_sub_responses.push(new TreeItem(`Services`,sub_sub_sub_responses,'',''));
+											
+											subresponses6.push(
+												new TreeItem(
+													`${subelement["name"]} (${subelement["description"]})`,
+													sub_sub_responses,
+													subelement["doc_file"],
+													subelement["doc_category"])
+													);
+											
+										});
+										responses6.push(new TreeItem(element.model, subresponses6,'','API_CONNECTOR'));
+										
+										
+									});
+				
+									var responses7: TreeItem[] = [];
+									res.data.data[0].erp.forEach((element: any) => {
+										//console.log(element)
+										var subresponses7: TreeItem[] = [];
+										element.connections.forEach((subelement: any) => {
+											
+											subresponses7.push(
+												new TreeItem(
+													`${subelement["name"]} (${subelement["description"]})`,
+													undefined,
+													subelement["doc_file"],
+													subelement["doc_category"])
+													);
+											
+										});
+										responses7.push(new TreeItem(element.model, subresponses7,'','ERP_CONNECTOR'));
+										
+										
+									});
+				
+
+				
+				category.push(new TreeItem('DATABASES', responses,'','CONNECTOR'))
+				category.push(new TreeItem('FINANCIALS', financials,'','CONNECTOR'))
+				category.push(new TreeItem('API', responses6,'','CONNECTOR'))
+				category.push(new TreeItem('ERP', responses7,'','CONNECTOR'))
+				
+
+
+				this.data = category;
 	}
   
 	private _onDidChangeTreeData: vscode.EventEmitter<undefined | null | void> = 
@@ -190,15 +473,47 @@ class TreeItem extends vscode.TreeItem {
 		}
 		}	  
 
+		if (this.tooltip == 'CONNECTOR'){
+			this.iconPath = path.join(__filename, '..', '..', 'images', 'plug.png');
+			
+		}
+
+		if (this.tooltip == 'DB_CONNECTOR'){
+			this.iconPath = path.join(__filename, '..', '..', 'images', 'database-db-icon.png');
+			
+		}
+		if (this.tooltip == 'CORE_BANKING'){
+			this.iconPath = path.join(__filename, '..', '..', 'images', 'dollar-sign.png');
+			
+		}
+		
+
+		if (this.tooltip == 'API_CONNECTOR'){
+			this.iconPath = path.join(__filename, '..', '..', 'images', 'api_icon.png');
+			
+		}
+
+		if (this.tooltip == 'ERP_CONNECTOR'){
+			this.iconPath = path.join(__filename, '..', '..', 'images', 'erp-icon.png');
+			
+		}
+
+		if (this.description == 'config'){
+			this.iconPath = path.join(__filename, '..', '..', 'images', 'service-icon.png');
+			//this.description = `\$(gear)`
+		}
+		if (this.description == 'add service'){
+			this.iconPath = ''; //path.join(__filename, '..', '..', 'images', 'service-icon.png');
+			//this.description = `\$(gear)`
+		}
 	}
   }
 
-  function apis(
+  function Connectors(
 		context: { subscriptions: vscode.Disposable[]; }, 
-		response: AxiosResponse<any, any>, 
-		contexto: vscode.ExtensionContext)
+		response: AxiosResponse<any, any>)
 		{
-	var apisTreeProvider = new TreeDataProviderAPIs(response);
+	var apisTreeProvider = new TreeDataProviderConnector(response);
 	
 	var tree = vscode.window.createTreeView('package-connectors', {
 		treeDataProvider: apisTreeProvider,
@@ -207,9 +522,38 @@ class TreeItem extends vscode.TreeItem {
 	tree.onDidChangeSelection((selection) => {
 
 		let date_ob = new Date();
-		selection.selection.map((e) => {
+		selection.selection.map(async (e) => {
 
 			var formatted = date_ob.toLocaleTimeString();
+
+			if (e.description?.toString() == 'config'){
+				if (e.tooltip?.toString() == 'IBM3270') {
+					vscode.commands.executeCommand('react-webview.start-3270');
+				}
+				else vscode.commands.executeCommand('react-webview.start');
+			}
+
+			if (e.description?.toString() == 'add service'){
+				if (e.tooltip?.toString().split('|')[1] == 'IBM3270') {
+
+					let toHost = await vscode.window.showInputBox({
+						placeHolder: "Name of the service",
+						validateInput: text => {
+						  //vscode.window.showInformationMessage(`Validating: ${text}`);  // you don't need this
+						  return text === text ? null : 'Not 123!';  // return null if validates
+						  
+					  }});
+					  var conne = e.tooltip?.toString().split('|')[0]
+
+					  console.log(con1);
+
+					  con1.apis[0].connections[0].services.push({'name': toHost||'new_service'});
+
+					  console.log(toHost);
+					  Connectors(context,response);
+				}
+
+			}
 
 			if (e.label?.toString().includes('('))	
 			{
@@ -345,6 +689,7 @@ class TreeItem extends vscode.TreeItem {
  * Manages react webview panels
  */
 class ReactPanel {
+	
 	/**
 	 * Track the currently panel. Only allow a single panel to exist at a time.
 	 */
@@ -356,7 +701,7 @@ class ReactPanel {
 	private readonly _extensionPath: string;
 	private _disposables: vscode.Disposable[] = [];
 
-	public static createOrShow(extensionPath: string) {
+	public static createOrShow(extensionPath: string, model: string) {
 
 		const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
 
@@ -365,11 +710,11 @@ class ReactPanel {
 		if (ReactPanel.currentPanel) {
 			ReactPanel.currentPanel._panel.reveal(column);
 		} else {
-			ReactPanel.currentPanel = new ReactPanel(extensionPath, column || vscode.ViewColumn.One);
+			ReactPanel.currentPanel = new ReactPanel(extensionPath, column || vscode.ViewColumn.One , model );
 		}
 	}
 
-	private constructor(extensionPath: string, column: vscode.ViewColumn) {
+	private constructor(extensionPath: string, column: vscode.ViewColumn, model: string) {
 		this._extensionPath = extensionPath;
 
 		// Create and show a new webview panel
@@ -384,7 +729,7 @@ class ReactPanel {
 		});
 		
 		// Set the webview's initial html content 
-		this._panel.webview.html = this._getHtmlForWebview();
+		this._panel.webview.html = this._getHtmlForWebview(model);
 
 		// Listen for when the panel is disposed
 		// This happens when the user closes the panel or when the panel is closed programatically
@@ -420,243 +765,38 @@ class ReactPanel {
 		}
 	}
 
-	private _getHtmlForWebview() {
-		//const manifest = require(path.join(this._extensionPath, 'build', 'asset-manifest.json'));
-
-
-
-		//const mainScript = manifest['files']['main.js'];
-		//const mainStyle = manifest['files']['main.css'];
-
-		//const scriptPathOnDisk = vscode.Uri.file(path.join(this._extensionPath, 'build', mainScript));
-
-		//const library = vscode.Uri.file(path.join(this._extensionPath, 'build', 'assets/lib.js'));
-		//const fullscreen = vscode.Uri.file(path.join(this._extensionPath, 'build', 'assets/fullscreen.js'));
-
-		//const scriptUri = scriptPathOnDisk.with({ scheme: 'vscode-resource' });
-		//const stylePathOnDisk = vscode.Uri.file(path.join(this._extensionPath, 'build', mainStyle));
-		//const styleUri = stylePathOnDisk.with({ scheme: 'vscode-resource' });
-
-		// Use a nonce to whitelist which scripts can be run
-		//const nonce = getNonce();
-
-		return `<!DOCTYPE html>
-		<html>
-		<head>
-		<style>
-		body, h1, select {font: 13px/1.3em 'Open Sans', Arial, Verdana, Serif; margin: 0; padding: 0;}
-
-		.title-bar {display: flex; min-height: 40px; background: #242424; align-items: center; width: 100%; box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);}
-		.title-bar, .title-bar a {color: #FFF; text-decoration: none;}
-		.title-bar a:hover {text-decoration: underline;}
-		.title-bar .column {padding: 0 10px;}
-		.title-bar select, .title-bar button {background: #FFF; color: #000; border: 0; padding: 5px; border-radius: 5px;}
-		.title-bar button {cursor: pointer;}
+	private _getHtmlForWebview(interfase: string) {
+	
+		const fullscreen = fs.readFileSync(path.resolve(__dirname, './assets/js/fullscreen.js'), 'utf8');
+		const index = fs.readFileSync(path.resolve(__dirname, './assets/js/index.umd.js'), 'utf8');
+		const common = fs.readFileSync(path.resolve(__dirname, './assets/css/common.css'), 'utf8');
+		const designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer.css'), 'utf8');
+		const light_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-light.css'), 'utf8');
+		const dark_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-dark.css'), 'utf8');
+		const editor = fs.readFileSync(path.resolve(__dirname, './assets/css/editor.css'), 'utf8');
 		
-		.flex-1 {flex: 1;}
-		.text-end {text-align: end;}
-		@media only screen and (max-width: 700px) {
-			.hidden-mobile {display: none;}
-		}
-
-		</style>
-			<meta charset="UTF-8">
-			
-			<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-			<link rel="icon" href="./assets/favicon.ico">
+		const ibm3270_connector = `
+								<!DOCTYPE html>
+									<html>
+										<head>
+											<meta charset="UTF-8">
+											<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+											<style>${common}</style>
+											<style>${editor}</style>
+										</head>
+										<body>
+											<div id="designer"></div>
+											<script>${index}</script>
+											<style>${designer}</style>
+											<style>${light_designer}</style>
+											<style>${dark_designer}</style>
+											<script>${fullscreen}</script>
+										</body>
+									</html>
+								`;
+		if (interfase === '3270') return ibm3270_connector
 		
-			<link rel="stylesheet" href="./assets/common.css">
-			<style>
-				html, body {width: 100vw; height: 100vh; overflow: hidden;}
-				body {display: flex; flex-direction: column;}
-				#designer {flex: 1;}
-				#validationStatus {padding: 0 10px; font-size: 11px; color: #999;}
-			</style>
-		</head>
-		<body>
-
-		
-			<div id="designer"></div>
-		
-			<script src="http://cdn.jsdelivr.net/npm/sequential-workflow-designer@0.10.2/dist/index.umd.js"></script>
-			<link href="http://cdn.jsdelivr.net/npm/sequential-workflow-designer@0.10.2/css/designer.css" rel="stylesheet">
-			<link href="http://cdn.jsdelivr.net/npm/sequential-workflow-designer@0.10.2/css/designer-light.css" rel="stylesheet">
-			<link href="http://cdn.jsdelivr.net/npm/sequential-workflow-designer@0.10.2/css/designer-dark.css" rel="stylesheet">
-
-			<script>
-			/* global document, sequentialWorkflowDesigner, console */
-
-function createTaskStep(id, type, name, properties) {
-	return {
-		id,
-		componentType: 'task',
-		type,
-		name,
-		properties: properties || {}
-	};
-}
-
-function createIfStep(id, _true, _false) {
-	return {
-		id,
-		componentType: 'switch',
-		type: 'if',
-		name: 'If',
-		branches: {
-			'true': _true,
-			'false': _false
-		},
-		properties: {}
-	};
-}
-
-function createContainerStep(id, steps) {
-	return {
-		id,
-		componentType: 'container',
-		type: 'loop',
-		name: 'Loop',
-		properties: {},
-		sequence: steps
-	};
-}
-
-function toolboxGroup(name) {
-	return {
-		name,
-		steps: [
-			createTaskStep(null, 'save', 'Save file'),
-			createTaskStep(null, 'text', 'Send email'),
-			createTaskStep(null, 'task', 'Create task'),
-			createIfStep(null, [], []),
-			createContainerStep(null, [])
-		]
-	};
-}
-
-function reloadChangeReadonlyButtonText() {
-	changeReadonlyButton.innerText = 'Readonly: ' + (designer.isReadonly() ? 'ON' : 'OFF');
-}
-
-function appendCheckbox(root, label, isChecked, onClick) {
-	const item = document.createElement('div');
-	item.innerHTML = '<div><h5></h5> <input type="checkbox" /></div>';
-	const h5 = item.getElementsByTagName('h5')[0];
-	h5.innerText = label;
-	const input = item.getElementsByTagName('input')[0];
-	input.checked = isChecked;
-	input.addEventListener('click', () => {
-		onClick(input.checked);
-	});
-	root.appendChild(item);
-}
-
-let designer;
-let changeReadonlyButton;
-let validationStatusText;
-
-function refreshValidationStatus() {
-	validationStatusText.innerText = designer.isValid() ? 'Definition is valid' : 'Definition is invalid';
-}
-
-const configuration = {
-	undoStackSize: 20,
-
-	toolbox: {
-		groups: [
-			toolboxGroup('Main'),
-			toolboxGroup('File system'),
-			toolboxGroup('E-mail')
-		]
-	},
-
-	controlBar: true,
-
-	steps: {
-		iconUrlProvider: (componentType, type) => {
-			return './assets/icon-'+type+'.svg'
-		},
-
-		validator: (step) => {
-			return !step.properties['isInvalid'];
-		},
-	},
-
-	editors: {
-		globalEditorProvider: (definition) => {
-			const root = document.createElement('div');
-			root.innerHTML = '<textarea style="width: 100%; border: 0;" rows="50"></textarea>';
-			const textarea = root.getElementsByTagName('textarea')[0];
-			textarea.value = JSON.stringify(definition, null, 2);
-			return root;
-		},
-
-		stepEditorProvider: (step, editorContext) => {
-			const root = document.createElement('div');
-
-			appendCheckbox(root, 'Is invalid', !!step.properties['isInvalid'], (checked) => {
-				step.properties['isInvalid'] = checked;
-				editorContext.notifyPropertiesChanged();
-			});
-
-			if (step.type === 'if') {
-				appendCheckbox(root, 'Catch branch', !!step.branches['catch'], (checked) => {
-					if (checked) {
-						step.branches['catch'] = [];
-					} else {
-						delete step.branches['catch'];
-					}
-					editorContext.notifyChildrenChanged();
-				});
-			}
-			return root;
-		}
+		return ''
 	}
-};
-
-const startDefinition = {
-	properties: {},
-	sequence: [
-		createIfStep('00000000000000000000000000000001',
-			[ createTaskStep('00000000000000000000000000000002', 'save', 'Save file', { isInvalid: true }) ],
-			[ createTaskStep('00000000000000000000000000000003', 'text', 'Send email') ]
-		),
-		createContainerStep('00000000000000000000000000000004', [
-			createTaskStep('00000000000000000000000000000005', 'task', 'Create task')
-		])
-	]
-};
-
-const placeholder = document.getElementById('designer');
-designer = sequentialWorkflowDesigner.Designer.create(placeholder, startDefinition, configuration);
-designer.onDefinitionChanged.subscribe((newDefinition) => {
-	refreshValidationStatus();
-	console.log('the definition has changed', newDefinition);
-});
-
-changeReadonlyButton = document.getElementById('changeReadonlyButton');
-changeReadonlyButton.addEventListener('click', () => {
-	designer.setIsReadonly(!designer.isReadonly());
-	reloadChangeReadonlyButtonText();
-});
-reloadChangeReadonlyButtonText();
-
-validationStatusText = document.getElementById('validationStatus');
-refreshValidationStatus();
-
-			</script>
-		</body>
-		</html>
-		`;
-	}
-}
-
-function getNonce() {
-	let text = "";
-	const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	for (let i = 0; i < 32; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-	return text;
 }
 

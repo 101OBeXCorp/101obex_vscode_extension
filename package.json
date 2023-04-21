@@ -1,9 +1,9 @@
 {
-  "name": "101obex-api-extension",
+  "name": "101obex-api-extension-framework",
   "displayName": "101OBeX API Extension",
   "description": "101OBeX API support extension",
-  "version": "0.0.8",
-  "publisher": "101OBeX Corp",
+  "version": "0.0.2",
+  "publisher": "101OBex",
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -19,14 +19,14 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "101obex-api-extension",
+          "id": "101obex-api-extension-framework",
           "title": "101OBeX API support extension",
           "icon": "images/101icon.png"
         }
       ]
     },
     "views": {
-      "101obex-api-extension": [
+      "101obex-api-extension-framework": [
         {
           "id": "package-connectors",
           "name": "CONNECTORS",
@@ -44,8 +44,9 @@
       {
         "command": "101obex-api-extension.refreshEntry-connectors",
         "title": "Refresh",
-        "icon": "$(refresh)" 
-      },      {
+        "icon": "$(refresh)"
+      },
+      {
         "command": "101obex-api-extension.viewOnlineDocumentation",
         "title": "View online Documentation"
       }
@@ -102,7 +103,8 @@
     "node-datetime": "^2.1.2",
     "node-fetch": "^3.3.1",
     "request": "^2.88.2",
-    "requests": "^0.3.0"
+    "requests": "^0.3.0",
+    "vscode-uri": "^3.0.7"
   },
   "repository": {
     "type": "git",
