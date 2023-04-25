@@ -2,7 +2,7 @@
   "name": "101obex-api-extension-framework",
   "displayName": "101OBeX API Extension",
   "description": "101OBeX API support extension",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "publisher": "101OBex",
   "engines": {
     "vscode": "^1.73.0"
@@ -58,6 +58,11 @@
         "command": "101obex-api-extension.RemoveService",
         "title": "Remove Service"
       }
+      ,
+      {
+        "command": "101obex-api-extension.EditConnection",
+        "title": "Edit Connection"
+      }
     ],
     "menus": {
       "view/title": [
@@ -79,6 +84,11 @@
         {
           "command": "101obex-api-extension.RemoveService",
           "when": "view == package-connectors && viewItem == SERV"
+        }
+        ,
+        {
+          "command": "101obex-api-extension.EditConnection",
+          "when": "view == package-connectors && viewItem == EDCONF"
         }
       ]
     }

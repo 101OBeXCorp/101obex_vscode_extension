@@ -27,6 +27,7 @@
 	        this.viewportApi.resetViewport();
 	    }
 	    zoomIn() {
+			
 	        this.viewportApi.zoom(true);
 	    }
 	    zoomOut() {

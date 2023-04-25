@@ -4,7 +4,15 @@ import axios, { AxiosResponse } from 'axios';
 import os = require("os");
 import path = require('path');
 
+var UPDATE_APIS = false;
+var UPDATE_ERP = false;
+var UPDATE_DATABASES = false;
+var UPDATE_FINANCIALS = false;
 
+//var con2: { any :{  'databases': {model: any, connection: []}, 'apis': {model: any, connection: []}, 'erp': {model: any, connection: []} }}
+var con2: { [x: string]: { apis: { model: string; connections: { name: string; description: string; ip: string; username: string; password: string; services: { name: string; }[]; }[]; }[]; erp: { model: string; connections: never[]; }[]; databases: { model: string; connections: never[]; }[]; finnancials: { core_banking: { model: string; connections: never[]; }[]; open_banking: { model: string; connections: never[]; }[]; baas: { model: string; connections: never[]; }[]; payment_methods: { model: string; connections: never[]; }[]; }; }; };
+var AccesToken: string;
+var idService: string;
 var con1 = {
 	apis : [
 		{
@@ -159,16 +167,17 @@ export function activate(context: vscode.ExtensionContext) {
 		var dataObj = JSON.parse( data.replace(/\'/g,"\"") );
 
 		if (TEST==1) dataObj.id_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1MmRlMjdmNTE1NzM3NTM5NjAwZDg5YjllZTJlNGVkNTM1ZmI1MTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgwNzE4ODU4MTA0MzU5OTg4ODIiLCJoZCI6IndheW5ub3ZhdGUuY29tIiwiZW1haWwiOiJyYWZhLnJ1aXpAd2F5bm5vdmF0ZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Il9GTk5wSlRvNEd5X2NaYS10d0hUVVEiLCJuYW1lIjoiUmFmYWVsIFJ1aXoiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUVkRlRwNG4xaF9RbUoxelhUd3NUdDNBRTdkVVVRUGhkTlFaN0hRek5zQVdrZz1zOTYtYyIsImdpdmVuX25hbWUiOiJSYWZhZWwiLCJmYW1pbHlfbmFtZSI6IlJ1aXoiLCJsb2NhbGUiOiJlcyIsImlhdCI6MTY3MDk1Mjc2NCwiZXhwIjoxNjcwOTU2MzY0fQ.uFMoDEhjZW-FKxnBg9BVxp_sSrjcrvw5_sxMOQZrREvJjv11W2GxLuQfMjMTtTPXhDCa8GeQOlzCllWxQRlOr3irEdu19y4qJQT1ut0RSi7pEIb6E6KcsdiAZtRSlA-6feIuj2u9gC2HXnGvBHtlO3FhWw4Et1zl_menGTCLOMqeq6v2QiMOfFlFzzE2t1TSo5_Be9AZQNfB7E1SLGHnbKXdR9ij9yqwMD2spjpxvnw4l4k5q23eS5Zz0Qz_WNm5PBgqF5NJwTeky-7-Aeq-ulUSnQ3qY-SsmQJunyt_miiwDyVOQkEWNDMRF4FJPuXDGJatWEeCsKXWe877pL4nVA';
+		
+		AccesToken = dataObj.id_token;
 
 		axios.get(url + dataObj.id_token, axiosConfig)
 			.then((response) => {
 				TokenData = response;
-		//		setActiveProject(response.data.data[0].authorizations[0].token);
-		//		setActiveOrganization(response.data.data[0].organizations[0].name);
-		//		organizations(context, response, true);
-		//		apis(context, response, context);
-		//		teams(context, response, true);
-		//		projects(context, response, false);
+
+				var pprojts = response.data.data[0].authorizations;
+				var connectrs = response.data.data[0].conectors;
+				var resultss = response.data.data[0].results;
+				con2 = resultss;
 
 				Connectors(context, response);
 				context.subscriptions.push(vscode.commands.registerCommand('react-webview.start', () => {
@@ -191,6 +200,7 @@ export function activate(context: vscode.ExtensionContext) {
 			
 					})
 					con1.apis[0].connections = arr;
+					UPDATE_APIS=true;
 					Connectors(context, response)
 				});
 
@@ -215,8 +225,42 @@ export function activate(context: vscode.ExtensionContext) {
 			
 					})
 					con1.apis[0].connections[ind].services = arr;
+					UPDATE_APIS=true;
 					Connectors(context, response)
 				});
+
+				///
+
+				vscode.commands.registerCommand(`101obex-api-extension.EditConnection`, async (e) => {
+					var arr:any;
+					
+					var valor = e.tooltip.split('|');
+					var valore = '';
+					if (valor[2]=='apis'){
+						if (valor[3]=='ip')  valore = con1.apis[0].connections[parseInt(valor[1])].ip;
+						if (valor[3]=='user')  valore = con1.apis[0].connections[parseInt(valor[1])].username;
+						if (valor[3]=='password')  valore = con1.apis[0].connections[parseInt(valor[1])].password;
+					}
+
+					let toHost = await vscode.window.showInputBox({
+						placeHolder: valore,
+						validateInput: text => {
+						  //vscode.window.showInformationMessage(`Validating: ${text}`);  // you don't need this
+						  return text === text ? null : 'Not 123!';  // return null if validates
+						  
+					  }});
+					
+					  if (valor[2]=='apis'){
+						if (valor[3]=='ip')  con1.apis[0].connections[parseInt(valor[1])].ip = toHost || '';
+						if (valor[3]=='user')  con1.apis[0].connections[parseInt(valor[1])].username = toHost || '';
+						if (valor[3]=='password')  con1.apis[0].connections[parseInt(valor[1])].password = toHost || '';
+					}
+
+					UPDATE_APIS=true;
+					Connectors(context, response)
+				});
+
+				///
 
 				})
 			.catch((error) => {
@@ -386,13 +430,16 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 									res.data.data[0].apis.forEach((element: any) => {
 										//console.log(element)
 										var subresponses6: TreeItem[] = [];
+										var tont = 0;
 										element.connections.forEach((subelement: any) => {
 
 											var sub_sub_responses: TreeItem[] = [];
 
-											sub_sub_responses.push(new TreeItem(`ip: ${subelement.ip}`,undefined,'',''));
-											sub_sub_responses.push(new TreeItem(`username: ${subelement.username}`,undefined,'',''));
-											sub_sub_responses.push(new TreeItem(`password: ${subelement.password}`,undefined,'',''));
+											sub_sub_responses.push(new TreeItem(`ip: ${subelement.ip}`,undefined,'',`edit_config|${tont}|apis|ip`));
+											sub_sub_responses.push(new TreeItem(`username: ${subelement.username}`,undefined,'',`edit_config|${tont}|apis|user`));
+											sub_sub_responses.push(new TreeItem(`password: ${subelement.password}`,undefined,'',`edit_config|${tont}|apis|password`));
+
+											tont++;
 
 											var sub_sub_sub_responses: TreeItem[] = [];
 											subelement.services.forEach((sub_sub_element: any) =>{
@@ -570,6 +617,10 @@ class TreeItem extends vscode.TreeItem {
 		if (this.tooltip?.toString()=='IBM3270'){
 			this.contextValue = 'SERV'
 		}
+
+		if (this.tooltip?.toString().indexOf('edit_config')!=-1){
+			this.contextValue = 'EDCONF'
+		}
 	}
   }
 
@@ -577,6 +628,27 @@ class TreeItem extends vscode.TreeItem {
 		context: { subscriptions: vscode.Disposable[]; }, 
 		response: AxiosResponse<any, any>)
 		{
+
+	con1 = con2[384];
+
+	if (UPDATE_APIS){
+
+		axios.post("https://hesperidium.101obex.mooo.com:3001/info_extension", {
+			obex_project_id: 384,
+			value_json: JSON.stringify(con1),
+			developer_token: AccesToken
+		  })
+		  .then((response) => {
+			console.log(response);
+		  }).catch((error) => { 
+			console.log(error);
+		  });
+
+		  UPDATE_APIS = false;
+	}
+
+	
+
 	var apisTreeProvider = new TreeDataProviderConnector(response);
 	
 	var tree = vscode.window.createTreeView('package-connectors', {
@@ -592,6 +664,7 @@ class TreeItem extends vscode.TreeItem {
 
 			if (e.description?.toString() == 'config'){
 				if (e.tooltip?.toString() == 'IBM3270') {
+					idService = `384${e.label}${e.tooltip}`;
 					vscode.commands.executeCommand('react-webview.start-3270');
 				}
 				else vscode.commands.executeCommand('react-webview.start');
@@ -620,6 +693,7 @@ class TreeItem extends vscode.TreeItem {
 					  con1.apis[0].connections[inde].services.push({'name': toHost||'new_service'});
 
 					  console.log(toHost);
+					  UPDATE_APIS = true;
 					  Connectors(context,response);
 				}
 
@@ -676,6 +750,7 @@ class TreeItem extends vscode.TreeItem {
 							});
 
 					  console.log(toHost);
+					  UPDATE_APIS = true;
 					  Connectors(context,response);
 				}
 
@@ -774,11 +849,15 @@ class TreeItem extends vscode.TreeItem {
 
   function setActiveProject(token: string){
 	var cod_pais;
+	var id_project;
 	TokenData.data.data[0].authorizations.forEach((entry: any)=>{
-		if (entry.token == token) cod_pais = entry.country_code;
+		if (entry.token == token) {
+			cod_pais = entry.country_code;
+			id_project = entry.obex_projetc_id;
+		}
 	})
 
-	var selectedProject = {'selected_project': `${token}`, "country_code": `${cod_pais}`};
+	var selectedProject = {'selected_project': `${token}`, "country_code": `${cod_pais}`, 'project_id': `${id_project}`};
 	SelectedDevToken = token;
 	if (token!='') DevToken = SelectedDevToken;
 	fs.writeFile(userHomeDir+'/.101obex/selectedproject.json', JSON.stringify(selectedProject), (err) => {
@@ -834,7 +913,8 @@ class ReactPanel {
 		// If we already have a panel, show it.
 		// Otherwise, create a new panel.
 		if (ReactPanel.currentPanel) {
-			ReactPanel.currentPanel._panel.reveal(column);
+			ReactPanel.currentPanel = new ReactPanel(extensionPath, column || vscode.ViewColumn.One , model );
+			//ReactPanel.currentPanel._panel.reveal(column);
 		} else {
 			ReactPanel.currentPanel = new ReactPanel(extensionPath, column || vscode.ViewColumn.One , model );
 		}
@@ -900,7 +980,8 @@ class ReactPanel {
 		const light_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-light.css'), 'utf8');
 		const dark_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-dark.css'), 'utf8');
 		const editor = fs.readFileSync(path.resolve(__dirname, './assets/css/editor.css'), 'utf8');
-		
+		const id_service = idService;
+		const id_project = 384;
 		const ibm3270_connector = `
 								<!DOCTYPE html>
 									<html>
@@ -911,6 +992,12 @@ class ReactPanel {
 											<style>${editor}</style>
 										</head>
 										<body>
+										
+										<input id="identier" class="id_service" value="${id_service}"/>
+										<input id="token" class="id_service" value="${AccesToken}"/>
+										<input id="id_project" class="id_service" value="${id_project}"/>
+										<input id="response" class="id_service" value=""/>
+										
 											<div id="designer"></div>
 											<script>${index}</script>
 											<style>${designer}</style>

@@ -145,7 +145,7 @@ stepEditorProvider: (step, editorContext) => {
 }
 };
 
-const startDefinition = {
+const startDefinition = {	// servicio de recuperacion de definicion vinculada al id de servicio
 	properties: {},
 	sequence: [
 		/*
@@ -158,20 +158,69 @@ const startDefinition = {
 		])*/
 	]
 };
-
+var  identifier = document.getElementById('identier').value; //valor del identificador
+var  token = document.getElementById('token').value;
+var  id_project = document.getElementById('id_project').value;
 const placeholder = document.getElementById('designer');
-designer = sequentialWorkflowDesigner.Designer.create(placeholder, startDefinition, configuration);
-designer.onDefinitionChanged.subscribe((newDefinition) => {
-	refreshValidationStatus();
-	console.log('the definition has changed', newDefinition);
-});
+var response_label = document.getElementById('response');
 
-changeReadonlyButton = document.getElementById('changeReadonlyButton');
-changeReadonlyButton.addEventListener('click', () => {
-	designer.setIsReadonly(!designer.isReadonly());
+fetch(`https://hesperidium.101obex.mooo.com:3001/info_extension_service?developer_token=${token}&obex_project_id=${id_project}&id_service=${identifier}`, {
+    method: 'GET',
+    headers: {
+        'Accept': 'application/json',
+		'disable-cache': 'true'
+    },
+})
+   .then(response => response.json())
+   .then(response => {
+	console.log(JSON.stringify(response));
+	response_label.value = JSON.stringify(response.data);
+
+	/////
+
+
+	designer = sequentialWorkflowDesigner.Designer.create(placeholder, response.data, configuration);
+	designer.onDefinitionChanged.subscribe((newDefinition) => {
+		fetch('https://hesperidium.101obex.mooo.com:3001/info_extension_service', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'disable-cache': 'true'
+			},
+			body: JSON.stringify({
+				"developer_token": token,
+				"obex_project_id": id_project ,
+				"value_json": JSON.stringify(newDefinition),
+				"id_service": identifier
+				})
+			}
+			)
+		   .then(response => {
+			console.log(response.status)
+			response_label.value = JSON.stringify(response)
+		})
+		refreshValidationStatus();
+		
+		console.log('the definition has changed', newDefinition); // servicio de actualizacion de definicion vinculada al id de servicio
+	
+	});
+	
+	changeReadonlyButton = document.getElementById('changeReadonlyButton');
+	changeReadonlyButton.addEventListener('click', () => {
+		designer.setIsReadonly(!designer.isReadonly());
+		reloadChangeReadonlyButtonText();
+	});
 	reloadChangeReadonlyButtonText();
-});
-reloadChangeReadonlyButtonText();
+	
+	validationStatusText = document.getElementById('validationStatus');
+	refreshValidationStatus();
 
-validationStatusText = document.getElementById('validationStatus');
-refreshValidationStatus();
+
+
+	/////
+
+   }
+	)
+
+
+
