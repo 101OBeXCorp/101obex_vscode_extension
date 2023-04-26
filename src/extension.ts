@@ -973,7 +973,7 @@ class ReactPanel {
 
 	private _getHtmlForWebview(interfase: string) {
 	
-		const fullscreen = fs.readFileSync(path.resolve(__dirname, './assets/js/fullscreen.js'), 'utf8');
+		const fullscreen = fs.readFileSync(path.resolve(__dirname, './assets/js/fullscreen1.js'), 'utf8');
 		const index = fs.readFileSync(path.resolve(__dirname, './assets/js/index.umd.js'), 'utf8');
 		const common = fs.readFileSync(path.resolve(__dirname, './assets/css/common.css'), 'utf8');
 		const designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer.css'), 'utf8');

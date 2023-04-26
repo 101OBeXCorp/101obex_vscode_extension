@@ -3589,6 +3589,18 @@
 	    }
 	}
 
+	class Task2StepExtension {
+	    constructor() {
+	        this.componentType = 'task2';
+	    }
+	    createComponentView(parentElement, stepContext, componentContext) {
+	        return TaskStepComponentView.create(parentElement, stepContext, componentContext.configuration, false);
+	    }
+	    getChildren() {
+	        return null;
+	    }
+	}
+
 	class ServicesResolver {
 	    static resolve(extensions, configuration) {
 	        const services = {};
@@ -3635,6 +3647,7 @@
 	    services.steps.push(new ContainerStepExtension());
 	    services.steps.push(new SwitchStepExtension());
 	    services.steps.push(new TaskStepExtension());
+		services.steps.push(new Task2StepExtension());
 	    if (!services.badges) {
 	        services.badges = [];
 	    }

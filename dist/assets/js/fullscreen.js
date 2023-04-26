@@ -11,6 +11,16 @@ properties: properties || {}
 };
 }
 
+function createTask2Step(id, type, name, properties) {
+	return {
+	id,
+	componentType: 'task2',
+	type,
+	name,
+	properties: properties || {}
+	};
+	}
+
 function createIfStep(id, _true, _false) {
 return {
 id,
@@ -43,6 +53,7 @@ steps: [
 createTaskStep(null, 'task', 'Send command'),
 createTaskStep(null, 'task', 'Read response'),
 createTaskStep(null, 'task', 'Store result'),
+createTask2Step(null, 'task2', 'Fin'),
 //createTaskStep(null, 'task', 'Create task'),
 //createTaskStep(null, 'task', 'Create task 2'),
 //createIfStep(null, [], []),
