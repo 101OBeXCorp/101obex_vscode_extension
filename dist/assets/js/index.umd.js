@@ -2986,7 +2986,20 @@
 	            class: 'sqd-toolbox-item-text'
 	        });
 	        text.textContent = step.name;
-	        root.appendChild(icon);
+	        
+			
+ 			root.appendChild(icon);
+
+			const icon2 = Dom.element('div', {
+	            class: 'sqd-toolbox-item-icon'
+	        });
+			const iconImage2 = Dom.element('img', {
+				class: 'sqd-toolbox-item-icon-image',
+				src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAABJCAIAAAD+EZyLAAAACXBIWXMAABYlAAAWJQFJUiTwAAABnUlEQVRo3u3bva2DMBQF4GvECpEoKKClYAr3SK9jLhoWYYM7gRcwNSu44BV5BcojxmCbQHROEwklhi8cfgqb5shh5rZtsywjIiLKsqxtW2ae44fiDa2Uquua3qSua6XULW3MTA6JegKj2LTW5Byt9Z1sliqulvM2Nsc2ntDMbZsxpus6KSV5RErJzMzsP07XdcaYALZpmnYV7N0BLcf05D1rPE2Tl80Y4w/7X7kDpV3lbZ69xPL7vu+VUnTJKKX6vt/4ksXtX55InVwddl8nA/7Noe4lL7HXUlgMQoiXLcMwVFW13FKWZaTWuexLa10UxZFOurxDxLuiXPZlf6dJ6HsDG2ywwQabPan/UyjSkeV5/mGb7bUAnYQNNthggw022GCDDTbYYIMNNthggw022GCDDTbYYIMNNthggw022JbZN3/yajHGpGl65LyFnaMaPFJKC2zD1jTNlW3bh3fCHPoYcZlDf8bahxgw37UPAdesBLzG3NesiF3zqcdx/CAsz3P7zWPHMwDPbthgg83tRiJEIv7y83h+fottnudf21odM6UdSngAAAAASUVORK5CYII='
+			});
+			icon2.appendChild(iconImage2);
+//			root.appendChild(icon2);
+
 	        root.appendChild(text);
 	        parent.appendChild(root);
 	        return new ToolboxItemView(root);

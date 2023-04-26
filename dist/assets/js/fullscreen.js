@@ -42,6 +42,7 @@ name,
 steps: [
 createTaskStep(null, 'task', 'Send command'),
 createTaskStep(null, 'task', 'Read response'),
+createTaskStep(null, 'task', 'Store result'),
 //createTaskStep(null, 'task', 'Create task'),
 //createTaskStep(null, 'task', 'Create task 2'),
 //createIfStep(null, [], []),
@@ -104,8 +105,11 @@ controlBar: true,
 
 steps: {
 iconUrlProvider: (componentType, type) => {
-	
-	return `/icon-${type}.svg`
+	const icon = {
+		"task":"M38 4h-8.37c-.82-2.32-3.02-4-5.63-4s-4.81 1.68-5.63 4h-8.37c-2.21 0-4 1.79-4 4v32c0 2.21 1.79 4 4 4h28c2.21 0 4-1.79 4-4v-32c0-2.21-1.79-4-4-4zm-14 0c1.1 0 2 .89 2 2s-.9 2-2 2-2-.89-2-2 .9-2 2-2zm14 36h-28v-32h4v6h20v-6h4v32z",
+		"text":"M40 4h-32c-2.21 0-4 1.79-4 4v24c0 2.21 1.79 4 4 4h28l8 8v-36c0-2.21-1.79-4-4-4zm-4 24h-24v-4h24v4zm0-6h-24v-4h24v4zm0-6h-24v-4h24v4z"
+	};
+	return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='${icon[type]}'/%3E%3C/svg%3E`
 },
 
 validator: (step) => {

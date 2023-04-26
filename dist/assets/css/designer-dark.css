@@ -26,6 +26,7 @@
 .sqd-theme-dark .sqd-toolbox-item {
 	border: none;
 	background: #C6C6C6;
+	color: #000;
 }
 .sqd-theme-dark .sqd-toolbox-item:hover {
 	background: #D3D3D3;
