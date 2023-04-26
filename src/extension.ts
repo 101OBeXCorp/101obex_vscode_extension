@@ -8,9 +8,9 @@ var UPDATE_APIS = false;
 var UPDATE_ERP = false;
 var UPDATE_DATABASES = false;
 var UPDATE_FINANCIALS = false;
-
+var Services: any;
 //var con2: { any :{  'databases': {model: any, connection: []}, 'apis': {model: any, connection: []}, 'erp': {model: any, connection: []} }}
-var con2: { [x: string]: { apis: { model: string; connections: { name: string; description: string; ip: string; username: string; password: string; services: { name: string; }[]; }[]; }[]; erp: { model: string; connections: never[]; }[]; databases: { model: string; connections: never[]; }[]; finnancials: { core_banking: { model: string; connections: never[]; }[]; open_banking: { model: string; connections: never[]; }[]; baas: { model: string; connections: never[]; }[]; payment_methods: { model: string; connections: never[]; }[]; }; }; };
+var con2: { [x: string]: { apis: { model: string; connections: { name: string; description: string; ip: string; username: string; password: string; id: string; services: { name: string; connection: string}[]; }[]; }[]; erp: { model: string; connections: never[]; }[]; databases: { model: string; connections: never[]; }[]; finnancials: { core_banking: { model: string; connections: never[]; }[]; open_banking: { model: string; connections: never[]; }[]; baas: { model: string; connections: never[]; }[]; payment_methods: { model: string; connections: never[]; }[]; }; }; };
 var AccesToken: string;
 var idService: string;
 var con1 = {
@@ -22,10 +22,14 @@ var con1 = {
 					'name':'conexion_prueba', 
 					'description':'localhost',
 					'ip':'127.0.0.1',
+					'id': '00000000000',
 					'username':'admin',
 					'password':'*****',
 					'services': [
-						{'name':'test'}
+						{
+						'name':'test',
+						 'connection':'/ws/util.py/paises'
+					}
 					]
 				}
 			]
@@ -131,7 +135,8 @@ const axiosConfig = {
 	headers: {
 		accept: 'application/json',
 		'Content-Type': 'application/json;charset=UTF-8',
-		'Accept-Encoding': 'identity'
+		'Accept-Encoding': 'identity',
+		'disable-cache': 'true'
 	},
 	data: {}
   };
@@ -174,6 +179,7 @@ export function activate(context: vscode.ExtensionContext) {
 			.then((response) => {
 				TokenData = response;
 
+				Services = response.data.data[0].services
 				var pprojts = response.data.data[0].authorizations;
 				var connectrs = response.data.data[0].conectors;
 				var resultss = response.data.data[0].results;
@@ -188,7 +194,8 @@ export function activate(context: vscode.ExtensionContext) {
 				}));
 
 				vscode.commands.registerCommand(`101obex-api-extension.RemoveConnection`, (e) => {
-					var arr: { name: string; description: string; ip: string; username: string; password: string; services: { name: string; }[]; }[] = [];
+					var arr: { name: string; description: string; ip: string; username: string; password: string; id: string; services: { name: string; connection: string}[]; }[] = [];
+					//var arr;
 					con1.apis[0].connections.forEach((connn: any) => {
 						
 						if (connn.name+` (${connn.description})` == e.label){
@@ -210,13 +217,13 @@ export function activate(context: vscode.ExtensionContext) {
 					var ind = 0;
 					var cont = 0;
 					con1.apis[0].connections.forEach((pooo:any)=>{
-						if (pooo.name==e.label) ind = cont;
+						if (pooo.id==e.tooltip.toString().split('|')[1]) ind = cont;
 						cont++;
 					})
 					
 					con1.apis[0].connections[ind].services.forEach((connn: any) => {
 						
-						if (connn.name == e.label){
+						if (`${connn.name} [${connn.connection}]` == e.label){
 			
 							arr = con1.apis[0].connections[ind].services.filter(function(item) {
 								return item !== connn
@@ -438,12 +445,13 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 											sub_sub_responses.push(new TreeItem(`ip: ${subelement.ip}`,undefined,'',`edit_config|${tont}|apis|ip`));
 											sub_sub_responses.push(new TreeItem(`username: ${subelement.username}`,undefined,'',`edit_config|${tont}|apis|user`));
 											sub_sub_responses.push(new TreeItem(`password: ${subelement.password}`,undefined,'',`edit_config|${tont}|apis|password`));
+											sub_sub_responses.push(new TreeItem(`id: ${subelement.id}`,undefined,'',`edit_config|${tont}|apis|id`));
 
 											tont++;
 
 											var sub_sub_sub_responses: TreeItem[] = [];
 											subelement.services.forEach((sub_sub_element: any) =>{
-												sub_sub_sub_responses.push(new TreeItem(`${sub_sub_element['name']}`,undefined,'config',element.model))
+												sub_sub_sub_responses.push(new TreeItem(`${sub_sub_element['name']} [${sub_sub_element['connection']}]`,undefined,'config',`${element.model}|${subelement.id}`,sub_sub_element['connection']))
 											})
 
 
@@ -532,13 +540,14 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 class TreeItem extends vscode.TreeItem {
 	children: TreeItem[]|undefined;
 	
-	constructor(label: string, children?: TreeItem[], document?:string, api_category?:string) {
+	constructor(label: string, children?: TreeItem[], document?:string, api_category?:string, api_conection?:string) {
 		
 	  super(
 		  label,
 		  children === undefined ? vscode.TreeItemCollapsibleState.None :
 								   vscode.TreeItemCollapsibleState.Collapsed
 								   );
+	  //this.id = api_conection;
 	  this.children = children;
 	  this.description = document;
 	  this.tooltip = api_category;
@@ -613,12 +622,12 @@ class TreeItem extends vscode.TreeItem {
 		}
 		if (this.tooltip?.toString().split('|')[1]=='connection'){
 			this.contextValue = 'CONECT'
-		}
-		if (this.tooltip?.toString()=='IBM3270'){
+		} else if (this.tooltip?.toString().split('|')[0].toString()=='IBM3270'){
 			this.contextValue = 'SERV'
 		}
 
-		if (this.tooltip?.toString().indexOf('edit_config')!=-1){
+
+		if (this.tooltip?.toString().indexOf('edit_config')!=-1 && this.label?.toString().indexOf('id')==-1 && this.tooltip!=undefined){
 			this.contextValue = 'EDCONF'
 		}
 	}
@@ -673,6 +682,56 @@ class TreeItem extends vscode.TreeItem {
 			if (e.description?.toString() == 'add service'){
 				if (e.tooltip?.toString().split('|')[1] == 'IBM3270') {
 
+					var ServicesFiltered = Services;
+
+					var conne = e.tooltip?.toString().split('|')[0]
+					var inde = 0;
+					var conta = 0;
+					con1.apis[0].connections.forEach((connecti: any)=>{
+					  if (connecti.name == conne) inde = conta;
+					  conta ++;
+					});
+
+					ServicesFiltered.forEach((connn: any) => {
+												
+						if (connn.description == '/ws' ){
+
+							ServicesFiltered = ServicesFiltered.filter(function(item: any) {
+								return item !== connn
+							})
+						}
+
+					})
+
+
+					con1.apis[0].connections[inde].services.forEach((connnt: any)=>{
+						
+///
+
+
+						ServicesFiltered.forEach((connn: any) => {
+												
+							if (connn.description == connnt.connection ){
+
+								ServicesFiltered = ServicesFiltered.filter(function(item: any) {
+									return item !== connn
+								})
+							}
+
+						})
+
+
+
+
+////
+					  })
+
+
+					var tto: any
+					tto = await vscode.window.showQuickPick(
+						ServicesFiltered
+					);
+					var tto1 = tto.description;
 					let toHost = await vscode.window.showInputBox({
 						placeHolder: "Name of the service",
 						validateInput: text => {
@@ -680,17 +739,11 @@ class TreeItem extends vscode.TreeItem {
 						  return text === text ? null : 'Not 123!';  // return null if validates
 						  
 					  }});
-					  var conne = e.tooltip?.toString().split('|')[0]
-					  var inde = 0;
-					  var conta = 0;
-					  con1.apis[0].connections.forEach((connecti: any)=>{
-						if (connecti.name == conne) inde = conta;
-						conta ++;
-					  });
+
 
 					  console.log(con1);
 
-					  con1.apis[0].connections[inde].services.push({'name': toHost||'new_service'});
+					  con1.apis[0].connections[inde].services.push({'name': toHost||'new_service', 'connection' :tto1 || ServicesFiltered[0].description});
 
 					  console.log(toHost);
 					  UPDATE_APIS = true;
@@ -739,6 +792,10 @@ class TreeItem extends vscode.TreeItem {
 					  }});
 					  var mode = e.tooltip?.toString()
 
+					  var id_conec = `${mode}${Date.now().toString()}`;
+
+					  var id_conector = Buffer.from(id_conec).toString('base64')
+					
 					  con1.apis[0].connections.push(
 							{
 								name: toHost || 'new connection',
@@ -746,6 +803,7 @@ class TreeItem extends vscode.TreeItem {
 								ip: toHost3 || '127.0.0.1',
 								username: toHost4 || 'username',
 								password: toHost5 || 'password',
+								id: id_conector || '0000000000',
 								services: []
 							});
 
