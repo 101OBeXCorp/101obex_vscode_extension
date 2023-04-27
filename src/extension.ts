@@ -5,7 +5,7 @@ import os = require("os");
 import { ChatGPTAPI } from 'chatgpt';
 import path = require('path');
 
-var TEST = 0;
+var TEST = 1;
 
 type AuthInfo = {apiKey?: string};
 type Settings = {selectedInsideCodeblock?: boolean, codeblockWithLanguageId?: false, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
@@ -341,6 +341,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				client.connect(8090, 'hesperidium.101obex.mooo.com', () => {
 					if (this._view){
 					}
+					if (SelectedDevToken== '') SelectedDevToken = '742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a',
 					// '742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a',
 					client.write(`{
 						'token': '${SelectedDevToken}', 
