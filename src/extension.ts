@@ -341,7 +341,13 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				client.connect(8090, 'hesperidium.101obex.mooo.com', () => {
 					if (this._view){
 					}
-					if (SelectedDevToken== '') SelectedDevToken = '742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a',
+					try{
+					if (SelectedDevToken== '') SelectedDevToken = '742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a';
+					if (SelectedDevToken== undefined) SelectedDevToken = '742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a';
+					}
+					catch  {
+						SelectedDevToken = '742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a';
+					}
 					// '742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a',
 					client.write(`{
 						'token': '${SelectedDevToken}', 
@@ -355,12 +361,12 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					var tt = data.toString();
 					totalResponse = totalResponse + tt;
 
-					if (data != "END") {
+					if (!data.includes("END")) {
 						
 						if (!data.includes('[ERROR]')){
 						
 						if (this._view){
-							this._view.webview.postMessage({ type: 'addResponse', value: totalResponse.toString() });
+							this._view.webview.postMessage({ type: 'addResponse', value: totalResponse.toString().replace('END','') });
 						}
 					} else {
 						var erromessage = ''+data;
