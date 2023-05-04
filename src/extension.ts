@@ -143,7 +143,7 @@ const axiosConfig = {
 var TokenData: AxiosResponse<any, any>;
 export function activate(context: vscode.ExtensionContext) {
 
-	vscode.commands.registerCommand(`101obex-api-extension.viewOnlineDocumentation`, (e) => {
+	vscode.commands.registerCommand(`101obex-api-extension-framework.viewOnlineDocumentation`, (e) => {
 		
 			vscode.env.openExternal(
 				vscode.Uri.parse(
@@ -165,7 +165,7 @@ export function activate(context: vscode.ExtensionContext) {
 				'101OBeX Developer Token was not found. '+
 				'Please use 101obexcli to get your 101OBeX Developer Token'
 				);
-			nullRegistration(context,'101obex-api-extension.refreshEntry-connectors');
+			nullRegistration(context,'101obex-api-extension-framework.refreshEntry-connectors');
 			throw err; 
 		} 
 
@@ -193,7 +193,7 @@ export function activate(context: vscode.ExtensionContext) {
 					ReactPanel.createOrShow(context.extensionPath, '3270');
 				}));
 
-				vscode.commands.registerCommand(`101obex-api-extension.RemoveConnection`, (e) => {
+				vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveConnection`, (e) => {
 					var arr: { name: string; description: string; ip: string; username: string; password: string; id: string; services: { name: string; connection: string}[]; }[] = [];
 					//var arr;
 					con1.apis[0].connections.forEach((connn: any) => {
@@ -211,7 +211,7 @@ export function activate(context: vscode.ExtensionContext) {
 					Connectors(context, response)
 				});
 
-				vscode.commands.registerCommand(`101obex-api-extension.RemoveService`, (e) => {
+				vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveService`, (e) => {
 					var arr:any;
 					
 					var ind = 0;
@@ -238,7 +238,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 				///
 
-				vscode.commands.registerCommand(`101obex-api-extension.EditConnection`, async (e) => {
+				vscode.commands.registerCommand(`101obex-api-extension-framework.EditConnection`, async (e) => {
 					var arr:any;
 					
 					var valor = e.tooltip.split('|');
@@ -281,7 +281,7 @@ export function activate(context: vscode.ExtensionContext) {
 							'101OBeX Server is not responding.'
 						);
 					} 
-				nullRegistration(context,'101obex-api-extension.refreshEntry-connectors');
+				nullRegistration(context,'101obex-api-extension-framework.refreshEntry-connectors');
 
 				
 				});	
@@ -672,8 +672,8 @@ class TreeItem extends vscode.TreeItem {
 			var formatted = date_ob.toLocaleTimeString();
 
 			if (e.description?.toString() == 'config'){
-				if (e.tooltip?.toString() == 'IBM3270') {
-					idService = `384${e.label}${e.tooltip}`;
+				if (e.tooltip?.toString().split("|")[0] == 'IBM3270') {
+					idService = `384|${e.label?.toString().split("[")[1].replace("]","")}|${e.tooltip.toString().split("|")[1]}`;
 					vscode.commands.executeCommand('react-webview.start-3270');
 				}
 				else vscode.commands.executeCommand('react-webview.start');
@@ -803,7 +803,7 @@ class TreeItem extends vscode.TreeItem {
 								ip: toHost3 || '127.0.0.1',
 								username: toHost4 || 'username',
 								password: toHost5 || 'password',
-								id: id_conector || '0000000000',
+								id: id_conector.replace("=",'') || '0000000000',
 								services: []
 							});
 
@@ -886,7 +886,7 @@ class TreeItem extends vscode.TreeItem {
 
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('101obex-api-extension.refreshEntry-connectors', () =>
+		vscode.commands.registerCommand('101obex-api-extension-framework.refreshEntry-connectors', () =>
 			apisTreeProvider.refresh())
 			);
   }
