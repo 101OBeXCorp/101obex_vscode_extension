@@ -1050,12 +1050,12 @@ class ReactPanel {
 											<style>${editor}</style>
 										</head>
 										<body>
-										
-										<input id="identier" class="id_service" value="${id_service}"/>
-										<input id="token" class="id_service" value="${AccesToken}"/>
-										<input id="id_project" class="id_service" value="${id_project}"/>
-										<input id="response" class="id_service" value=""/>
-										
+										<div style="height: 0px;">
+											<input id="identier" class="id_service" value="${id_service}"/>
+											<input id="token" class="id_service" value="${AccesToken}"/>
+											<input id="id_project" class="id_service" value="${id_project}"/>
+											<input id="response" class="id_service" value=""/>
+										</div>
 											<div id="designer"></div>
 											<script>${index}</script>
 											<style>${designer}</style>
