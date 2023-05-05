@@ -16,7 +16,7 @@ function createTaskStep(type, name, properties) {
 
 class Steps {
 
-	static createIfStep(id, _true, _false, variable, value, comparator) {
+	static createIfStep(id, _true, _false, variable, variableValue, comparator) {
 		return {
 			id,
 			componentType: 'switch',
@@ -28,7 +28,7 @@ class Steps {
 			},
 			properties: {
 				variable,
-				value,
+				variableValue,
 				comparator
 			}
 		};
@@ -116,7 +116,7 @@ class Steps {
 		}
 	}
 
-    static stringFound(name,posX, posY, text) {
+    static stringFound(name,posX, posY, text, variable) {
 		/*return createTaskStep('setNumber', name, {
 			targetVarName,
 			value,
@@ -133,7 +133,8 @@ class Steps {
 			properties: {
 				posX,
 				posY,
-                text
+                text,
+				variable
 			}
 		}
 	}
@@ -427,10 +428,10 @@ const configuration = {
 			{
 				name: 'Interaction',
 				steps: [
-					Steps.setNumber('Fill Field', 0,0,''),
-                    Steps.deleteField('Delete Field', 0,0,''),
-					Steps.getString('Get String', 0,0,0,'X'),
-                    Steps.stringFound('String Found', 0,0,''),
+					Steps.setNumber('Fill Field', 1,1,''),
+                    Steps.deleteField('Delete Field', 1,1,''),
+					Steps.getString('Get String', 1,1,1,'X'),
+                    Steps.stringFound('String Found', 1,1,'','U'),
 					Steps.sendEnter('Send Enter'),
 					Steps.sendFKey('Send F Key',1),
 					Steps.loop('loop', 'j', 0, 5),
