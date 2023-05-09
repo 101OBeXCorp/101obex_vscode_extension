@@ -16,6 +16,22 @@ function createTaskStep(type, name, properties) {
 
 class Steps {
 
+	static variableFromJSON(name,SourceVariable,key,TargetVariable) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'variableFromJSON',
+			name,
+			properties: {
+                SourceVariable,
+                key,
+				TargetVariable
+			}
+		}
+	}
+
+
 	static createIfStep(id, _true, _false, variable, variableValue, comparator) {
 		return {
 			id,
@@ -869,6 +885,7 @@ const configuration = {
 					Steps.addResult('Add to Result','X'),
                     Steps.addParam('Add param to Variable', 'parameter','Z'),
                     Steps.addVar('Set Variable','Y',''),
+					Steps.variableFromJSON("Get variable from JSON","A","","M")
 				]
 			}
 		]
