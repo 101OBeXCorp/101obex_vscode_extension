@@ -10,7 +10,7 @@ var UPDATE_DATABASES = false;
 var UPDATE_FINANCIALS = false;
 var Services: any;
 //var con2: { any :{  'databases': {model: any, connection: []}, 'apis': {model: any, connection: []}, 'erp': {model: any, connection: []} }}
-var con2: { [x: string]: { apis: { model: string; connections: { name: string; description: string; ip: string; username: string; password: string; id: string; services: { name: string; connection: string}[]; }[]; }[]; erp: { model: string; connections: never[]; }[]; databases: { model: string; connections: never[]; }[]; finnancials: { core_banking: { model: string; connections: never[]; }[]; open_banking: { model: string; connections: never[]; }[]; baas: { model: string; connections: never[]; }[]; payment_methods: { model: string; connections: never[]; }[]; }; }; };
+var con2: { [x: string]: { apis: { model: string; connections: { name: string; description: string; ip: string; username: string; password: string; id: string; services: { name: string; connection: string}[]; }[]; }[]; erp: { model: string; connections: never[]; }[]; databases: { model: string; connections: never[]; }[]; low_code: { model: string; apis: {name: string }[];}[] ;finnancials: { core_banking: { model: string; connections: never[]; }[]; open_banking: { model: string; connections: never[]; }[]; baas: { model: string; connections: never[]; }[]; payment_methods: { model: string; connections: never[]; }[]; }; }; };
 var AccesToken: string;
 var idService: string;
 var con1 = {
@@ -66,6 +66,16 @@ var con1 = {
 			model:	'ORACLE',
 			connections: []
 		},
+	],
+	low_code: [
+		{
+			model: 'API',
+			apis: [
+				{
+					name: 'countries'
+				}
+			]
+		}
 	],
 	finnancials : 
 		{
@@ -191,6 +201,9 @@ export function activate(context: vscode.ExtensionContext) {
 				}));
 				context.subscriptions.push(vscode.commands.registerCommand('react-webview.start-3270', () => {
 					ReactPanel.createOrShow(context.extensionPath, '3270');
+				}));
+				context.subscriptions.push(vscode.commands.registerCommand('react-webview.start-low_code', () => {
+					ReactPanel.createOrShow(context.extensionPath, 'API');
 				}));
 
 				vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveConnection`, (e) => {
@@ -502,6 +515,45 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 										
 										
 									});
+
+
+									////
+									var responses8: TreeItem[] = [];
+									res.data.data[0].low_code.forEach((element: any) => {
+										console.log(element)
+										var subresponses8: TreeItem[] = [];
+										element.apis.forEach((subelement: any) => {
+											
+											subresponses8.push(
+												new TreeItem(
+													`${subelement["name"]}`,
+													undefined,
+													'config',
+													`${element.model}|${subelement.name}`)
+													);
+											
+										});
+
+
+										if (element.model === 'API'){
+											subresponses8.push(
+												new TreeItem(
+													`+`,
+													undefined,
+													'add connection',
+													element.model)
+													);
+												}
+
+
+										responses8.push(new TreeItem(element.model, subresponses8,'','LOW_CODE'));
+										
+										
+									});
+
+
+
+									/////
 				
 
 				
@@ -509,6 +561,7 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 				category.push(new TreeItem('FINANCIALS', financials,'','CONNECTOR'))
 				category.push(new TreeItem('API', responses6,'','CONNECTOR'))
 				category.push(new TreeItem('ERP', responses7,'','CONNECTOR'))
+				category.push(new TreeItem('LOW CODE', responses8,'','CONNECTOR'))
 				
 
 
@@ -676,6 +729,13 @@ class TreeItem extends vscode.TreeItem {
 					idService = `384|${e.label?.toString().split("[")[1].replace("]","")}|${e.tooltip.toString().split("|")[1]}`;
 					vscode.commands.executeCommand('react-webview.start-3270');
 				}
+				if (e.tooltip?.toString().split("|")[0] == 'API') {
+					idService = `384|${e.label?.toString()}`;
+					vscode.commands.executeCommand('react-webview.start-low_code');
+				} 
+
+
+
 				else vscode.commands.executeCommand('react-webview.start');
 			}
 
@@ -810,6 +870,35 @@ class TreeItem extends vscode.TreeItem {
 					  console.log(toHost);
 					  UPDATE_APIS = true;
 					  Connectors(context,response);
+				}
+
+
+
+
+				if (e.tooltip?.toString() == 'API') {
+
+					let toHost = await vscode.window.showInputBox({
+						placeHolder: "Name of the API",
+						validateInput: text => {
+						  //vscode.window.showInformationMessage(`Validating: ${text}`);  // you don't need this
+						  return text === text ? null : 'Not 123!';  // return null if validates
+						  
+					  }});
+					  
+					  var mode = e.tooltip?.toString()
+
+					  var id_conec = `${mode}${Date.now().toString()}`;
+
+					  var id_conector = Buffer.from(id_conec).toString('base64')
+					
+					  con1.low_code[0].apis.push(
+							{ 
+								name: toHost || 'new connection',
+							});
+
+					  console.log(toHost);
+					  UPDATE_APIS = true;
+					  Connectors(context, response);
 				}
 
 			}
@@ -1032,13 +1121,19 @@ class ReactPanel {
 	private _getHtmlForWebview(interfase: string) {
 	
 		const fullscreen = fs.readFileSync(path.resolve(__dirname, './assets/js/fullscreen1.js'), 'utf8');
+		const fullscreen_low_code = fs.readFileSync(path.resolve(__dirname, './assets/js/fullscreen2.js'), 'utf8');
 		const index = fs.readFileSync(path.resolve(__dirname, './assets/js/index.umd.js'), 'utf8');
 		const common = fs.readFileSync(path.resolve(__dirname, './assets/css/common.css'), 'utf8');
 		const designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer.css'), 'utf8');
 		const light_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-light.css'), 'utf8');
 		const dark_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-dark.css'), 'utf8');
 		const editor = fs.readFileSync(path.resolve(__dirname, './assets/css/editor.css'), 'utf8');
-		const id_service = idService;
+		let id_service = ""
+		if (interfase=='API'){
+			id_service = idService.split('|')[1];
+		} else {
+			id_service = idService
+		}
 		const id_project = 384;
 		const ibm3270_connector = `
 								<!DOCTYPE html>
@@ -1065,7 +1160,33 @@ class ReactPanel {
 										</body>
 									</html>
 								`;
+		const api_low_code = `
+								<!DOCTYPE html>
+									<html>
+										<head>
+											<meta charset="UTF-8">
+											<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+											<style>${common}</style>
+											<style>${editor}</style>
+										</head>
+										<body>
+										<div style="height: 0px;">
+											<input id="identier" class="id_service" value="${id_service}"/>
+											<input id="token" class="id_service" value="${AccesToken}"/>
+											<input id="id_project" class="id_service" value="${id_project}"/>
+											<input id="response" class="id_service" value=""/>
+										</div>
+											<div id="designer"></div>
+											<script>${index}</script>
+											<style>${designer}</style>
+											<style>${light_designer}</style>
+											<style>${dark_designer}</style>
+											<script>${fullscreen_low_code}</script>
+										</body>
+									</html>
+								`;
 		if (interfase === '3270') return ibm3270_connector
+		if (interfase === 'API') return api_low_code
 		
 		return ''
 	}
