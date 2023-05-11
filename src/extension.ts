@@ -724,6 +724,20 @@ class TreeItem extends vscode.TreeItem {
 
 			var formatted = date_ob.toLocaleTimeString();
 
+			if (e.tooltip?.toString().split('|')[0] == 'edit_config'){
+				
+				if(e.label?.toString().split(':')[0] == 'id')
+				{
+					var id_conexion = e.label?.toString().split(':')[1].replace(' ','');
+					console.log(id_conexion);
+					vscode.window.showInformationMessage(
+						`ID ${id_conexion} stored in clipboard.`
+					);
+					vscode.env.clipboard.writeText(id_conexion);
+
+				}
+			}
+
 			if (e.description?.toString() == 'config'){
 				if (e.tooltip?.toString().split("|")[0] == 'IBM3270') {
 					idService = `384|${e.label?.toString().split("[")[1].replace("]","")}|${e.tooltip.toString().split("|")[1]}`;

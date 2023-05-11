@@ -16,6 +16,500 @@ function createTaskStep(type, name, properties) {
 
 class Steps {
 
+	static login(name,variable1,variable2,variable3,o_variable1,o_variable2,o_variable3,o_variable4,o_variable5,o_variable6, o_variable7, o_variable8) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'login',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				o_variable1,
+				o_variable2,
+				o_variable3,
+				o_variable4,
+				o_variable5,
+				o_variable6,
+				o_variable7
+			}
+		}
+	}
+
+	static logout(name,variable1,variable2,o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'logout',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				o_variable1,
+			}
+		}
+	}
+
+	static restartpin(name,variable1,variable2,o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'restartpin',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				o_variable1,
+			}
+		}
+	}
+
+	static checknick(name,variable1,variable2,o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'checknick',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				o_variable1,
+			}
+		}
+	}
+
+	static checksession(name,variable1,variable2,variable3,o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'checksession',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				o_variable1,
+			}
+		}
+	}
+
+	static data(name,variable1,variable2,variable3,o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'data',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				o_variable1,
+			}
+		}
+	}
+
+
+    static enviar(name,variable1,variable2,variable3,variable4,variable5,variable6, variable7, o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'enviar',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				variable7,
+				o_variable1
+			}
+		}
+	}
+
+    static firmar(name,variable1,variable2,variable3,variable4,variable5, o_variable1, o_variable2) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'firmar',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				o_variable1,
+				o_variable2
+			}
+		}
+	}
+	static recargar(name,variable1,variable2,variable3,variable4,variable5,variable6, o_variable1, o_variable2) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'recargar',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				o_variable1,
+				o_variable2
+			}
+		}
+	}
+
+
+	static listado(name,variable1,variable2,variable3,variable4,variable5,variable6, variable7, o_variable1, o_variable2, o_variable3) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'listado',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				variable7,
+				o_variable1,
+				o_variable2,
+				o_variable3
+			}
+		}
+	}
+
+	static pedir(name,variable1,variable2,variable3,variable4,variable5,variable6, o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'pedir',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				o_variable1,
+			}
+		}
+	}
+
+	static depositotarjeta(name,variable1,variable2,variable3,variable4,variable5,variable6,variable7,variable8,variable9 ,o_variable1, o_variable2) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'depositotarjeta',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				variable7,
+				variable8,
+				variable9,
+				o_variable1,
+				o_variable2
+			}
+		}
+	}
+
+	static depositotarjetaotracuenta(name,variable1,variable2,variable3,variable4,variable5,variable6,variable7,variable8,variable9,variable10,variable11 ,o_variable1, o_variable2, o_variable3) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'depositotarjetaotracuenta',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				variable7,
+				variable8,
+				variable9,
+				variable10,
+				variable11,
+				o_variable1,
+				o_variable2,
+				o_variable3
+			}
+		}
+	}
+	static comprartarjeta(name,variable1,variable2,variable3,variable4,variable5,variable6,variable7,variable8,variable9,variable10 ,o_variable1, o_variable2) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'comprartarjeta',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				variable7,
+				variable8,
+				variable9,
+				variable10,
+				o_variable1,
+				o_variable2,
+			}
+		}
+	}
+
+	static anularcomprartarjeta(name,variable1,variable2,variable3,variable4,variable5,o_variable1, o_variable2) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'comprartarjeta',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				o_variable1,
+				o_variable2,
+			}
+		}
+	}
+
+
+	static consultatransaccion(name,variable1,variable2,variable3,variable4,variable5,variable6,variable7,o_variable1, o_variable2) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'consultatransaccion',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				variable7,
+				o_variable1,
+				o_variable2,
+			}
+		}
+	}
+
+	static actividad(name,variable1,variable2,variable3,variable4,variable5,variable6,variable7,o_variable1, o_variable2) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'actividad',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				variable7,
+				o_variable1,
+				o_variable2,
+			}
+		}
+	}
+
+	static datos_transaccion(name,variable1,variable2,variable3,variable4,o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'datos_transaccion',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				o_variable1,
+			}
+		}
+	}
+
+	static enviosderegalo(name,variable1,variable2,variable3,variable4,variable5,variable6,variable7,o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'enviosderegalo',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				variable7,
+				o_variable1,
+			}
+		}
+	}
+
+	static entreorigenes(name,variable1,variable2,variable3,variable4,variable5,variable6,o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'entreorigenes',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				o_variable1,
+			}
+		}
+	}
+
+	static canjear_puntos(name,variable1,variable2,variable3,variable4,variable5,variable6,o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'canjear_puntos',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				variable5,
+				variable6,
+				o_variable1,
+			}
+		}
+	}
+
+	static comprobartransaccion(name,variable1,variable2,variable3,variable4,variable5,variable6,o_variable1) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'comprobartransaccion',
+			name,
+			properties: {
+                variable1,
+                variable2,
+				variable3,
+				variable4,
+				o_variable1,
+			}
+		}
+	}
+
+
+	static ormAccessSelect(name,fields,dbase,varTarget,selector) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'ormAccess',
+			command: 'get',
+			name,
+			properties: {
+				fields,
+				dbase,
+				varTarget,
+				selector
+			}
+		}
+	}
+
+	static ormAccessInsert(name,fields,fieldsValuesVariables,dbase,varTarget) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'ormAccess',
+			command: 'add',
+			name,
+			properties: {
+				fields,
+				fieldsValuesVariables,
+				dbase,
+				varTarget
+			}
+		}
+	}
+
+	static ormAccessUpdate(name,fields,fieldsValuesVariables,dbase,varTarget,selector) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'ormAccess',
+			command: 'add',
+			name,
+			properties: {
+				fields,
+				fieldsValuesVariables,
+				dbase,
+				varTarget,
+				selector
+			}
+		}
+	}
+
+	static itemFromList(name,SourceVariable,index,TargetVariable) {
+
+        return {
+			id: nextId(),
+			componentType: 'task',
+			type: 'itemFromList',
+			name,
+			properties: {
+                SourceVariable,
+                index,
+				TargetVariable
+			}
+		}
+	}
+
 	static variableFromJSON(name,SourceVariable,key,TargetVariable) {
 
         return {
@@ -51,14 +545,7 @@ class Steps {
 	}
 
     static addParam(name,param,Variable) {
-		/*return createTaskStep('setNumber', name, {
-			targetVarName,
-			value,
-			properties: {
-				posX,
-                posY
-			}
-		});*/
+
         return {
 			id: nextId(),
 			componentType: 'task',
@@ -836,7 +1323,7 @@ const configuration = {
 	toolbox: {
 		groups: [
 			{
-				name: 'Services',
+				name: 'Util Services',
 				steps: [
 					Steps.digito_control_curp('CURP Control Digit', 'A','M'),
 					Steps.curp_validate('CURP Validate', 'A','M','N','O','P','Q'),
@@ -860,16 +1347,60 @@ const configuration = {
 					Steps.get_operative_limit('Get Operative Limits', 'A','M','N','O'),
 					Steps.modify_operative_limit('Modify Operative Limits','A','B','M'),
 					Steps.app_version('Obtain App Version Info','A','M'),
-
+				]
+			},
+			{
+				name: 'Block Services',
+				steps:[
+					
 					Steps.bloquear('Block User by Phone','A','M'),
 					Steps.desbloquear('UnBlock User by Phone','A','B','M'),
 					Steps.reiniciar('Reset User','A','M'),
 					Steps.listado('Block User List','A','B','C','M'),
+					
+				]
+			},
+			{
+				name: 'Account Services',
+				steps:[
 					Steps.alta('User Registration', 'A','B','C','D','E','F','G','H','I','J','K','L','A1','B1','C1','D1','E1','M','N'),
 					Steps.parar('User Pause', 'A','B','C','D','E','M'),
 					Steps.activar('User UnPause', 'A','B','C','D','E','M'),
 					Steps.saldo('User Balance','A','B','C','D','E','M','N'),
 					Steps.baja('Stop User','A','B','C','D','M','N')
+				]
+			},
+			{
+				name: 'Movements Services',
+				steps:[
+					Steps.enviar('Send Money','A','B','C','D','E','F','G','M'),
+					Steps.firmar('Sign Sent','A','B','C','D','E','M','N'),
+					Steps.recargar('Recharge','A','B','C','D','E','F','M','N'),
+					Steps.listado('List','A','B','C','D','E','F','G','M','N','O'),
+					Steps.pedir('Ask Money','A','B','C','D','E','F','M','N'),
+					Steps.depositotarjeta('Card Deposit','A','B','C','D','E','F','G','H','I','M','N'),
+					Steps.depositotarjetaotracuenta('Card Deposit Other Account', 'A','B','C','D','E','F','G','H','I','J','K','M','N','O'),
+					Steps.comprartarjeta('Buy whith Card','A','B','C','D','E','F','G','H','I','J','M','N'),
+					Steps.anularcomprartarjeta('Revoke Card Buy','A','B','C','D','E','M','N'),
+					Steps.consultatransaccion('Check Transaction','A','B','C','D','E','F','M','N'),
+					Steps.actividad('Activity','A','B','C','E','F','G','H','M','N'),
+					Steps.datos_transaccion('Transaction Data','A','B','C','D','M'),
+					Steps.enviosderegalo('Send Gift','A','B','C','D','E','F','G','M'),
+					Steps.entreorigenes('Between Funds','A','B','C','D','E','F','M'),
+					Steps.canjear_puntos('Redeem Points','A','B','C','D','E','F','M'),
+					Steps.consultatransaccion('Verify Transaction','A','B','C','D','M')
+				]
+			},
+			{
+				name: 'Users Services',
+				steps: [
+					Steps.login('Login','A','B','C','M','N','O','P','Q','R','S','T'),
+					Steps.logout('Logout', 'A','B','M'),
+					Steps.restartpin('Restart PIN', 'A','B','M'),
+					Steps.checknick('Check Nick Availability', 'A','B','M'),
+					Steps.checksession('Check Session', 'A','B','C','M'),
+					Steps.data('User Data', 'A', 'B','C','M'),
+
 				]
 			},
             {
@@ -880,12 +1411,21 @@ const configuration = {
 				]
 			},
 			{
+				name: 'ORM',
+				steps: [
+					Steps.ormAccessSelect("Get from table", "*","usuarios","M",""),
+					Steps.ormAccessInsert("Insert into table", "*","A,B","usuarios","M"),
+					Steps.ormAccessUpdate("Update table", "*","A,B","usuarios","M",""),
+				]
+			},
+			{
 				name: 'System',
 				steps: [
 					Steps.addResult('Add to Result','X'),
                     Steps.addParam('Add param to Variable', 'parameter','Z'),
                     Steps.addVar('Set Variable','Y',''),
-					Steps.variableFromJSON("Get variable from JSON","A","","M")
+					Steps.variableFromJSON("Get variable from JSON","A","","M"),
+					Steps.itemFromList("Get item from List","A","1","M")
 				]
 			}
 		]
