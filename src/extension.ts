@@ -179,7 +179,7 @@ export function activate(context: vscode.ExtensionContext) {
 				'101OBeX Developer Token was not found. '+
 				'Please use 101obexcli to get your 101OBeX Developer Token'
 				);
-			nullRegistration(context,'101obex-api-extension-framework.refreshEntry-connectors');
+			nullRegistration(context,'101obex-api-extension-legacy-connectors.refreshEntry-connectors');
 			throw err; 
 		} 
 
@@ -210,7 +210,7 @@ export function activate(context: vscode.ExtensionContext) {
 					ReactPanel.createOrShow(context.extensionPath, 'API');
 				}));
 
-				vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveConnection`, (e) => {
+				vscode.commands.registerCommand(`101obex-api-extension-legacy-connectors.RemoveConnection`, (e) => {
 					var arr: { name: string; description: string; ip: string; username: string; password: string; id: string; services: { name: string; connection: string}[]; }[] = [];
 					//var arr;
 					con1.apis[0].connections.forEach((connn: any) => {
@@ -228,7 +228,7 @@ export function activate(context: vscode.ExtensionContext) {
 					Connectors(context, response)
 				});
 
-				vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveService`, (e) => {
+				vscode.commands.registerCommand(`101obex-api-extension-legacy-connectors.RemoveService`, (e) => {
 					var arr:any;
 					
 					var ind = 0;
@@ -255,7 +255,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 				///
 
-				vscode.commands.registerCommand(`101obex-api-extension-framework.EditConnection`, async (e) => {
+				vscode.commands.registerCommand(`101obex-api-extension-legacy-connectors.EditConnection`, async (e) => {
 					var arr:any;
 					
 					var valor = e.tooltip.split('|');
@@ -298,7 +298,7 @@ export function activate(context: vscode.ExtensionContext) {
 							'101OBeX Server is not responding.'
 						);
 					} 
-				nullRegistration(context,'101obex-api-extension-framework.refreshEntry-connectors');
+				nullRegistration(context,'101obex-api-extension-legacy-connectors.refreshEntry-connectors');
 
 				
 				});	
@@ -742,7 +742,7 @@ class TreeItem extends vscode.TreeItem {
 				if(e.label?.toString().split(':')[0] == 'id')
 				{
 					var id_conexion = e.label?.toString().split(':')[1].replace(' ','');
-					console.log(id_conexion);
+				//	console.log(id_conexion);
 					vscode.window.showInformationMessage(
 						`ID ${id_conexion} stored in clipboard.`
 					);
@@ -828,11 +828,11 @@ class TreeItem extends vscode.TreeItem {
 					  }});
 
 
-					  console.log(con1);
+					  //console.log(con1);
 
 					  con1.apis[0].connections[inde].services.push({'name': toHost||'new_service', 'connection' :tto1 || ServicesFiltered[0].description});
 
-					  console.log(toHost);
+					  //console.log(toHost);
 					  UPDATE_APIS = true;
 					  Connectors(context,response);
 				}
@@ -894,7 +894,7 @@ class TreeItem extends vscode.TreeItem {
 								services: []
 							});
 
-					  console.log(toHost);
+					  //console.log(toHost);
 					  UPDATE_APIS = true;
 					  Connectors(context,response);
 				}
@@ -923,7 +923,7 @@ class TreeItem extends vscode.TreeItem {
 								name: toHost || 'new connection',
 							});
 
-					  console.log(toHost);
+					  // console.log(toHost);
 					  UPDATE_APIS = true;
 					  Connectors(context, response);
 				}
@@ -946,7 +946,7 @@ class TreeItem extends vscode.TreeItem {
 	
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('101obex-api-extension-framework.refreshEntry-connectors', () =>
+		vscode.commands.registerCommand('101obex-api-extension-legacy-connectors.refreshEntry-connectors', () =>
 			apisTreeProvider.refresh())
 			);
   }

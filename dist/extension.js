@@ -7598,7 +7598,7 @@ function activate(context) {
             if (err && TEST == 0) {
                 vscode.window.showErrorMessage('101OBeX Developer Token was not found. ' +
                     'Please use 101obexcli to get your 101OBeX Developer Token');
-                nullRegistration(context, '101obex-api-extension-framework.refreshEntry-connectors');
+                nullRegistration(context, '101obex-api-extension-legacy-connectors.refreshEntry-connectors');
                 throw err;
             }
             if (TEST == 0)
@@ -7626,7 +7626,7 @@ function activate(context) {
                 context.subscriptions.push(vscode.commands.registerCommand('react-webview.start-low_code', () => {
                     ReactPanel.createOrShow(context.extensionPath, 'API');
                 }));
-                vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveConnection`, (e) => {
+                vscode.commands.registerCommand(`101obex-api-extension-legacy-connectors.RemoveConnection`, (e) => {
                     var arr = [];
                     //var arr;
                     con1.apis[0].connections.forEach((connn) => {
@@ -7640,7 +7640,7 @@ function activate(context) {
                     UPDATE_APIS = true;
                     Connectors(context, response);
                 });
-                vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveService`, (e) => {
+                vscode.commands.registerCommand(`101obex-api-extension-legacy-connectors.RemoveService`, (e) => {
                     var arr;
                     var ind = 0;
                     var cont = 0;
@@ -7661,7 +7661,7 @@ function activate(context) {
                     Connectors(context, response);
                 });
                 ///
-                vscode.commands.registerCommand(`101obex-api-extension-framework.EditConnection`, async (e) => {
+                vscode.commands.registerCommand(`101obex-api-extension-legacy-connectors.EditConnection`, async (e) => {
                     var arr;
                     var valor = e.tooltip.split('|');
                     var valore = '';
@@ -7700,7 +7700,7 @@ function activate(context) {
                 else {
                     vscode.window.showErrorMessage('101OBeX Server is not responding.');
                 }
-                nullRegistration(context, '101obex-api-extension-framework.refreshEntry-connectors');
+                nullRegistration(context, '101obex-api-extension-legacy-connectors.refreshEntry-connectors');
             });
         });
         vscode.window.showInformationMessage('101OBeX Legacy Connector Extension activated');
@@ -7950,7 +7950,7 @@ function Connectors(context, response) {
             if (e.tooltip?.toString().split('|')[0] == 'edit_config') {
                 if (e.label?.toString().split(':')[0] == 'id') {
                     var id_conexion = e.label?.toString().split(':')[1].replace(' ', '');
-                    console.log(id_conexion);
+                    //	console.log(id_conexion);
                     vscode.window.showInformationMessage(`ID ${id_conexion} stored in clipboard.`);
                     vscode.env.clipboard.writeText(id_conexion);
                 }
@@ -8006,9 +8006,9 @@ function Connectors(context, response) {
                             return text === text ? null : 'Not 123!'; // return null if validates
                         }
                     });
-                    console.log(con1);
+                    //console.log(con1);
                     con1.apis[0].connections[inde].services.push({ 'name': toHost || 'new_service', 'connection': tto1 || ServicesFiltered[0].description });
-                    console.log(toHost);
+                    //console.log(toHost);
                     UPDATE_APIS = true;
                     Connectors(context, response);
                 }
@@ -8062,7 +8062,7 @@ function Connectors(context, response) {
                         id: id_conector.replace("=", '') || '0000000000',
                         services: []
                     });
-                    console.log(toHost);
+                    //console.log(toHost);
                     UPDATE_APIS = true;
                     Connectors(context, response);
                 }
@@ -8080,7 +8080,7 @@ function Connectors(context, response) {
                     con1.low_code[0].apis.push({
                         name: toHost || 'new connection',
                     });
-                    console.log(toHost);
+                    // console.log(toHost);
                     UPDATE_APIS = true;
                     Connectors(context, response);
                 }
@@ -8095,7 +8095,7 @@ function Connectors(context, response) {
             }
         });
     });
-    context.subscriptions.push(vscode.commands.registerCommand('101obex-api-extension-framework.refreshEntry-connectors', () => apisTreeProvider.refresh()));
+    context.subscriptions.push(vscode.commands.registerCommand('101obex-api-extension-legacy-connectors.refreshEntry-connectors', () => apisTreeProvider.refresh()));
 }
 function nullRegistration(context, target) {
     context.subscriptions.push(vscode.commands.registerCommand(target, () => {
