@@ -1,7 +1,7 @@
 {
   "name": "101obex-api-extension-api-creation",
-  "displayName": "101OBeX API Extension Legacy Connectors",
-  "description": "101OBeX API support extension Legacy Connectors",
+  "displayName": "101OBeX API Extension API Creator",
+  "description": "101OBeX API support extension API Creator",
   "version": "0.0.1",
   "publisher": "101obex",
   "engines": {
