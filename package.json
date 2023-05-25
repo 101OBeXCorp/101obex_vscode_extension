@@ -1,5 +1,5 @@
 {
-  "name": "101obex-api-extension-framework",
+  "name": "101obex-api-extension-api-creation",
   "displayName": "101OBeX API Extension Legacy Connectors",
   "description": "101OBeX API support extension Legacy Connectors",
   "version": "0.0.1",
@@ -28,8 +28,8 @@
     "views": {
       "101obex-api-extension": [
         {
-          "id": "package-connectors",
-          "name": "CONNECTORS",
+          "id": "package-creation",
+          "name": "API CREATION",
           "type": "tree"
         }
       ]
@@ -42,46 +42,28 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "101obex-api-extension-framework.refreshEntry-connectors",
+        "command": "101obex-api-extension-api-creation.refreshEntry-connectors",
         "title": "Refresh",
         "icon": "$(refresh)"
       },
       {
-        "command": "101obex-api-extension-framework.RemoveConnection",
-        "title": "Remove Connection"
-      },
-      {
-        "command": "101obex-api-extension-framework.RemoveService",
-        "title": "Remove Service"
-      }
-      ,
-      {
-        "command": "101obex-api-extension-framework.EditConnection",
-        "title": "Edit Connection"
+        "command": "101obex-api-extension-api-creation.RemoveAPI",
+        "title": "Remove API configuration"
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "101obex-api-extension-framework.refreshEntry-connectors",
-          "when": "view == package-connectors",
+          "command": "101obex-api-extension-api-creation.refreshEntry-connectors",
+          "when": "view == package-creation",
           "group": "navigation"
         }
       ],
       "view/item/context": [
 
         {
-          "command": "101obex-api-extension-framework.RemoveConnection",
-          "when": "view == package-connectors && viewItem == CONECT"
-        },
-        {
-          "command": "101obex-api-extension-framework.RemoveService",
-          "when": "view == package-connectors && viewItem == SERV"
-        }
-        ,
-        {
-          "command": "101obex-api-extension-framework.EditConnection",
-          "when": "view == package-connectors && viewItem == EDCONF"
+          "command": "101obex-api-extension-api-creation.RemoveAPI",
+          "when": "view == package-creation && viewItem == APICONF"
         }
       ]
     }
