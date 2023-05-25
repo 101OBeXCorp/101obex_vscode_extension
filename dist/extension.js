@@ -7450,6 +7450,13 @@ const fs = __webpack_require__(2);
 const axios_1 = __webpack_require__(3);
 const os = __webpack_require__(38);
 const path = __webpack_require__(9);
+let ACCESS = false;
+let extensions = vscode.extensions.all;
+extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
+extensions.forEach(ex => {
+    if (ex.id == "101obex.101obex-api-extension")
+        ACCESS = true;
+});
 var UPDATE_APIS = false;
 var UPDATE_ERP = false;
 var UPDATE_DATABASES = false;
@@ -7580,119 +7587,124 @@ const axiosConfig = {
 };
 var TokenData;
 function activate(context) {
-    vscode.commands.registerCommand(`101obex-api-extension-framework.viewOnlineDocumentation`, (e) => {
-        vscode.env.openExternal(vscode.Uri.parse(`https://developer.101obex.com/apis/${e.tooltip}/${e.description}`));
-    });
-    fs.readFile(contextFile, 'utf8', (err, data) => {
-        CONTEXT = data.toString();
-    });
-    fs.readFile(configFile, 'utf8', (err, data) => {
-        if (err) {
-            vscode.window.showErrorMessage('101OBeX Developer Token was not found. ' +
-                'Please use 101obexcli to get your 101OBeX Developer Token');
-            nullRegistration(context, '101obex-api-extension-framework.refreshEntry-connectors');
-            throw err;
-        }
-        var dataObj = JSON.parse(data.replace(/\'/g, "\""));
-        if (TEST == 1)
-            dataObj.id_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1MmRlMjdmNTE1NzM3NTM5NjAwZDg5YjllZTJlNGVkNTM1ZmI1MTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgwNzE4ODU4MTA0MzU5OTg4ODIiLCJoZCI6IndheW5ub3ZhdGUuY29tIiwiZW1haWwiOiJyYWZhLnJ1aXpAd2F5bm5vdmF0ZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Il9GTk5wSlRvNEd5X2NaYS10d0hUVVEiLCJuYW1lIjoiUmFmYWVsIFJ1aXoiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUVkRlRwNG4xaF9RbUoxelhUd3NUdDNBRTdkVVVRUGhkTlFaN0hRek5zQVdrZz1zOTYtYyIsImdpdmVuX25hbWUiOiJSYWZhZWwiLCJmYW1pbHlfbmFtZSI6IlJ1aXoiLCJsb2NhbGUiOiJlcyIsImlhdCI6MTY3MDk1Mjc2NCwiZXhwIjoxNjcwOTU2MzY0fQ.uFMoDEhjZW-FKxnBg9BVxp_sSrjcrvw5_sxMOQZrREvJjv11W2GxLuQfMjMTtTPXhDCa8GeQOlzCllWxQRlOr3irEdu19y4qJQT1ut0RSi7pEIb6E6KcsdiAZtRSlA-6feIuj2u9gC2HXnGvBHtlO3FhWw4Et1zl_menGTCLOMqeq6v2QiMOfFlFzzE2t1TSo5_Be9AZQNfB7E1SLGHnbKXdR9ij9yqwMD2spjpxvnw4l4k5q23eS5Zz0Qz_WNm5PBgqF5NJwTeky-7-Aeq-ulUSnQ3qY-SsmQJunyt_miiwDyVOQkEWNDMRF4FJPuXDGJatWEeCsKXWe877pL4nVA';
-        AccesToken = dataObj.id_token;
-        axios_1.default.get(url + dataObj.id_token, axiosConfig)
-            .then((response) => {
-            TokenData = response;
-            Services = response.data.data[0].services;
-            var pprojts = response.data.data[0].authorizations;
-            var connectrs = response.data.data[0].conectors;
-            var resultss = response.data.data[0].results;
-            con2 = resultss;
-            Connectors(context, response);
-            context.subscriptions.push(vscode.commands.registerCommand('react-webview.start', () => {
-                ReactPanel.createOrShow(context.extensionPath, '3270');
-            }));
-            context.subscriptions.push(vscode.commands.registerCommand('react-webview.start-3270', () => {
-                ReactPanel.createOrShow(context.extensionPath, '3270');
-            }));
-            context.subscriptions.push(vscode.commands.registerCommand('react-webview.start-low_code', () => {
-                ReactPanel.createOrShow(context.extensionPath, 'API');
-            }));
-            vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveConnection`, (e) => {
-                var arr = [];
-                //var arr;
-                con1.apis[0].connections.forEach((connn) => {
-                    if (connn.name + ` (${connn.description})` == e.label) {
-                        arr = con1.apis[0].connections.filter(function (item) {
-                            return item !== connn;
-                        });
-                    }
-                });
-                con1.apis[0].connections = arr;
-                UPDATE_APIS = true;
-                Connectors(context, response);
-            });
-            vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveService`, (e) => {
-                var arr;
-                var ind = 0;
-                var cont = 0;
-                con1.apis[0].connections.forEach((pooo) => {
-                    if (pooo.id == e.tooltip.toString().split('|')[1])
-                        ind = cont;
-                    cont++;
-                });
-                con1.apis[0].connections[ind].services.forEach((connn) => {
-                    if (`${connn.name} [${connn.connection}]` == e.label) {
-                        arr = con1.apis[0].connections[ind].services.filter(function (item) {
-                            return item !== connn;
-                        });
-                    }
-                });
-                con1.apis[0].connections[ind].services = arr;
-                UPDATE_APIS = true;
-                Connectors(context, response);
-            });
-            ///
-            vscode.commands.registerCommand(`101obex-api-extension-framework.EditConnection`, async (e) => {
-                var arr;
-                var valor = e.tooltip.split('|');
-                var valore = '';
-                if (valor[2] == 'apis') {
-                    if (valor[3] == 'ip')
-                        valore = con1.apis[0].connections[parseInt(valor[1])].ip;
-                    if (valor[3] == 'user')
-                        valore = con1.apis[0].connections[parseInt(valor[1])].username;
-                    if (valor[3] == 'password')
-                        valore = con1.apis[0].connections[parseInt(valor[1])].password;
-                }
-                let toHost = await vscode.window.showInputBox({
-                    placeHolder: valore,
-                    validateInput: text => {
-                        //vscode.window.showInformationMessage(`Validating: ${text}`);  // you don't need this
-                        return text === text ? null : 'Not 123!'; // return null if validates
-                    }
-                });
-                if (valor[2] == 'apis') {
-                    if (valor[3] == 'ip')
-                        con1.apis[0].connections[parseInt(valor[1])].ip = toHost || '';
-                    if (valor[3] == 'user')
-                        con1.apis[0].connections[parseInt(valor[1])].username = toHost || '';
-                    if (valor[3] == 'password')
-                        con1.apis[0].connections[parseInt(valor[1])].password = toHost || '';
-                }
-                UPDATE_APIS = true;
-                Connectors(context, response);
-            });
-            ///
-        })
-            .catch((error) => {
-            if ('success' in error.response.data) {
-                vscode.window.showErrorMessage('Your Token is not a valid Token.');
-            }
-            else {
-                vscode.window.showErrorMessage('101OBeX Server is not responding.');
-            }
-            nullRegistration(context, '101obex-api-extension-framework.refreshEntry-connectors');
+    if (ACCESS) {
+        fs.readFile(contextFile, 'utf8', (err, data) => {
+            CONTEXT = data.toString();
         });
-    });
-    vscode.window.showInformationMessage('101OBeX API Extension activated');
+        fs.readFile(configFile, 'utf8', (err, data) => {
+            if (err && TEST == 0) {
+                vscode.window.showErrorMessage('101OBeX Developer Token was not found. ' +
+                    'Please use 101obexcli to get your 101OBeX Developer Token');
+                nullRegistration(context, '101obex-api-extension-framework.refreshEntry-connectors');
+                throw err;
+            }
+            if (TEST == 0)
+                var dataObj = JSON.parse(data.replace(/\'/g, "\""));
+            else
+                var dataObj = {};
+            if (TEST == 1)
+                dataObj.id_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1MmRlMjdmNTE1NzM3NTM5NjAwZDg5YjllZTJlNGVkNTM1ZmI1MTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgwNzE4ODU4MTA0MzU5OTg4ODIiLCJoZCI6IndheW5ub3ZhdGUuY29tIiwiZW1haWwiOiJyYWZhLnJ1aXpAd2F5bm5vdmF0ZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Il9GTk5wSlRvNEd5X2NaYS10d0hUVVEiLCJuYW1lIjoiUmFmYWVsIFJ1aXoiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUVkRlRwNG4xaF9RbUoxelhUd3NUdDNBRTdkVVVRUGhkTlFaN0hRek5zQVdrZz1zOTYtYyIsImdpdmVuX25hbWUiOiJSYWZhZWwiLCJmYW1pbHlfbmFtZSI6IlJ1aXoiLCJsb2NhbGUiOiJlcyIsImlhdCI6MTY3MDk1Mjc2NCwiZXhwIjoxNjcwOTU2MzY0fQ.uFMoDEhjZW-FKxnBg9BVxp_sSrjcrvw5_sxMOQZrREvJjv11W2GxLuQfMjMTtTPXhDCa8GeQOlzCllWxQRlOr3irEdu19y4qJQT1ut0RSi7pEIb6E6KcsdiAZtRSlA-6feIuj2u9gC2HXnGvBHtlO3FhWw4Et1zl_menGTCLOMqeq6v2QiMOfFlFzzE2t1TSo5_Be9AZQNfB7E1SLGHnbKXdR9ij9yqwMD2spjpxvnw4l4k5q23eS5Zz0Qz_WNm5PBgqF5NJwTeky-7-Aeq-ulUSnQ3qY-SsmQJunyt_miiwDyVOQkEWNDMRF4FJPuXDGJatWEeCsKXWe877pL4nVA';
+            AccesToken = dataObj.id_token;
+            axios_1.default.get(url + dataObj.id_token, axiosConfig)
+                .then((response) => {
+                TokenData = response;
+                Services = response.data.data[0].services;
+                var pprojts = response.data.data[0].authorizations;
+                var connectrs = response.data.data[0].conectors;
+                var resultss = response.data.data[0].results;
+                con2 = resultss;
+                Connectors(context, response);
+                context.subscriptions.push(vscode.commands.registerCommand('react-webview.start', () => {
+                    ReactPanel.createOrShow(context.extensionPath, '3270');
+                }));
+                context.subscriptions.push(vscode.commands.registerCommand('react-webview.start-3270', () => {
+                    ReactPanel.createOrShow(context.extensionPath, '3270');
+                }));
+                context.subscriptions.push(vscode.commands.registerCommand('react-webview.start-low_code', () => {
+                    ReactPanel.createOrShow(context.extensionPath, 'API');
+                }));
+                vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveConnection`, (e) => {
+                    var arr = [];
+                    //var arr;
+                    con1.apis[0].connections.forEach((connn) => {
+                        if (connn.name + ` (${connn.description})` == e.label) {
+                            arr = con1.apis[0].connections.filter(function (item) {
+                                return item !== connn;
+                            });
+                        }
+                    });
+                    con1.apis[0].connections = arr;
+                    UPDATE_APIS = true;
+                    Connectors(context, response);
+                });
+                vscode.commands.registerCommand(`101obex-api-extension-framework.RemoveService`, (e) => {
+                    var arr;
+                    var ind = 0;
+                    var cont = 0;
+                    con1.apis[0].connections.forEach((pooo) => {
+                        if (pooo.id == e.tooltip.toString().split('|')[1])
+                            ind = cont;
+                        cont++;
+                    });
+                    con1.apis[0].connections[ind].services.forEach((connn) => {
+                        if (`${connn.name} [${connn.connection}]` == e.label) {
+                            arr = con1.apis[0].connections[ind].services.filter(function (item) {
+                                return item !== connn;
+                            });
+                        }
+                    });
+                    con1.apis[0].connections[ind].services = arr;
+                    UPDATE_APIS = true;
+                    Connectors(context, response);
+                });
+                ///
+                vscode.commands.registerCommand(`101obex-api-extension-framework.EditConnection`, async (e) => {
+                    var arr;
+                    var valor = e.tooltip.split('|');
+                    var valore = '';
+                    if (valor[2] == 'apis') {
+                        if (valor[3] == 'ip')
+                            valore = con1.apis[0].connections[parseInt(valor[1])].ip;
+                        if (valor[3] == 'user')
+                            valore = con1.apis[0].connections[parseInt(valor[1])].username;
+                        if (valor[3] == 'password')
+                            valore = con1.apis[0].connections[parseInt(valor[1])].password;
+                    }
+                    let toHost = await vscode.window.showInputBox({
+                        placeHolder: valore,
+                        validateInput: text => {
+                            //vscode.window.showInformationMessage(`Validating: ${text}`);  // you don't need this
+                            return text === text ? null : 'Not 123!'; // return null if validates
+                        }
+                    });
+                    if (valor[2] == 'apis') {
+                        if (valor[3] == 'ip')
+                            con1.apis[0].connections[parseInt(valor[1])].ip = toHost || '';
+                        if (valor[3] == 'user')
+                            con1.apis[0].connections[parseInt(valor[1])].username = toHost || '';
+                        if (valor[3] == 'password')
+                            con1.apis[0].connections[parseInt(valor[1])].password = toHost || '';
+                    }
+                    UPDATE_APIS = true;
+                    Connectors(context, response);
+                });
+                ///
+            })
+                .catch((error) => {
+                if ('success' in error.response.data) {
+                    vscode.window.showErrorMessage('Your Token is not a valid Token.');
+                }
+                else {
+                    vscode.window.showErrorMessage('101OBeX Server is not responding.');
+                }
+                nullRegistration(context, '101obex-api-extension-framework.refreshEntry-connectors');
+            });
+        });
+        vscode.window.showInformationMessage('101OBeX Legacy Connector Extension activated');
+    }
+    else {
+        vscode.window.showErrorMessage("You must have 101OBeX API Extension Base installed");
+    }
 }
 exports.activate = activate;
 function deactivate() { }
@@ -7811,14 +7823,14 @@ class TreeDataProviderConnector {
             if (element.model === 'API') {
                 subresponses8.push(new TreeItem(`+`, undefined, 'add connection', element.model));
             }
-            responses8.push(new TreeItem(element.model, subresponses8, '', 'LOW_CODE'));
+            //		responses8.push(new TreeItem(element.model, subresponses8,'','LOW_CODE'));
         });
         /////
         category.push(new TreeItem('DATABASES', responses, '', 'CONNECTOR'));
         category.push(new TreeItem('FINANCIALS', financials, '', 'CONNECTOR'));
         category.push(new TreeItem('API', responses6, '', 'CONNECTOR'));
         category.push(new TreeItem('ERP', responses7, '', 'CONNECTOR'));
-        category.push(new TreeItem('LOW CODE', responses8, '', 'CONNECTOR'));
+        //	category.push(new TreeItem('LOW CODE', responses8,'','CONNECTOR'))
         this.data = category;
     }
     refresh() {
@@ -8070,48 +8082,12 @@ function Connectors(context, response) {
                 var document_file = `${e.description}.md`;
                 var label = e.label?.toString();
                 var labels = label.split("(");
-                markdownPreview(document_file);
+                // markdownPreview(document_file);
                 //markdownPreviewOnline(contexto,document_file,formatted);
                 //vscode.commands.executeCommand(`catCoding.start${document_file}${formatted}`);
             }
         });
     });
-    async function markdownPreview(url) {
-        await axios_1.default.get(`http://101obex.static.mooo.com/static/docs/${url}`, axiosConfig)
-            .then((response) => {
-            fs.writeFile(userHomeDir + '/.101obex/apidoc.md', response.data, (err) => {
-                if (err)
-                    console.log(err);
-                else {
-                }
-            });
-            vscode.commands.executeCommand("markdown.showPreview", vscode.Uri.file(userHomeDir + '/.101obex/apidoc.md'));
-        });
-    }
-    function markdownPreviewOnline(context, url, timemark) {
-        context.subscriptions.push(vscode.commands.registerCommand(`catCoding.start${url}${timemark}`, () => {
-            const panel = vscode.window.createWebviewPanel('catCoding', '101OBeX API Documentation', vscode.ViewColumn.One, {
-                enableScripts: true
-            });
-            panel.webview.html = getWebviewContent(url);
-        }));
-    }
-    function getWebviewContent(url) {
-        return `
-		<!DOCTYPE html>
-			<!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
-			<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js">
-			</script>
-
-			<!-- Load the element definition -->
-			<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js">
-			</script>
-
-			<!-- Simply set the src attribute to your MD file and win -->
-			<zero-md src="http://101obex.static.mooo.com/static/docs/${url}.md">
-			</zero-md>
-		`;
-    }
     context.subscriptions.push(vscode.commands.registerCommand('101obex-api-extension-framework.refreshEntry-connectors', () => apisTreeProvider.refresh()));
 }
 function nullRegistration(context, target) {
@@ -8119,48 +8095,6 @@ function nullRegistration(context, target) {
         vscode.window.showErrorMessage('You has no 101OBeX Developer Account Active');
     }));
 }
-function setActiveProject(token) {
-    var cod_pais;
-    var id_project;
-    TokenData.data.data[0].authorizations.forEach((entry) => {
-        if (entry.token == token) {
-            cod_pais = entry.country_code;
-            id_project = entry.obex_projetc_id;
-        }
-    });
-    var selectedProject = { 'selected_project': `${token}`, "country_code": `${cod_pais}`, 'project_id': `${id_project}` };
-    SelectedDevToken = token;
-    if (token != '')
-        DevToken = SelectedDevToken;
-    fs.writeFile(userHomeDir + '/.101obex/selectedproject.json', JSON.stringify(selectedProject), (err) => {
-        if (err)
-            console.log(err);
-        else {
-        }
-    });
-}
-function setActiveOrganization(organization) {
-    if (organization == '')
-        return;
-    var cod_org;
-    TokenData.data.data[0].organizations.forEach((entry) => {
-        if (entry.name == organization)
-            cod_org = entry.id;
-    });
-    var selectedOrganization = { 'selected_organization': `${cod_org}` };
-    SelectedOrganization = cod_org || '0';
-    if (organization != '')
-        DevOrganization = organization;
-    fs.writeFile(userHomeDir + '/.101obex/selectedorganization.json', JSON.stringify(selectedOrganization), (err) => {
-        if (err)
-            console.log(err);
-        else {
-        }
-    });
-}
-/**
-* Manages react webview panels
-*/
 class ReactPanel {
     static createOrShow(extensionPath, model) {
         const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;

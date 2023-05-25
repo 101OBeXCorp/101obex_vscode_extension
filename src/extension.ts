@@ -4,6 +4,15 @@ import axios, { AxiosResponse } from 'axios';
 import os = require("os");
 import path = require('path');
 
+let ACCESS = false;
+
+let extensions = vscode.extensions.all;
+extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
+extensions.forEach(ex =>{
+  if (ex.id == "101obex.101obex-api-extension") ACCESS = true;
+})
+
+
 var UPDATE_APIS = false;
 var UPDATE_ERP = false;
 var UPDATE_DATABASES = false;
@@ -153,24 +162,15 @@ const axiosConfig = {
 var TokenData: AxiosResponse<any, any>;
 export function activate(context: vscode.ExtensionContext) {
 
-	vscode.commands.registerCommand(`101obex-api-extension-framework.viewOnlineDocumentation`, (e) => {
-		
-			vscode.env.openExternal(
-				vscode.Uri.parse(
-					`https://developer.101obex.com/apis/${e.tooltip}/${e.description}`
-					));
-			
-	});
 
-
-
+	if (ACCESS) {
 
 	fs.readFile(contextFile, 'utf8', (err, data) => {
 		CONTEXT = data.toString();
 	});
 
 	fs.readFile(configFile, 'utf8', (err, data) => {
-		if (err) { 
+		if (err && TEST == 0) { 
 			vscode.window.showErrorMessage(
 				'101OBeX Developer Token was not found. '+
 				'Please use 101obexcli to get your 101OBeX Developer Token'
@@ -179,7 +179,7 @@ export function activate(context: vscode.ExtensionContext) {
 			throw err; 
 		} 
 
-		var dataObj = JSON.parse( data.replace(/\'/g,"\"") );
+		if (TEST == 0) var dataObj = JSON.parse( data.replace(/\'/g,"\"") ); else var dataObj: any = {}
 
 		if (TEST==1) dataObj.id_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1MmRlMjdmNTE1NzM3NTM5NjAwZDg5YjllZTJlNGVkNTM1ZmI1MTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgwNzE4ODU4MTA0MzU5OTg4ODIiLCJoZCI6IndheW5ub3ZhdGUuY29tIiwiZW1haWwiOiJyYWZhLnJ1aXpAd2F5bm5vdmF0ZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Il9GTk5wSlRvNEd5X2NaYS10d0hUVVEiLCJuYW1lIjoiUmFmYWVsIFJ1aXoiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUVkRlRwNG4xaF9RbUoxelhUd3NUdDNBRTdkVVVRUGhkTlFaN0hRek5zQVdrZz1zOTYtYyIsImdpdmVuX25hbWUiOiJSYWZhZWwiLCJmYW1pbHlfbmFtZSI6IlJ1aXoiLCJsb2NhbGUiOiJlcyIsImlhdCI6MTY3MDk1Mjc2NCwiZXhwIjoxNjcwOTU2MzY0fQ.uFMoDEhjZW-FKxnBg9BVxp_sSrjcrvw5_sxMOQZrREvJjv11W2GxLuQfMjMTtTPXhDCa8GeQOlzCllWxQRlOr3irEdu19y4qJQT1ut0RSi7pEIb6E6KcsdiAZtRSlA-6feIuj2u9gC2HXnGvBHtlO3FhWw4Et1zl_menGTCLOMqeq6v2QiMOfFlFzzE2t1TSo5_Be9AZQNfB7E1SLGHnbKXdR9ij9yqwMD2spjpxvnw4l4k5q23eS5Zz0Qz_WNm5PBgqF5NJwTeky-7-Aeq-ulUSnQ3qY-SsmQJunyt_miiwDyVOQkEWNDMRF4FJPuXDGJatWEeCsKXWe877pL4nVA';
 		
@@ -301,7 +301,10 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	
 	);
-	vscode.window.showInformationMessage('101OBeX API Extension activated');
+	vscode.window.showInformationMessage('101OBeX Legacy Connector Extension activated');
+	} else {
+		vscode.window.showErrorMessage("You must have 101OBeX API Extension Base installed");
+	}
 }
 
 export function deactivate() {}
@@ -546,7 +549,7 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 												}
 
 
-										responses8.push(new TreeItem(element.model, subresponses8,'','LOW_CODE'));
+								//		responses8.push(new TreeItem(element.model, subresponses8,'','LOW_CODE'));
 										
 										
 									});
@@ -561,7 +564,7 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 				category.push(new TreeItem('FINANCIALS', financials,'','CONNECTOR'))
 				category.push(new TreeItem('API', responses6,'','CONNECTOR'))
 				category.push(new TreeItem('ERP', responses7,'','CONNECTOR'))
-				category.push(new TreeItem('LOW CODE', responses8,'','CONNECTOR'))
+			//	category.push(new TreeItem('LOW CODE', responses8,'','CONNECTOR'))
 				
 
 
@@ -922,7 +925,7 @@ class TreeItem extends vscode.TreeItem {
 				var document_file = `${e.description}.md`
 				var label = e.label?.toString();
 				var labels = label.split("(");					
-				markdownPreview(document_file);
+				// markdownPreview(document_file);
 
 				//markdownPreviewOnline(contexto,document_file,formatted);
 				//vscode.commands.executeCommand(`catCoding.start${document_file}${formatted}`);
@@ -930,63 +933,7 @@ class TreeItem extends vscode.TreeItem {
 		}
 		);
 	});
-
-	async function markdownPreview(url:string) {
-		
-		await axios.get(`http://101obex.static.mooo.com/static/docs/${url}`, axiosConfig)
-		.then((response) => {
-
-			fs.writeFile(userHomeDir+'/.101obex/apidoc.md', response.data, (err) => {
-				if (err)
-					console.log(err);
-					else {
-
-					}
-				});
-			vscode.commands.executeCommand(
-				"markdown.showPreview",
-				vscode.Uri.file(userHomeDir+'/.101obex/apidoc.md')
-				);
-		});
-	}
 	
-
-	function  markdownPreviewOnline(context: vscode.ExtensionContext, url: string, timemark: string) {
-		
-		context.subscriptions.push(
-		  vscode.commands.registerCommand(`catCoding.start${url}${timemark}`, () => {
-
-			const panel = vscode.window.createWebviewPanel(
-			  'catCoding',
-			  '101OBeX API Documentation',
-			  vscode.ViewColumn.One,
-			  {
-				enableScripts: true
-			  }
-			);
-			panel.webview.html = getWebviewContent(url);
-		  })
-		);		
-	  }
-	  
-	  function getWebviewContent(url: string) {
-
-		return `
-		<!DOCTYPE html>
-			<!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
-			<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js">
-			</script>
-
-			<!-- Load the element definition -->
-			<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js">
-			</script>
-
-			<!-- Simply set the src attribute to your MD file and win -->
-			<zero-md src="http://101obex.static.mooo.com/static/docs/${url}.md">
-			</zero-md>
-		`;
-	  }
-
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('101obex-api-extension-framework.refreshEntry-connectors', () =>
@@ -1008,52 +955,6 @@ class TreeItem extends vscode.TreeItem {
   }
   
 
-  function setActiveProject(token: string){
-	var cod_pais;
-	var id_project;
-	TokenData.data.data[0].authorizations.forEach((entry: any)=>{
-		if (entry.token == token) {
-			cod_pais = entry.country_code;
-			id_project = entry.obex_projetc_id;
-		}
-	})
-
-	var selectedProject = {'selected_project': `${token}`, "country_code": `${cod_pais}`, 'project_id': `${id_project}`};
-	SelectedDevToken = token;
-	if (token!='') DevToken = SelectedDevToken;
-	fs.writeFile(userHomeDir+'/.101obex/selectedproject.json', JSON.stringify(selectedProject), (err) => {
-	if (err)
-		console.log(err);
-		else {
-		}
-	});
-
-	
-  }
-
-  function setActiveOrganization(organization: string){
-
-	if (organization=='') return;
-	var cod_org;
-	TokenData.data.data[0].organizations.forEach((entry: any)=>{
-		if (entry.name == organization) cod_org = entry.id;
-	})
-	var selectedOrganization = {'selected_organization': `${cod_org}`};
-	SelectedOrganization = cod_org || '0';
-	if (organization!='') DevOrganization = organization;
-	fs.writeFile(userHomeDir+'/.101obex/selectedorganization.json', JSON.stringify(selectedOrganization), (err) => {
-	if (err)
-		console.log(err);
-		else {
-		}
-	});
-
-	
-  }
-
-  /**
- * Manages react webview panels
- */
 class ReactPanel {
 	
 	/**

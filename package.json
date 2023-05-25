@@ -1,9 +1,9 @@
 {
   "name": "101obex-api-extension-framework",
-  "displayName": "101OBeX API Extension",
-  "description": "101OBeX API support extension",
-  "version": "0.0.11",
-  "publisher": "101OBex",
+  "displayName": "101OBeX API Extension Legacy Connectors",
+  "description": "101OBeX API support extension Legacy Connectors",
+  "version": "0.0.1",
+  "publisher": "101obex",
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -19,14 +19,14 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "101obex-api-extension-framework",
+          "id": "101obex-api-extension",
           "title": "101OBeX API support extension",
           "icon": "images/101icon.png"
         }
       ]
     },
     "views": {
-      "101obex-api-extension-framework": [
+      "101obex-api-extension": [
         {
           "id": "package-connectors",
           "name": "CONNECTORS",
@@ -45,10 +45,6 @@
         "command": "101obex-api-extension-framework.refreshEntry-connectors",
         "title": "Refresh",
         "icon": "$(refresh)"
-      },
-      {
-        "command": "101obex-api-extension-framework.viewOnlineDocumentation",
-        "title": "View online Documentation"
       },
       {
         "command": "101obex-api-extension-framework.RemoveConnection",
@@ -73,10 +69,7 @@
         }
       ],
       "view/item/context": [
-        {
-          "command": "101obex-api-extension-framework.viewOnlineDocumentation",
-          "when": "view == package-connectors && viewItem == DOCU"
-        },
+
         {
           "command": "101obex-api-extension-framework.RemoveConnection",
           "when": "view == package-connectors && viewItem == CONECT"
