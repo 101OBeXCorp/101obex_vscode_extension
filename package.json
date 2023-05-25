@@ -2,8 +2,8 @@
   "name": "101obex-api-doc-extension",
   "displayName": "101OBeX API Documentation Extension",
   "description": "101OBeX API Documentation Support Extension",
-  "version": "0.0.12",
-  "publisher": "101OBeX Corp",
+  "version": "0.0.1",
+  "publisher": "101obex",
   "engines": {
     "vscode": "^1.73.0"
   },
