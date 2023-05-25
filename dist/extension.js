@@ -7451,6 +7451,7 @@ const axios_1 = __webpack_require__(3);
 const os = __webpack_require__(38);
 const path = __webpack_require__(9);
 let ACCESS = false;
+var SelectedProject = 384;
 let extensions = vscode.extensions.all;
 extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
 extensions.forEach(ex => {
@@ -7459,7 +7460,6 @@ extensions.forEach(ex => {
 });
 var UPDATE_APIS = false;
 var Services;
-//var con2: { any :{  'databases': {model: any, connection: []}, 'apis': {model: any, connection: []}, 'erp': {model: any, connection: []} }}
 var con2;
 var AccesToken;
 var idService;
@@ -7568,6 +7568,7 @@ var DevOrganization = '';
 var SelectedDevToken = '';
 var DevToken = '';
 var CONTEXT = "";
+var ExtContext;
 var consultando = false;
 const url = "https://hesperidium.101obex.mooo.com:3001/info_extension?developer_token=";
 const userHomeDir = os.homedir();
@@ -7584,6 +7585,7 @@ const axiosConfig = {
 };
 var TokenData;
 function activate(context) {
+    ExtContext = context;
     if (ACCESS) {
         fs.readFile(contextFile, 'utf8', (err, data) => {
             CONTEXT = data.toString();
@@ -7592,7 +7594,7 @@ function activate(context) {
             if (err && TEST == 0) {
                 vscode.window.showErrorMessage('101OBeX Developer Token was not found. ' +
                     'Please use 101obexcli to get your 101OBeX Developer Token');
-                nullRegistration(context, '101obex-api-extension-api-creation.refreshEntry-connectors');
+                nullRegistration(context, '101obex-api-extension-api-creation.refreshEntry-api-creator');
                 throw err;
             }
             if (TEST == 0)
@@ -7614,8 +7616,6 @@ function activate(context) {
                 }));
                 vscode.commands.registerCommand(`101obex-api-extension-api-creation.RemoveAPI`, (e) => {
                     var arr;
-                    var ind = 0;
-                    var cont = 0;
                     con1.low_code[0].apis.forEach((pooo) => {
                         if (pooo.name == e.tooltip.toString().split('|')[1]) {
                             arr = con1.low_code[0].apis.filter(function (item) {
@@ -7635,7 +7635,7 @@ function activate(context) {
                 else {
                     vscode.window.showErrorMessage('101OBeX Server is not responding.');
                 }
-                nullRegistration(context, '101obex-api-extension-api-creation.refreshEntry-connectors');
+                nullRegistration(context, '101obex-api-extension-api-creation.refreshEntry-api-creator');
             });
         });
         vscode.window.showInformationMessage('101OBeX API Creation Extension activated');
@@ -7647,9 +7647,8 @@ function activate(context) {
 exports.activate = activate;
 function deactivate() { }
 exports.deactivate = deactivate;
-class TreeDataProviderConnector {
+class TreeDataProviderAPICreator {
     constructor(response) {
-        ///////////////////////////////
         this._onDidChangeTreeData = new vscode.EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         var res_data_array = con1;
@@ -7657,7 +7656,6 @@ class TreeDataProviderConnector {
                 res_data_array
             ] };
         var res = { data: res_data };
-        /////////////////////////////
         var category = [];
         res.data.data[0].low_code.forEach((element) => {
             var subresponses8 = [];
@@ -7673,6 +7671,7 @@ class TreeDataProviderConnector {
     }
     refresh() {
         this._onDidChangeTreeData.fire();
+        Connectors(ExtContext, TokenData);
     }
     getTreeItem(element) {
         return element;
@@ -7727,10 +7726,12 @@ class TreeItem extends vscode.TreeItem {
     }
 }
 function Connectors(context, response) {
-    con1 = con2[384];
+    let porSel = getCurrentProject();
+    SelectedProject = porSel.obex_project_id;
+    con1 = con2[SelectedProject];
     if (UPDATE_APIS) {
         axios_1.default.post("https://hesperidium.101obex.mooo.com:3001/info_extension", {
-            obex_project_id: 384,
+            obex_project_id: SelectedProject,
             value_json: JSON.stringify(con1),
             developer_token: AccesToken
         })
@@ -7741,30 +7742,15 @@ function Connectors(context, response) {
         });
         UPDATE_APIS = false;
     }
-    var apisTreeProvider = new TreeDataProviderConnector(response);
+    var apisTreeProvider = new TreeDataProviderAPICreator(response);
     var tree = vscode.window.createTreeView('package-creation', {
         treeDataProvider: apisTreeProvider,
     });
     tree.onDidChangeSelection((selection) => {
         selection.selection.map(async (e) => {
-            /*
-            if (e.tooltip?.toString().split('|')[0] == 'edit_config'){
-                
-                if(e.label?.toString().split(':')[0] == 'id')
-                {
-                    var id_conexion = e.label?.toString().split(':')[1].replace(' ','');
-                    console.log(id_conexion);
-                    vscode.window.showInformationMessage(
-                        `ID ${id_conexion} stored in clipboard.`
-                    );
-                    vscode.env.clipboard.writeText(id_conexion);
-
-                }
-            }
-            */
             if (e.description?.toString() == 'config') {
                 if (e.tooltip?.toString().split("|")[0] == 'API') {
-                    idService = `384|${e.label?.toString()}`;
+                    idService = `${SelectedProject}|${e.label?.toString()}`;
                     vscode.commands.executeCommand('react-webview.start-low_code');
                 }
             }
@@ -7785,7 +7771,7 @@ function Connectors(context, response) {
             }
         });
     });
-    context.subscriptions.push(vscode.commands.registerCommand('101obex-api-extension-api-creation.refreshEntry-connectors', () => apisTreeProvider.refresh()));
+    context.subscriptions.push(vscode.commands.registerCommand('101obex-api-extension-api-creation.refreshEntry-api-creator', () => apisTreeProvider.refresh()));
 }
 function nullRegistration(context, target) {
     context.subscriptions.push(vscode.commands.registerCommand(target, () => {
@@ -7842,14 +7828,8 @@ class ReactPanel {
         const light_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-light.css'), 'utf8');
         const dark_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-dark.css'), 'utf8');
         const editor = fs.readFileSync(path.resolve(__dirname, './assets/css/editor.css'), 'utf8');
-        let id_service = "";
-        if (interfase == 'API') {
-            id_service = idService.split('|')[1];
-        }
-        else {
-            id_service = idService;
-        }
-        const id_project = 384;
+        const id_service = idService.split('|')[1];
+        const id_project = SelectedProject;
         const api_low_code = `
 								<!DOCTYPE html>
 									<html>
@@ -7875,12 +7855,15 @@ class ReactPanel {
 										</body>
 									</html>
 								`;
-        if (interfase === 'API')
-            return api_low_code;
-        return '';
+        return api_low_code;
     }
 }
 ReactPanel.viewType = 'react';
+function getCurrentProject() {
+    var rawdata = fs.readFileSync(os.homedir + '/.101obex/selectedproject.json');
+    var objectdata = JSON.parse(rawdata.toString());
+    return objectdata;
+}
 
 })();
 

@@ -42,7 +42,7 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "101obex-api-extension-api-creation.refreshEntry-connectors",
+        "command": "101obex-api-extension-api-creation.refreshEntry-api-creator",
         "title": "Refresh",
         "icon": "$(refresh)"
       },
@@ -54,7 +54,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "101obex-api-extension-api-creation.refreshEntry-connectors",
+          "command": "101obex-api-extension-api-creation.refreshEntry-api-creator",
           "when": "view == package-creation",
           "group": "navigation"
         }
