@@ -335,6 +335,9 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 					if (this._view){
 					}
 					try{
+						let selDevTok = getCurrentProject();
+						SelectedDevToken = selDevTok.selected_project.toString();
+
 					if (SelectedDevToken== '') SelectedDevToken = '742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a';
 					if (SelectedDevToken== undefined) SelectedDevToken = '742a4a412ddfaf3f8eaff835f8cb43f6d952406876d9a6dd73ed0911ea5e893a';
 					}
