@@ -75,6 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 				apis(context, response, context);
 
+				registerPythonCompletion(context, response);
 
 				})
 			.catch((error) => {
@@ -313,5 +314,93 @@ class TreeItem extends vscode.TreeItem {
 			})
 		);
   }
-  
 
+  function getCurrentProject(){
+
+	var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedproject.json');
+	var objectdata = JSON.parse(rawdata.toString());
+	return objectdata
+}
+  
+function registerPythonCompletion(context: any, response: any){
+	const providerPython = vscode.languages.registerCompletionItemProvider('python', {
+
+		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+
+
+			const commandCompletion = new vscode.CompletionItem('request.get');
+			commandCompletion.kind = vscode.CompletionItemKind.Keyword;
+			commandCompletion.insertText = 'requests.get( ';
+			commandCompletion.command = { command: 'editor.action.triggerSuggest', title: 'Re-trigger completions...' };
+			
+
+			const commandCompletion2 = new vscode.CompletionItem('request.post');
+			commandCompletion2.kind = vscode.CompletionItemKind.Keyword;
+			commandCompletion2.insertText = 'requests.post( ';
+			commandCompletion2.command = { command: 'editor.action.triggerSuggest', title: 'Re-trigger completions...' };
+
+
+
+			var resultado = [
+				commandCompletion2,
+				commandCompletion
+			];
+
+			response.data.data[0].services.forEach((subelement: any) => {
+				//var headers = response.data.data[0].authorizations[0].token;
+				const linePrefix = document.lineAt(position).text.substr(0, position.character);
+				
+				if (subelement.parameters != undefined){
+					var dataObject = getCurrentProject();
+					var snippetCompletionArray = new vscode.CompletionItem(`${subelement.description}`);
+					var arr = subelement.parameters.replace("[","").replace("]","").replace(/\'/g,"");
+					var objArray = arr.split(",");
+					var parametrosCadena = "/";
+					var posicion = 1;
+					if (linePrefix.toString().includes(".get")){
+					objArray.forEach((parametro: any) => {
+						if (posicion==1) {parametrosCadena= parametrosCadena+'?';} else {parametrosCadena = parametrosCadena+'&';}
+						
+						if (parametro=='codigo_pais')
+						{
+							parametrosCadena = parametrosCadena+`${parametro}=${dataObject.country_code}`+'${'+posicion+'}';
+						} else 
+						{
+							parametrosCadena = parametrosCadena+`${parametro}=`+'${'+posicion+'}';
+						}
+						posicion++;
+					})
+					snippetCompletionArray.insertText = new vscode.SnippetString(`\n\t\turl = \"http://api.101obex.com:8000${subelement.description}`+parametrosCadena+'\",\n\t\t'+`headers = {\n\t\t\t\"101ObexToken\": \"${dataObject.selected_project}\"\n\t\t}\n)`);
+				} else {
+
+					parametrosCadena = "";
+					objArray.forEach((parametro: any) => {
+						if (parametro=='codigo_pais')
+						{
+							parametrosCadena = parametrosCadena+`\"${parametro}\" : \"${dataObject.country_code}`+'${'+posicion+'}\",'+'\n\t\t\t';
+						}
+						else{
+							parametrosCadena = parametrosCadena+`\"${parametro}\" : \"`+'${'+posicion+'}\",'+'\n\t\t\t';
+						}
+						posicion++;
+					})
+
+
+					snippetCompletionArray.insertText = new vscode.SnippetString(`\n\t\turl = \"http://api.101obex.com:8000${subelement.description}\",`+
+																				`\n\t\tdata = {\n\t\t\t${parametrosCadena}}`+
+																					',\n\t\t'+`headers = {\n\t\t\t\"101ObexToken\": \"${dataObject.selected_project}\"\n\t\t}\n)`);
+
+				}
+					resultado.push(snippetCompletionArray);
+				} 
+				else 
+				{
+					resultado.push(new vscode.CompletionItem(subelement.description));
+				}
+			});
+			return resultado;
+		}
+	});
+
+	context.subscriptions.push(providerPython);
+}
