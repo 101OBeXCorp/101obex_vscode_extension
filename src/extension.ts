@@ -4,7 +4,10 @@ import axios, { AxiosResponse } from 'axios';
 import os = require("os");
 import path = require('path');
 
+var ExtContext: vscode.ExtensionContext;
+
 let ACCESS = false;
+var SelectedProject = 384;
 
 let extensions = vscode.extensions.all;
 extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
@@ -162,6 +165,7 @@ const axiosConfig = {
 var TokenData: AxiosResponse<any, any>;
 export function activate(context: vscode.ExtensionContext) {
 
+	ExtContext = context;
 
 	if (ACCESS) {
 
@@ -579,6 +583,7 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
   
 	refresh(): void {
 	  this._onDidChangeTreeData.fire();
+	  Connectors(ExtContext, TokenData);
 	}
 
 	getTreeItem(element: TreeItem): vscode.TreeItem|Thenable<vscode.TreeItem> {
@@ -694,12 +699,17 @@ class TreeItem extends vscode.TreeItem {
 		response: AxiosResponse<any, any>)
 		{
 
-	con1 = con2[384];
+	// con1 = con2[384];
+	let porSel = getCurrentProject();
+	SelectedProject = porSel.obex_project_id;
+	con1 = con2[SelectedProject];
 
 	if (UPDATE_APIS){
 
+
+
 		axios.post("https://hesperidium.101obex.mooo.com:3001/info_extension", {
-			obex_project_id: 384,
+			obex_project_id: SelectedProject,
 			value_json: JSON.stringify(con1),
 			developer_token: AccesToken
 		  })
@@ -743,11 +753,11 @@ class TreeItem extends vscode.TreeItem {
 
 			if (e.description?.toString() == 'config'){
 				if (e.tooltip?.toString().split("|")[0] == 'IBM3270') {
-					idService = `384|${e.label?.toString().split("[")[1].replace("]","")}|${e.tooltip.toString().split("|")[1]}`;
+					idService = `${SelectedProject}|${e.label?.toString().split("[")[1].replace("]","")}|${e.tooltip.toString().split("|")[1]}`;
 					vscode.commands.executeCommand('react-webview.start-3270');
 				}
 				if (e.tooltip?.toString().split("|")[0] == 'API') {
-					idService = `384|${e.label?.toString()}`;
+					idService = `${SelectedProject}|${e.label?.toString()}`;
 					vscode.commands.executeCommand('react-webview.start-low_code');
 				} 
 
@@ -1049,7 +1059,7 @@ class ReactPanel {
 		} else {
 			id_service = idService
 		}
-		const id_project = 384;
+		const id_project = SelectedProject;
 		const ibm3270_connector = `
 								<!DOCTYPE html>
 									<html>
@@ -1107,3 +1117,9 @@ class ReactPanel {
 	}
 }
 
+function getCurrentProject(){
+
+	var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedproject.json');
+	var objectdata = JSON.parse(rawdata.toString());
+	return objectdata
+}
