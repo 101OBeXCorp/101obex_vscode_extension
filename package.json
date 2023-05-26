@@ -10,26 +10,22 @@
   "categories": [
     "Other"
   ],
+  "extensionPack": [
+    "101obex.101obex-api-extension"
+],
+"extensionDependencies":["101obex.101obex-api-extension"],
   "icon": "images/101icon.png",
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "101obex-api-extension",
-          "title": "101OBeX API support extension",
-          "icon": "images/101icon.png"
-        }
-      ]
-    },
+
     "views": {
       "101obex-api-extension": [
         {
           "type": "webview",
-          "id": "101obex-api-extension-ia.chatView",
+          "id": "101obex-api-extension.chatView",
           "name": "Marieta"
         }
       ]
@@ -214,9 +210,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/101OBeXCorp/101obex_vscode_extension.git"
-  },
-  "extensionPack": [
-    "101obex.101obex-api-extension"
-],
-"extensionDependencies":["101obex.101obex-api-extension"]
+  }
 }

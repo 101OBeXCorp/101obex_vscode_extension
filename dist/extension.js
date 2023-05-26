@@ -7657,7 +7657,7 @@ class ChatGPTViewProvider {
             }
             ;
             if (!this._view) {
-                await vscode.commands.executeCommand('101obex-api-extension-ia.chatView.focus');
+                await vscode.commands.executeCommand('101obex-api-extension.chatView.focus');
             }
             else {
                 this._view?.show?.(true);
@@ -7827,7 +7827,7 @@ class ChatGPTViewProvider {
 			</html>`;
     }
 }
-ChatGPTViewProvider.viewType = '101obex-api-extension-ia.chatView';
+ChatGPTViewProvider.viewType = '101obex-api-extension.chatView';
 function nullRegistration(context, target) {
     context.subscriptions.push(vscode.commands.registerCommand(target, () => {
         vscode.window.showErrorMessage('You has no 101OBeX Developer Account Active');

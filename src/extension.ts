@@ -192,7 +192,7 @@ export function deactivate() {}
 /////
 
 class ChatGPTViewProvider implements vscode.WebviewViewProvider {
-	public static readonly viewType = '101obex-api-extension-ia.chatView';
+	public static readonly viewType = '101obex-api-extension.chatView';
 	private _view?: vscode.WebviewView;
 
 	private _chatGPTAPI?: ChatGPTAPI;
@@ -282,7 +282,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 
 		if (!this._view) {
-			await vscode.commands.executeCommand('101obex-api-extension-ia.chatView.focus');
+			await vscode.commands.executeCommand('101obex-api-extension.chatView.focus');
 		} else {
 			this._view?.show?.(true);
 		}
