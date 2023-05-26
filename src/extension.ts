@@ -17,7 +17,7 @@ extensions.forEach(ex =>{
 var TEST = 1;
 
 type AuthInfo = {apiKey?: string};
-type Settings = {selectedInsideCodeblock?: boolean, codeblockWithLanguageId?: false, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
+type Settings = {selectedInsideCodeblock?: boolean, codeblockWithLanguageId?: true, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
 
 var SelectedOrganization = '';
 var DevOrganization = '';
@@ -70,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
 				/// CHAT GPT
 
 				// Get the settings from the extension's configuration
-				const config = vscode.workspace.getConfiguration('101obex-api-extension');
+	//			const config = vscode.workspace.getConfiguration('101obex-api-extension');
 			
 				// Create a new ChatGPTViewProvider instance and register it with the extension's context
 				const provider = new ChatGPTViewProvider(context.extensionUri);
@@ -80,11 +80,11 @@ export function activate(context: vscode.ExtensionContext) {
 					apiKey: ''//config.get('apiKey')
 				});
 				provider.setSettings({
-					selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false,
-					codeblockWithLanguageId: config.get('codeblockWithLanguageId') || false,
-					pasteOnClick: config.get('pasteOnClick') || false,
-					keepConversation: config.get('keepConversation') || false,
-					timeoutLength: config.get('timeoutLength') || 60,
+					selectedInsideCodeblock: true,//config.get('selectedInsideCodeblock') || false,
+					codeblockWithLanguageId: true, //config.get('codeblockWithLanguageId') || false,
+					pasteOnClick: true,//config.get('pasteOnClick') || false,
+					keepConversation: true,//config.get('keepConversation') || false,
+					timeoutLength: 60//config.get('timeoutLength') || 60,
 				});
 			
 				// Register the provider with the extension's context
@@ -96,7 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
 			
 			
 				const commandHandler = (command:string) => {
-					const config = vscode.workspace.getConfiguration('101obex-api-extension');
+					const config = vscode.workspace.getConfiguration('101obex-api-extension-ia');
 					var prompt = config.get(command) as string;
 					if (prompt == 'Explain what this code does: ') {
 						prompt = "Explain what this code does:";
@@ -134,9 +134,10 @@ export function activate(context: vscode.ExtensionContext) {
 			
 				// Change the extension's session token or settings when configuration is changed
 				vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
+					/*
 					if (event.affectsConfiguration('101obex-api-extension-ia.apiKey')) {
 						const config = vscode.workspace.getConfiguration('101obex-api-extension');
-						provider.setAuthenticationInfo({apiKey: ''/*config.get('apiKey')*/});
+						provider.setAuthenticationInfo({apiKey: ''/*config.get('apiKey')});
 					} else if (event.affectsConfiguration('101obex-api-extension-ia.selectedInsideCodeblock')) {
 						const config = vscode.workspace.getConfiguration('101obex-api-extension');
 						provider.setSettings({ selectedInsideCodeblock: config.get('selectedInsideCodeblock') || false });
@@ -153,6 +154,7 @@ export function activate(context: vscode.ExtensionContext) {
 						const config = vscode.workspace.getConfiguration('101obex-api-extension');
 						provider.setSettings({ timeoutLength: config.get('timeoutLength') || 60 });
 					}
+					*/
 				});
 
 				/////
@@ -202,8 +204,8 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 	private _currentMessageNumber = 0;
 
 	private _settings: Settings = {
-		selectedInsideCodeblock: false,
-		codeblockWithLanguageId: false,
+		selectedInsideCodeblock: true,
+		codeblockWithLanguageId: true,
 		pasteOnClick: true,
 		keepConversation: true,
 		timeoutLength: 60
@@ -382,7 +384,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 					}  else 
 					{
-						console.log("FINALIZADO")
+						
 						client.destroy();
 						consultando = false;
 					}
