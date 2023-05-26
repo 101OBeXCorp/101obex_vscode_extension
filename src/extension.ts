@@ -6,6 +6,7 @@ import { ChatGPTAPI } from 'chatgpt';
 import path = require('path');
 
 let ACCESS = false;
+let CONTEXT_BACK: vscode.ExtensionContext;
 
 let extensions = vscode.extensions.all;
 extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
@@ -41,7 +42,7 @@ const axiosConfig = {
   };
 var TokenData: AxiosResponse<any, any>;
 export function activate(context: vscode.ExtensionContext) {
-
+	CONTEXT_BACK = context;
 	if (ACCESS) {
 
 	vscode.commands.registerCommand(`101obex-api-doc-extension.viewOnlineDocumentation`, (e) => {
@@ -139,6 +140,7 @@ class TreeDataProviderAPIs implements vscode.TreeDataProvider<TreeItem> {
   
 	refresh(): void {
 	  this._onDidChangeTreeData.fire();
+	  apis(CONTEXT_BACK, TokenData, CONTEXT_BACK);
 	}
 
 	getTreeItem(element: TreeItem): vscode.TreeItem|Thenable<vscode.TreeItem> {
@@ -289,11 +291,14 @@ class TreeItem extends vscode.TreeItem {
 		`;
 	  }
 
-
-	context.subscriptions.push(
-		vscode.commands.registerCommand('101obex-api-doc-extension.refreshEntry-apis', () =>
-			apisTreeProvider.refresh())
-			);
+	  try{
+		context.subscriptions.push(
+			vscode.commands.registerCommand('101obex-api-doc-extension.refreshEntry-apis', () =>
+				apisTreeProvider.refresh())
+				);
+		} catch {
+			
+		}
   }
 
 
