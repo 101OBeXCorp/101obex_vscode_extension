@@ -71,7 +71,6 @@ export function activate(context: vscode.ExtensionContext) {
 				organizations(context, response, true);
 				teams(context, response, true);
 				projects(context, response, false);
-				getCommands();
 
 				})
 			.catch((error) => {
@@ -413,20 +412,43 @@ class TreeItem extends vscode.TreeItem {
 	var selectedProject = {'selected_project': `${token}`, "country_code": `${cod_pais}`, "obex_project_id": `${obex_project_id}`};
 	SelectedDevToken = token;
 	if (token!='') DevToken = SelectedDevToken;
-	if (token!='') fs.writeFile(userHomeDir+'/.101obex/selectedproject.json', JSON.stringify(selectedProject), (err) => {
-	if (err)
-		console.log(err);
-		else {
-		}
-	});
-
-	
+	if (token!='') {
+		fs.writeFile(userHomeDir+'/.101obex/selectedproject.json', JSON.stringify(selectedProject), (err) => {
+		if (err){
+			console.log(err);
+		} else {
+			refresh101ObeXExtensions();
+			}
+		});
+	}
   }
 
-  async function getCommands(){
+  async function refresh101ObeXExtensions(){
 	let comandos = await vscode.commands.getCommands();
-	comandos.forEach((com)=>{
-		if (com.startsWith('101obex-') && com.includes('refresh')) console.log(com);})
+	if (comandos!= null){
+		try {
+		comandos.forEach((com)=>{
+			if (com.startsWith('101obex-') && com.includes('refresh')) {
+				
+				try{
+				if (com == '101obex-api-extension-legacy-connectors.refreshEntry-connectors'){
+					vscode.commands.executeCommand("101obex-api-extension-legacy-connectors.refreshEntry-connectors");
+				}
+				if (com == '101obex-api-doc-extension.refreshEntry-apis'){
+					vscode.commands.executeCommand("101obex-api-doc-extension.refreshEntry-apis");
+				}
+				if (com == '101obex-api-extension-api-creation.refreshEntry-api-creator'){
+					vscode.commands.executeCommand("101obex-api-extension-api-creation.refreshEntry-api-creator");
+				}
+			}
+			catch{
+				
+			}
+			}
+		})
+	} catch {
+	}
+	}
   }
 
   function setActiveOrganization(organization: string){
