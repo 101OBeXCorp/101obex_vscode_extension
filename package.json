@@ -11,11 +11,10 @@
     "Other"
   ],
   "extensionPack": [
-    "101obex.101obex-api-extension"
+    
   ],
-  "extensionDependencies":[
-    "101obex.101obex-api-extension"
-  ],
+  "extensionDependencies":["101obex.101obex-api-extension"],
+  "recommendations": ["101obex.101obex-api-extension"],
   "icon": "images/101icon.png",
   "activationEvents": [
     "onStartupFinished"
