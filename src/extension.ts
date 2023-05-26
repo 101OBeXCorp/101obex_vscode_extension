@@ -527,7 +527,7 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 									////
 									var responses8: TreeItem[] = [];
 									res.data.data[0].low_code.forEach((element: any) => {
-										console.log(element)
+										///console.log(element)
 										var subresponses8: TreeItem[] = [];
 										element.apis.forEach((subelement: any) => {
 											
@@ -944,11 +944,12 @@ class TreeItem extends vscode.TreeItem {
 		);
 	});
 	
-
+	try{
 	context.subscriptions.push(
 		vscode.commands.registerCommand('101obex-api-extension-legacy-connectors.refreshEntry-connectors', () =>
 			apisTreeProvider.refresh())
 			);
+	} catch {}
   }
 
 
