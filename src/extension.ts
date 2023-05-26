@@ -433,11 +433,13 @@ class TreeItem extends vscode.TreeItem {
 				}
 				);
 			});
-			
+
+			try{
 			context.subscriptions.push(
 				vscode.commands.registerCommand('101obex-api-extension-api-creation.refreshEntry-api-creator', () =>
 					apisTreeProvider.refresh())
 					);
+			} catch { }
   }
 
   function nullRegistration(context: { subscriptions: vscode.Disposable[]; }, target: string){
