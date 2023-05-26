@@ -71,6 +71,8 @@ export function activate(context: vscode.ExtensionContext) {
 				organizations(context, response, true);
 				teams(context, response, true);
 				projects(context, response, false);
+				getCommands();
+
 				})
 			.catch((error) => {
 				if ('success' in error.response.data) {
@@ -419,6 +421,12 @@ class TreeItem extends vscode.TreeItem {
 	});
 
 	
+  }
+
+  async function getCommands(){
+	let comandos = await vscode.commands.getCommands();
+	comandos.forEach((com)=>{
+		if (com.startsWith('101obex-') && com.includes('refresh')) console.log(com);})
   }
 
   function setActiveOrganization(organization: string){
