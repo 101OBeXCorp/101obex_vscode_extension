@@ -10,25 +10,22 @@
   "categories": [
     "Other"
   ],
+  "extensionPack": [
+    "101obex.101obex-api-extension"
+  ],
+  "extensionDependencies":[
+    "101obex.101obex-api-extension"
+  ],
   "icon": "images/101icon.png",
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "101obex-api-extension",
-          "title": "101OBeX API support extension",
-          "icon": "images/101icon.png"
-        }
-      ]
-    },
     "views": {
       "101obex-api-extension": [
         {
-          "id": "package-creation",
+          "id": "101obex-api-extension.package-creation",
           "name": "API CREATION",
           "type": "tree"
         }
@@ -55,7 +52,7 @@
       "view/title": [
         {
           "command": "101obex-api-extension-api-creation.refreshEntry-api-creator",
-          "when": "view == package-creation",
+          "when": "view == 101obex-api-extension.package-creation",
           "group": "navigation"
         }
       ],
@@ -63,7 +60,7 @@
 
         {
           "command": "101obex-api-extension-api-creation.RemoveAPI",
-          "when": "view == package-creation && viewItem == APICONF"
+          "when": "view == 101obex-api-extension.package-creation && viewItem == APICONF"
         }
       ]
     }

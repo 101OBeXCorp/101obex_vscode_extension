@@ -393,7 +393,7 @@ class TreeItem extends vscode.TreeItem {
 
 			var apisTreeProvider = new TreeDataProviderAPICreator(response);
 			
-			var tree = vscode.window.createTreeView('package-creation', {
+			var tree = vscode.window.createTreeView('101obex-api-extension.package-creation', {
 				treeDataProvider: apisTreeProvider,
 			});
 
