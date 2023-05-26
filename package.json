@@ -12,14 +12,7 @@
   ],
   "icon": "images/101icon.png",
   "activationEvents": [
-    "onStartupFinished",
-    "onView:101obex-api-extension-ia.chatView",
-    "onCommand:101obex-api-extension-ia.ask",
-    "onCommand:101obex-api-extension-ia.explain",
-    "onCommand:101obex-api-extension-ia.refactor",
-    "onCommand:101obex-api-extension-ia.optimize",
-    "onCommand:101obex-api-extension-ia.findProblems",
-    "onCommand:101obex-api-extension-ia.documentation"
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
