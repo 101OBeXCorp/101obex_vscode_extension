@@ -256,5 +256,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/101OBeXCorp/101obex_vscode_extension.git"
-  }
+  },
+  "extensionPack": [
+    "101obex.101obex-api-extension"
+]
 }
