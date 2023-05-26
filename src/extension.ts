@@ -184,10 +184,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 	} else {
 		vscode.window.showErrorMessage("You must have 101OBeX API Extension Base installed");
+		deactivate()
 	}
 }
 
-export function deactivate() {}
+export function deactivate() {
+
+	console.log("DESACTIVANDO")
+}
 
 /////
 
