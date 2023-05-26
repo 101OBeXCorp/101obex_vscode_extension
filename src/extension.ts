@@ -32,12 +32,6 @@ const axiosConfig = {
   };
 
 
-  let extensions = vscode.extensions.all;
-  extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
-  extensions.forEach(ex =>{
-	if (ex.id == "101OBeX Corp.101obex-api-extension") console.log("SI ESTA!");
-  })
-  console.log(extensions);
 var TokenData: AxiosResponse<any, any>;
 export function activate(context: vscode.ExtensionContext) {
 
@@ -406,14 +400,18 @@ class TreeItem extends vscode.TreeItem {
 
   function setActiveProject(token: string){
 	var cod_pais;
+	var obex_project_id;
 	TokenData.data.data[0].authorizations.forEach((entry: any)=>{
-		if (entry.token == token) cod_pais = entry.country_code;
+		if (entry.token == token){
+			obex_project_id = entry.obex_project_id;
+			cod_pais = entry.country_code;
+		} 
 	})
 
-	var selectedProject = {'selected_project': `${token}`, "country_code": `${cod_pais}`};
+	var selectedProject = {'selected_project': `${token}`, "country_code": `${cod_pais}`, "obex_project_id": `${obex_project_id}`};
 	SelectedDevToken = token;
 	if (token!='') DevToken = SelectedDevToken;
-	fs.writeFile(userHomeDir+'/.101obex/selectedproject.json', JSON.stringify(selectedProject), (err) => {
+	if (token!='') fs.writeFile(userHomeDir+'/.101obex/selectedproject.json', JSON.stringify(selectedProject), (err) => {
 	if (err)
 		console.log(err);
 		else {
