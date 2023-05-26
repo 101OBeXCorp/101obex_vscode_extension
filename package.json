@@ -10,21 +10,18 @@
   "categories": [
     "Other"
   ],
+  "extensionPack": [
+    "101obex.101obex-api-extension"
+  ],
+  "extensionDependencies":[
+    "101obex.101obex-api-extension"
+  ],
   "icon": "images/101icon.png",
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "101obex-api-extension",
-          "title": "101OBeX API support extension",
-          "icon": "images/101icon.png"
-        }
-      ]
-    },
     "views": {
       "101obex-api-extension": [
         
