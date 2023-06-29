@@ -4,6 +4,8 @@
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.sequentialWorkflowDesigner = {}));
 })(this, (function (exports) { 'use strict';
 
+
+
 	class ControlBarApi {
 	    constructor(state, historyController, definitionModifier, viewportApi) {
 	        this.state = state;
@@ -3055,6 +3057,7 @@
 	}
 
 	class ToolboxView {
+
 	    static create(parent, api) {
 	        const root = Dom.element('div', {
 	            class: 'sqd-toolbox'
@@ -3114,16 +3117,36 @@
 	            this.scrollBoxView.refresh();
 	        }
 	    }
+
+
 	    setGroups(groups) {
 	        const list = Dom.element('div');
 	        groups.forEach(group => {
+				const list2 = Dom.element('div');
+				list2.id = `${group.steps[1].type}`;
 	            const groupTitle = Dom.element('div', {
-	                class: 'sqd-toolbox-group-title'
+	                class: 'sqd-toolbox-group-title',
+					id: `title-${group.steps[1].type}`,
+					onclick: `{   
+						${groups[0].steps[1].type}.hidden = true;
+						${groups[1].steps[1].type}.hidden = true;
+						${groups[2].steps[1].type}.hidden = true;
+						${groups[3].steps[1].type}.hidden = true;
+						${groups[4].steps[1].type}.hidden = true;
+						${groups[5].steps[1].type}.hidden = true;
+						${groups[6].steps[1].type}.hidden = true;
+						${groups[7].steps[1].type}.hidden = true;
+						let gg = ${group.steps[1].type.toString()}
+						gg.hidden = false;
+						}`,
+					
 	            });
 	            groupTitle.innerText = group.name;
 	            list.appendChild(groupTitle);
-	            group.steps.forEach(s => ToolboxItem.create(list, s, this.api));
+	            group.steps.forEach(s => ToolboxItem.create(list2, s, this.api));
+				list.appendChild(list2);
 	        });
+			
 	        this.scrollBoxView.setContent(list);
 	    }
 	    destroy() {
@@ -3387,6 +3410,9 @@
 	        (_a = this.g.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(this.g);
 	    }
 	}
+
+
+
 	function createCircle(d, iconSize) {
 	    const r = SIZE / 2;
 	    const circle = Dom.svg('circle', {

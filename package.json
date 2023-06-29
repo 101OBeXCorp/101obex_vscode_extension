@@ -1,9 +1,9 @@
 {
   "name": "101obex-api-extension-api-creation",
-  "displayName": "101OBeX API Extension API Creator",
-  "description": "101OBeX API support extension API Creator",
-  "version": "0.0.1",
-  "publisher": "101obex",
+  "displayName": "101OBeX API Designer",
+  "description": "101OBeX API Designer",
+  "version": "0.0.3",
+  "publisher": "101OBEX, CORP",
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -11,29 +11,46 @@
     "Other"
   ],
   "extensionPack": [
-    "101obex.101obex-api-extension"
+    
   ],
-  "extensionDependencies":[
-    "101obex.101obex-api-extension"
-  ],
+  "extensionDependencies":["101obex.101obex-api-extension"],
+  "recommendations": ["101obex.101obex-api-extension"],
   "icon": "images/101icon.png",
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
+
+  "viewsContainers": {
+    "panel": [
+        {
+            "id": "101obex-api-extension.myPanel",
+            "title": "Colors",
+            "icon": "images/views/history.svg"
+        }
+    ]
+},
+
+
   "contributes": {
     "views": {
+
       "101obex-api-extension": [
         {
           "id": "101obex-api-extension.package-creation",
-          "name": "API CREATION",
+          "name": "API DESIGNER",
           "type": "tree"
-        }
+        },
+        {
+          "type": "webview",
+          "id": "101obex-api-extension.myPanel",
+          "name": "API Tester"
+      }
       ]
     },
     "commands": [
       {
-        "command": "react-webview.start",
+        "command": "react-webview-creation.start",
         "title": "Start React Webview",
         "category": "React",
         "icon": "$(refresh)"

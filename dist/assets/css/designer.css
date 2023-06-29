@@ -29,7 +29,7 @@
 	z-index: 20;
 	box-sizing: border-box;
 	border-radius: 10px;
-	width: 130px;
+	width: 200px;
 	user-select: none;
 }
 .sqd-toolbox-header {
@@ -68,7 +68,7 @@
 	box-sizing: border-box;
 	padding: 6px 8px;
 	outline: none;
-	width: 110px;
+	width: 180px;
 	margin: 0 10px 10px;
 	box-sizing: border-box;
 	border-radius: 10px;
@@ -78,13 +78,14 @@
 	padding: 5px 0;
 	margin: 0 10px 10px;
 	border-radius: 10px;
+	cursor: pointer;
 }
 .sqd-toolbox-item {
 	position: relative;
 	border-radius: 5px;
 	box-sizing: border-box;
 	margin: 0 10px 10px;
-	width: 110px;
+	width: 180px;
 	cursor: move;
 }
 .sqd-toolbox-item-icon {
