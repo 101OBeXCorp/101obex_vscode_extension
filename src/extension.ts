@@ -18,7 +18,7 @@ let ventanaNueva: vscode.WebviewView;
 let extensions = vscode.extensions.all;
 extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
 extensions.forEach(ex =>{
-  if (ex.id == "101obex.101obex-api-extension") ACCESS = true;
+  if (ex.id == "101OBEX, CORP.101obex-api-extension") ACCESS = true;
 })
 
 
@@ -215,7 +215,7 @@ function getWebviewContent(url: any, headers: any, api_parameters: any) {
     	if (response.ok) { // si el HTTP-status es 200-299
 		  // obtener cuerpo de la respuesta (método debajo)
 		  let json = await response.json();
-		  console.log(json)
+		//  console.log(json)
 		  response_label.innerText = JSON.stringify(json);
 		} else {
 		  alert("Error-HTTP: " + response.status);
@@ -266,7 +266,7 @@ function getWebviewContent(url: any, headers: any, api_parameters: any) {
 	  }
 	</script>
 	`;
-	console.log(fromularie);
+	//console.log(fromularie);
 	
     return fromularie;
 }

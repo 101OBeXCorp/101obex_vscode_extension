@@ -57,6 +57,7 @@
 .sqd-scrollbox {
 	position: relative;
 	overflow: hidden;
+	height: 60vh !important;
 }
 .sqd-scrollbox-body {
 	position: absolute;
@@ -79,6 +80,7 @@
 	margin: 0 10px 10px;
 	border-radius: 10px;
 	cursor: pointer;
+	width: 180px;
 }
 .sqd-toolbox-item {
 	position: relative;

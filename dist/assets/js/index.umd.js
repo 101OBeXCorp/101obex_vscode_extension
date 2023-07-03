@@ -3121,10 +3121,18 @@
 
 	    setGroups(groups) {
 	        const list = Dom.element('div');
+		//	list.style.height = '40pc';
+		//	list.overflow = scroll;
 	        groups.forEach(group => {
+
 				const list2 = Dom.element('div');
 				list2.id = `${group.steps[1].type}`;
+
+				const titleSec = Dom.element('div');
+
+
 	            const groupTitle = Dom.element('div', {
+					
 	                class: 'sqd-toolbox-group-title',
 					id: `title-${group.steps[1].type}`,
 					onclick: `{   
@@ -3136,16 +3144,41 @@
 						${groups[5].steps[1].type}.hidden = true;
 						${groups[6].steps[1].type}.hidden = true;
 						${groups[7].steps[1].type}.hidden = true;
+
+
+						${groups[0].steps[1].type}.height = '0px';
+						${groups[1].steps[1].type}.height = '0px';
+						${groups[2].steps[1].type}.height = '0px';
+						${groups[3].steps[1].type}.height = '0px';
+						${groups[4].steps[1].type}.height = '0px';
+						${groups[5].steps[1].type}.height = '0px';
+						${groups[6].steps[1].type}.height = '0px';
+						${groups[7].steps[1].type}.height = '0px';
+
+
 						let gg = ${group.steps[1].type.toString()}
 						gg.hidden = false;
+						gg.style.height = '';
+						${group.steps[1].type}.height = '';
+						${group.steps[1].type}.style.height = '';
+						console.log(${group.steps[1].type})
 						}`,
 					
 	            });
+
 	            groupTitle.innerText = group.name;
-	            list.appendChild(groupTitle);
+			
+	            titleSec.appendChild(groupTitle);
+
 	            group.steps.forEach(s => ToolboxItem.create(list2, s, this.api));
-				list.appendChild(list2);
+				
+				list2.style.height = 0;
+				list2.hidden = true;
+				titleSec.appendChild(list2)
+				list.appendChild(titleSec);
 	        });
+
+			//document.getElementById(group.steps[1].type).hidden = false;
 			
 	        this.scrollBoxView.setContent(list);
 	    }
