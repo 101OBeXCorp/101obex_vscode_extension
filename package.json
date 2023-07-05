@@ -21,17 +21,6 @@
   ],
   "main": "./dist/extension.js",
 
-  "viewsContainers": {
-    "panel": [
-        {
-            "id": "101obex-api-extension.myPanel",
-            "title": "Colors",
-            "icon": "images/views/history.svg"
-        }
-    ]
-},
-
-
   "contributes": {
     "views": {
 
@@ -40,12 +29,7 @@
           "id": "101obex-api-extension.package-creation",
           "name": "API DESIGNER",
           "type": "tree"
-        },
-        {
-          "type": "webview",
-          "id": "101obex-api-extension.myPanel",
-          "name": "API Tester"
-      }
+        }
       ]
     },
     "commands": [

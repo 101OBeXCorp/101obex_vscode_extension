@@ -342,11 +342,13 @@ export function activate(context: vscode.ExtensionContext) {
 //		)
 //	  );
 
-	  context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider('101obex-api-extension.myPanel', thisProvider
-		)
-	  );
-	
+
+// -------
+//	  context.subscriptions.push(
+//		vscode.window.registerWebviewViewProvider('101obex-api-extension.myPanel', thisProvider
+//		)
+//	  );
+// -------	
 		
 	  
 
@@ -390,7 +392,7 @@ export function activate(context: vscode.ExtensionContext) {
 				con2 = resultss;
 
 				Connectors(context, response, thisProvider);
-				thisProvider.sayHi('');
+//				thisProvider.sayHi('');
 				context.subscriptions.push(vscode.commands.registerCommand('react-webview-creation.start-low_code', () => {
 					ReactPanel.createOrShow(context.extensionPath, 'API');
 				}));
@@ -411,7 +413,7 @@ export function activate(context: vscode.ExtensionContext) {
 					con1.low_code[0].apis = arr;
 					UPDATE_APIS=true;
 					Connectors(context, response, thisProvider);
-					thisProvider.sayHi('');
+//					thisProvider.sayHi('');
 				});
 				
 				
@@ -640,7 +642,8 @@ class TreeItem extends vscode.TreeItem {
 					}
 
 					if (e.description?.toString() == 'test'){
-						thisProvider.sayHi(e.tooltip?.toString().split('|')[1].toString());
+						//thisProvider.
+						sayHi(e.tooltip?.toString().split('|')[1].toString());
 					}
 				}
 				);
@@ -784,4 +787,60 @@ function getCurrentProject(){
 	var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedproject.json');
 	var objectdata = JSON.parse(rawdata.toString());
 	return objectdata
+}
+
+
+async function setTestData(url: string, params: Object){
+
+	var TestData = {'url': `${url}`, 'params': `${params}`};
+	
+	
+	if (url!='') {
+		fs.writeFile(userHomeDir+'/.101obex/test.json', JSON.stringify(TestData), (err) => {
+		if (err){
+			console.log(err);
+		} else {
+			//refresh101ObeXExtensions();
+			}
+		});
+
+		let comandos = await vscode.commands.getCommands();
+		if (comandos!= null){
+			try {
+			comandos.forEach((com)=>{
+				if (/*com.startsWith('101obex-') && */ com.includes('SayHi')) {
+					
+				try{
+					if (com == '101obex-api-extension-api-tester.SayHi'){
+						vscode.commands.executeCommand("101obex-api-extension-api-tester.SayHi");
+					}
+				}
+				catch{
+					
+				}
+				}
+			})
+		} catch {
+		}
+		}
+	}
+  }
+
+
+function sayHi(url: any) {  
+	console.log(ventanaNueva);
+	let url_config = 'https://hesperidium.101obex.mooo.com:3001/info_api_parameters?developer_token='
+	let pamameters_config = `&id_service=${url}&obex_project_id=${SelectedProject}`;
+	if (url!=null && url!=''){
+	axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
+	.then((response) => {
+		let api_parameters = response.data.data || [];
+		console.log(api_parameters);
+		setTestData("https://docking.101obex.mooo.com/ws/low_code.py/"+url,api_parameters);
+		//ventanaNueva.webview.html = getWebviewContent(`${url}`,`${SelectedProjectToken}`,api_parameters);
+
+
+	}
+	);
+}
 }
