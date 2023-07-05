@@ -1,9 +1,9 @@
 {
   "name": "101obex-api-extension",
-  "displayName": "101OBeX API Extension",
-  "description": "101OBeX API support extension",
-  "version": "0.0.1",
-  "publisher": "101obex",
+  "displayName": "101OBeX API Extension for Visual Code",
+  "description": "101OBeX API Extension for Visual Code",
+  "version": "0.0.2",
+  "publisher": "101OBEX, CORP",
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -20,7 +20,7 @@
       "activitybar": [
         {
           "id": "101obex-api-extension",
-          "title": "101OBeX API support extension",
+          "title": "101OBeX API Extension for Visual Code",
           "icon": "images/101icon.png"
         }
       ]

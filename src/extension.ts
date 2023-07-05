@@ -20,6 +20,8 @@ var consultando = false;
 
 const url = "https://hesperidium.101obex.mooo.com:3001/info_extension?developer_token=";
 const userHomeDir = os.homedir();
+console.log("---------");
+console.log(userHomeDir);
 const configFile = userHomeDir+'/.101obex/config.json';
 const contextFile = userHomeDir+'/context.txt';
 const axiosConfig = {
