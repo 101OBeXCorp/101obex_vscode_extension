@@ -435,6 +435,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	
 	);
+	sayHi("", true);
 	vscode.window.showInformationMessage('101OBeX API Creation Extension activated');
 	} else {
 		vscode.window.showErrorMessage("You must have 101OBeX API Extension Base installed");
@@ -790,12 +791,13 @@ function getCurrentProject(){
 }
 
 
-async function setTestData(url: string, params: Object){
+async function setTestData(url: string, params: Object, init = false){
 
 	var TestData = {'url': `${url}`, 'params': `${params}`};
 	
+	if (init) TestData = {'url': ``, 'params': ``};
 	
-	if (url!='') {
+	if (url!='' || init) {
 		fs.writeFile(userHomeDir+'/.101obex/test.json', JSON.stringify(TestData), (err) => {
 		if (err){
 			console.log(err);
@@ -827,18 +829,18 @@ async function setTestData(url: string, params: Object){
   }
 
 
-function sayHi(url: any) {  
+function sayHi(url: any, init = false) {  
 	console.log(ventanaNueva);
 	let url_config = 'https://hesperidium.101obex.mooo.com:3001/info_api_parameters?developer_token='
 	let pamameters_config = `&id_service=${url}&obex_project_id=${SelectedProject}`;
-	if (url!=null && url!=''){
+	if ((url!=null && url!='') || init){
 	axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
 	.then((response) => {
 		let api_parameters = response.data.data || [];
 		console.log(api_parameters);
-		setTestData("https://docking.101obex.mooo.com/ws/low_code.py/"+url,api_parameters);
+		if (!init) setTestData("https://docking.101obex.mooo.com/ws/low_code.py/"+url,api_parameters); else
 		//ventanaNueva.webview.html = getWebviewContent(`${url}`,`${SelectedProjectToken}`,api_parameters);
-
+		setTestData("", [], init);
 
 	}
 	);
