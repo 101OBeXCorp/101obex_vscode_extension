@@ -834,7 +834,8 @@ function sayHi(url: any, init = false) {
 	let url_config = 'https://hesperidium.101obex.mooo.com:3001/info_api_parameters?developer_token='
 	let pamameters_config = `&id_service=${url}&obex_project_id=${SelectedProject}`;
 	if ((url!=null && url!='') || init){
-	axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
+	if (!init) {
+		axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
 	.then((response) => {
 		let api_parameters = response.data.data || [];
 		console.log(api_parameters);
@@ -844,5 +845,8 @@ function sayHi(url: any, init = false) {
 
 	}
 	);
+} else {
+	setTestData("", [], init);
+}
 }
 }
