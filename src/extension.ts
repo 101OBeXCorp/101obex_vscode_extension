@@ -1147,9 +1147,9 @@ function getCurrentProject(){
 
 async function setTestData(url: string, params: Object, init =false){
 
-	var TestData = {'url': `${url}`, 'params': `${params}`};
+	var TestData = {'url': `${url}`, 'params': `${params}`, 'values':''};
 	
-	if (init) TestData = {'url': ``, 'params': ``};
+	if (init) TestData = {'url': ``, 'params': ``, 'values':''};
 	
 	if (url!='' || init) {
 		fs.writeFile(userHomeDir+'/.101obex/test.json', JSON.stringify(TestData), (err) => {
