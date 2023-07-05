@@ -309,6 +309,8 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	
 	);
+
+	sayHi("","",true);
 	vscode.window.showInformationMessage('101OBeX Legacy Connector Extension activated');
 	} else {
 		vscode.window.showErrorMessage("You must have 101OBeX API Extension Base installed");
@@ -759,7 +761,13 @@ class TreeItem extends vscode.TreeItem {
 			if (e.description?.toString() == 'config'){
 				if (e.tooltip?.toString().split("|")[0] == 'IBM3270') {
 					idService = `${SelectedProject}|${e.label?.toString().split("[")[1].replace("]","")}|${e.tooltip.toString().split("|")[1]}`;
+
+					let webservice = e.label?.toString().split("[")[1].replace("]","");
+					let connectionId = e.tooltip.toString().split("|")[1];
 					vscode.commands.executeCommand('react-webview.start-3270');
+					sayHi(webservice,connectionId);
+
+
 				}
 				if (e.tooltip?.toString().split("|")[0] == 'API') {
 					idService = `${SelectedProject}|${e.label?.toString()}`;
@@ -1134,4 +1142,62 @@ function getCurrentProject(){
 	var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedproject.json');
 	var objectdata = JSON.parse(rawdata.toString());
 	return objectdata
+}
+
+
+async function setTestData(url: string, params: Object, init =false){
+
+	var TestData = {'url': `${url}`, 'params': `${params}`};
+	
+	if (init) TestData = {'url': ``, 'params': ``};
+	
+	if (url!='' || init) {
+		fs.writeFile(userHomeDir+'/.101obex/test.json', JSON.stringify(TestData), (err) => {
+		if (err){
+			console.log(err);
+		} else {
+			//refresh101ObeXExtensions();
+			}
+		});
+
+		let comandos = await vscode.commands.getCommands();
+		if (comandos!= null){
+			try {
+			comandos.forEach((com)=>{
+				if ( com.includes('SayHi')) {
+					
+				try{
+					if (com == '101obex-api-extension-api-tester.SayHi'){
+						vscode.commands.executeCommand("101obex-api-extension-api-tester.SayHi");
+					}
+				}
+				catch{
+					
+				}
+				}
+			})
+		} catch {
+		}
+		}
+	}
+  }
+
+
+function sayHi(url: any, id: any, init = false) {  
+	
+	let url_config = 'https://hesperidium.101obex.mooo.com:3001/info_api_parameters?developer_token='
+	let pamameters_config = `&id_service=${url}&obex_project_id=${SelectedProject}`;
+	if ((url!=null && url!='') || init){
+	//axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
+	//.then((response) => {
+		let api_parameters: Object = [];
+
+		if (!init) setTestData("https://docking.101obex.mooo.com"+url+"?legacy_connector_id="+id, api_parameters, init ); else
+		setTestData("", [], init);
+		
+
+
+	
+	
+}
 }
