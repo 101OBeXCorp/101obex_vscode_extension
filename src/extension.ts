@@ -793,9 +793,9 @@ function getCurrentProject(){
 
 async function setTestData(url: string, params: Object, init = false){
 
-	var TestData = {'url': `${url}`, 'params': `${params}`};
+	var TestData = {'url': `${url}`, 'params': `${params}`, 'values':''};
 	
-	if (init) TestData = {'url': ``, 'params': ``};
+	if (init) TestData = {'url': ``, 'params': ``, 'values':''};
 	
 	if (url!='' || init) {
 		fs.writeFile(userHomeDir+'/.101obex/test.json', JSON.stringify(TestData), (err) => {
@@ -835,16 +835,20 @@ function sayHi(url: any, init = false) {
 	let pamameters_config = `&id_service=${url}&obex_project_id=${SelectedProject}`;
 	if ((url!=null && url!='') || init){
 	if (!init) {
-		axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
-	.then((response) => {
-		let api_parameters = response.data.data || [];
-		console.log(api_parameters);
-		if (!init) setTestData("https://docking.101obex.mooo.com/ws/low_code.py/"+url,api_parameters); else
-		//ventanaNueva.webview.html = getWebviewContent(`${url}`,`${SelectedProjectToken}`,api_parameters);
-		setTestData("", [], init);
+		try{
+			axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
+				.then((response) => {
+					let api_parameters = response.data.data || [];
+					console.log(api_parameters);
+					if (!init) setTestData("https://docking.101obex.mooo.com/ws/low_code.py/"+url,api_parameters); else
+					//ventanaNueva.webview.html = getWebviewContent(`${url}`,`${SelectedProjectToken}`,api_parameters);
+					setTestData("", [], init);
 
-	}
-	);
+				}
+				);
+			} catch {
+				sayHi(url, init);
+			}
 } else {
 	setTestData("", [], init);
 }
