@@ -167,10 +167,14 @@ const axiosConfig = {
   };
 var TokenData: AxiosResponse<any, any>;
 
-function getWebviewContent(url: any, headers: any, api_parameters: any) {
+function getWebviewContent(url: any, headers: any, api_parameters: any, api_values: any) {
 
 	let fromularie = `<!DOCTYPE html>
 	<style>
+	input:focus {
+		outline: none;
+		border: specify yours;
+		}
 	.loader {
 		margin-left: 10px;
 		border: 6px solid #f3f3f3; /* Light grey */
@@ -189,16 +193,20 @@ function getWebviewContent(url: any, headers: any, api_parameters: any) {
     <html>
 	<body onload="createForm();">
 	<div style="display: flex;">
-	<div style="min-width: 20px;margin-right: 10px;">URL: </div> <div id='req_url'>https://docking.101obex.mooo.com/${url}</div>
+	<div style="min-width: 20px;margin-right: 10px; margin-top: 14px;">URL: </div> <input style="margin-top: 10px;border-style: solid; width: 89vw; background-color: transparent; border-width: 2px; border-bottom-color: #1978d7; border-top-color: transparent; border-left-color: transparent; border-right-color: transparent; color: white" id='req_url' value='${url}'></input>
 	</div>
 	<div style="display: flex;">
-	<div style="min-width: 20px;margin-right: 10px;">101ObeX Dev Token:</div> <div>${headers}</div>
+	<div style="margin-top: 10px; min-width: 20px;margin-right: 10px;">101ObeX Dev Token:</div> <div style="margin-top: 10px;">${headers}</div>
 	</div>
+	<div style="display: table-caption;">
 	<form style="margin-top: 10px;" id="formed"></form>
-	<div style="display: flex; margin-top: 20px;"> 
-	<button onclick="test2();" id="Test">Test</button> <div id='loader_spinner' class="loader"></div> 
 	</div>
-	<form id="response"></form>
+	<div style="display: flex; margin-top: 20px;"> 
+	<button style="width:33.4pc; border-style: solid; background-color: #0f78d4; border-color: #0f78d4; color: white" onclick="test2();" id="Test">Test</button> <div id='loader_spinner' class="loader"></div> 
+	</div>
+	<div style="width: 94vw;">
+	<form style="margin-top: 20px; background-color: #2a2a2a; padding: 10px;" id="response"></form>
+	</div>
 	</body>
 	</html>
 	<script>
@@ -210,8 +218,8 @@ function getWebviewContent(url: any, headers: any, api_parameters: any) {
 		llo.hidden = false;
 
 		llo.hidden = false;
-		jkl = document.getElementById('req_url').innerText.toString().replace('https://docking.101obex.mooo.com/','')
-    	let response = await fetch("http://216.238.82.11/ws/low_code.py/"+jkl.toString(),{headers:{'101ObexToken':'${headers}'}});
+		jkl = document.getElementById('req_url').value.toString(); //.replace('https://docking.101obex.mooo.com/','')
+    	let response = await fetch(/*"http://216.238.82.11/ws/low_code.py/"+*/jkl.toString(),{headers:{'101ObexToken':'${headers}'}});
     	if (response.ok) { // si el HTTP-status es 200-299
 		  // obtener cuerpo de la respuesta (método debajo)
 		  let json = await response.json();
@@ -228,8 +236,10 @@ function getWebviewContent(url: any, headers: any, api_parameters: any) {
 		llo.hidden = true;
 		let datat = {}
 		let arrr = '${api_parameters}'
+		let yy = '${api_values}';
 		arrrr = arrr.split(',');
-		let arra = ['usuario','contrase']
+		if (yy!=undefined) yrrrr = yy.split(',')
+		
 		for (i in arrrr) {
 		  form = document.getElementById("formed");
 	  
@@ -245,7 +255,7 @@ function getWebviewContent(url: any, headers: any, api_parameters: any) {
 			  paramss+=arrrr[v]+'='+datat[arrrr[v]]+'&';
 		  }
 		  let req_urls = document.getElementById('req_url');
-		  req_urls.innerText = 'https://docking.101obex.mooo.com/${url}'+paramss.substring(0,paramss.length-1);
+		  req_urls.value = '${url}'+paramss.substring(0,paramss.length-1);
 		  
 		}
 
@@ -253,7 +263,9 @@ function getWebviewContent(url: any, headers: any, api_parameters: any) {
 
 		  var input = document.createElement('input');
 		  input.setAttribute('placeholder', x)
-		  input.setAttribute('id', x)
+		  input.setAttribute('id', x);
+		  if (yrrrr[i] != undefined && yrrrr!=undefined) input.value = yrrrr[i];
+		  input.style.cssText = 'border-style: solid; width: 33pc; background-color: transparent; border-width: 1px; border-color: #1978d7; margin-top: 4px; color: white;';
 		  input.addEventListener('input', inputHandler);
 	  
 		  if (x=!null && x!='') form.appendChild(input);
@@ -266,25 +278,25 @@ function getWebviewContent(url: any, headers: any, api_parameters: any) {
 	  }
 	</script>
 	`;
-	//console.log(fromularie);
+	console.log(fromularie);
 	
     return fromularie;
 }
 
 export function activate(context: vscode.ExtensionContext) {
-
+	
 	const thisProvider = {
 		resolveWebviewView:function(thisWebviewView : any, thisWebviewContext: any, thisToken: any){
 			
 			thisWebviewView.webview.options={enableScripts:true};
-			thisWebviewView.webview.html= getWebviewContent("","",[]); 
+			thisWebviewView.webview.html= getWebviewContent("","https://docking.101obex.mooo.com/ws/util.py/paises",[],[]); 
 			thisWebviewView.enableScripts= true
 			thisWebviewView.webview.onDidReceiveMessage(
 				(message:any) => {
 				  switch (message.command) {
 				  case 'alert':
 					vscode.window.showErrorMessage(message.text);
-					thisWebviewView.webview.html = getWebviewContent("","",[]);
+					thisWebviewView.webview.html = getWebviewContent("","https://docking.101obex.mooo.com/ws/util.py/paises",[],[]);
 					return;
 				  }
 				},
@@ -294,19 +306,22 @@ export function activate(context: vscode.ExtensionContext) {
 			  ventanaNueva = thisWebviewView;
 
 		},
-		sayHi:function(url: any) {  
+		sayHi:function(url2: any) {  
+			let api_parameters: never[] = [];
+			let api_values: never[] = [];
+			let dd = getCurrentAPIConsumption();
+			let url = dd.url;
+			api_parameters = dd.params;
+			api_values = dd.values;
+			if (url=='') url = url2
+			let porSel = getCurrentProject();
+			SelectedProject = porSel.obex_project_id;
+			SelectedProjectToken = porSel.selected_project;
+			con1 = con2[SelectedProject];
+			
 			console.log(ventanaNueva);
-			let url_config = 'https://hesperidium.101obex.mooo.com:3001/info_api_parameters?developer_token='
-			let pamameters_config = `&id_service=${url}&obex_project_id=${SelectedProject}`;
 			if (url!=null && url!=''){
-			axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
-			.then((response) => {
-				let api_parameters = response.data.data || [];
-				console.log(api_parameters);
-
-				ventanaNueva.webview.html = getWebviewContent(`${url}`,`${SelectedProjectToken}`,api_parameters);
-			}
-			);
+			ventanaNueva.webview.html = getWebviewContent(`${url}`,`${SelectedProjectToken}`,api_parameters, api_values);
 		}
 		},
 	  };
@@ -342,12 +357,14 @@ export function activate(context: vscode.ExtensionContext) {
 //		)
 //	  );
 
+
+	vscode.commands.executeCommand("workbench.action.focusCommentsPanel");
 	  context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider('101obex-api-extension.myPanel', thisProvider
+		vscode.window.registerWebviewViewProvider('101obex-api-extension-api-tester.myPanel', thisProvider
 		)
 	  );
 	
-		
+	  vscode.commands.executeCommand("101obex-api-extension-api-tester.myPanel.focus")
 	  
 
 	//  context.subscriptions.push(
@@ -389,12 +406,22 @@ export function activate(context: vscode.ExtensionContext) {
 				var resultss = response.data.data[0].results;
 				con2 = resultss;
 
-				Connectors(context, response, thisProvider);
-				thisProvider.sayHi('');
-				context.subscriptions.push(vscode.commands.registerCommand('react-webview-creation.start-low_code', () => {
-					ReactPanel.createOrShow(context.extensionPath, 'API');
-				}));
+//				Connectors(context, response, thisProvider);
+				
+				thisProvider.sayHi('https://docking.101obex.mooo.com/ws/util.py/paises');
 
+
+				try{
+					context.subscriptions.push(
+						vscode.commands.registerCommand('101obex-api-extension-api-tester.SayHi', () =>
+						thisProvider.sayHi('https://docking.101obex.mooo.com/ws/util.py/paises'))
+							);
+					} catch { }
+
+	//			context.subscriptions.push(vscode.commands.registerCommand('react-webview-creation.start-low_code', () => {
+	//				ReactPanel.createOrShow(context.extensionPath, 'API');
+	//			}));
+/*
 
 				vscode.commands.registerCommand(`101obex-api-extension-api-creation.RemoveAPI`, (e) => {
 					var arr:any;
@@ -414,7 +441,7 @@ export function activate(context: vscode.ExtensionContext) {
 					thisProvider.sayHi('');
 				});
 				
-				
+				*/
 				})
 			.catch((error) => {
 				if ('success' in error.response.data) {
@@ -597,11 +624,12 @@ class TreeItem extends vscode.TreeItem {
 
 			var apisTreeProvider = new TreeDataProviderAPICreator(response);
 			
-			var tree = vscode.window.createTreeView('101obex-api-extension.package-creation', {
-				treeDataProvider: apisTreeProvider,
-			});
+	//		var tree = vscode.window.createTreeView('101obex-api-extension.package-creation', {
+	//			treeDataProvider: apisTreeProvider,
+	//		});
 
-			tree.onDidChangeSelection((selection) => {
+	/*
+	tree.onDidChangeSelection((selection) => {
 				if (!REFRESHING){
 					
 				selection.selection.map(async (e) => {
@@ -648,7 +676,10 @@ class TreeItem extends vscode.TreeItem {
 			else {
 				REFRESHING = false;
 			}
-			});
+			}
+	
+			
+			);*/
 
 			try{
 			context.subscriptions.push(
@@ -656,6 +687,13 @@ class TreeItem extends vscode.TreeItem {
 					apisTreeProvider.refresh())
 					);
 			} catch { }
+
+			try{
+				context.subscriptions.push(
+					vscode.commands.registerCommand('101obex-api-extension-api-tester.SayHi', () =>
+					thisProvider.sayHi('https://docking.101obex.mooo.com/ws/util.py/paises'))
+						);
+				} catch { }
 
 			
 			
@@ -782,6 +820,13 @@ class ReactPanel {
 function getCurrentProject(){
 
 	var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedproject.json');
+	var objectdata = JSON.parse(rawdata.toString());
+	return objectdata
+}
+
+function getCurrentAPIConsumption(){
+
+	var rawdata = fs.readFileSync(os.homedir+'/.101obex/test.json');
 	var objectdata = JSON.parse(rawdata.toString());
 	return objectdata
 }

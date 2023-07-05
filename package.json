@@ -1,8 +1,8 @@
 {
-  "name": "101obex-api-extension-api-creation",
-  "displayName": "101OBeX API Designer",
-  "description": "101OBeX API Designer",
-  "version": "0.0.4",
+  "name": "101obex-api-extension-api-tester",
+  "displayName": "101OBeX API Tester",
+  "description": "101OBeX API Tester",
+  "version": "0.0.1",
   "publisher": "101OBEX, CORP",
   "engines": {
     "vscode": "^1.73.0"
@@ -24,7 +24,7 @@
   "viewsContainers": {
     "panel": [
         {
-            "id": "101obex-api-extension.myPanel",
+            "id": "101obex-api-extension-api-tester.myPanel",
             "title": "Colors",
             "icon": "images/views/history.svg"
         }
@@ -33,52 +33,44 @@
 
 
   "contributes": {
-    "views": {
-
-      "101obex-api-extension": [
+    "viewsContainers": {
+      "panel":[
         {
-          "id": "101obex-api-extension.package-creation",
-          "name": "API DESIGNER",
-          "type": "tree"
-        },
+          "id": "101obex-api-extension-api-tester",
+          "title": "Package Explorer",
+          "icon": "resources/package-explorer.svg"
+        }
+      ]
+      
+    },
+    "views": {
+      
+      "101obex-api-extension-api-tester": [
         {
           "type": "webview",
-          "id": "101obex-api-extension.myPanel",
+          "id": "101obex-api-extension-api-tester.myPanel",
           "name": "API Tester"
       }
       ]
     },
     "commands": [
       {
-        "command": "react-webview-creation.start",
-        "title": "Start React Webview",
-        "category": "React",
-        "icon": "$(refresh)"
-      },
-      {
-        "command": "101obex-api-extension-api-creation.refreshEntry-api-creator",
+        "command": "101obex-api-extension-api-tester.refreshEntry-api-creator",
         "title": "Refresh",
         "icon": "$(refresh)"
-      },
+      }
+      ,
       {
-        "command": "101obex-api-extension-api-creation.RemoveAPI",
-        "title": "Remove API configuration"
+        "title": "TestApi",
+        "command": "101obex-api-extension-api-tester.SayHi"
       }
     ],
     "menus": {
       "view/title": [
-        {
-          "command": "101obex-api-extension-api-creation.refreshEntry-api-creator",
-          "when": "view == 101obex-api-extension.package-creation",
-          "group": "navigation"
-        }
+
       ],
       "view/item/context": [
 
-        {
-          "command": "101obex-api-extension-api-creation.RemoveAPI",
-          "when": "view == 101obex-api-extension.package-creation && viewItem == APICONF"
-        }
       ]
     }
   },
