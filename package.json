@@ -37,7 +37,7 @@
       "panel":[
         {
           "id": "101obex-api-extension-api-tester",
-          "title": "Package Explorer",
+          "title": "101OBeX",
           "icon": "resources/package-explorer.svg"
         }
       ]

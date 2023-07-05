@@ -306,14 +306,16 @@ export function activate(context: vscode.ExtensionContext) {
 			  ventanaNueva = thisWebviewView;
 
 		},
-		sayHi:function(url2: any) {  
+		sayHi:function(url2: any, selected = false) {  
 			let api_parameters: never[] = [];
 			let api_values: never[] = [];
 			let dd = getCurrentAPIConsumption();
 			let url = dd.url;
-			api_parameters = dd.params;
-			api_values = dd.values;
-			if (url=='') url = url2
+			if (!selected){
+					api_parameters = dd.params;
+					api_values = dd.values;
+				}
+			if (url=='' || selected) url = url2
 			let porSel = getCurrentProject();
 			SelectedProject = porSel.obex_project_id;
 			SelectedProjectToken = porSel.selected_project;
@@ -378,7 +380,7 @@ export function activate(context: vscode.ExtensionContext) {
 			const selection = vscode.window.activeTextEditor?.selection;
 			const selectedText = vscode.window.activeTextEditor?.document.getText(selection);
 			console.log("TESTANDO");
-			thisProvider.sayHi(selectedText);
+			thisProvider.sayHi(selectedText, true);
 
 		}
 //			vscode.window.showInputBox({ prompt: 'What do you want to do?' })
