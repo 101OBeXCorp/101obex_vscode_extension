@@ -8,11 +8,12 @@ var ExtContext: vscode.ExtensionContext;
 
 let ACCESS = false;
 var SelectedProject = 384;
+let REFRESHING = false;
 
 let extensions = vscode.extensions.all;
 extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
 extensions.forEach(ex =>{
-  if (ex.id == "101obex.101obex-api-extension") ACCESS = true;
+  if (ex.id == "101OBEX, CORP.101obex-api-extension") ACCESS = true;
 })
 
 
@@ -200,9 +201,12 @@ export function activate(context: vscode.ExtensionContext) {
 				con2 = resultss;
 
 				Connectors(context, response);
+				/*
 				context.subscriptions.push(vscode.commands.registerCommand('react-webview.start', () => {
 					ReactPanel.createOrShow(context.extensionPath, '3270');
 				}));
+
+				*/
 				context.subscriptions.push(vscode.commands.registerCommand('react-webview.start-3270', () => {
 					ReactPanel.createOrShow(context.extensionPath, '3270');
 				}));
@@ -582,6 +586,7 @@ class TreeDataProviderConnector implements vscode.TreeDataProvider<TreeItem> {
 		this._onDidChangeTreeData.event;
   
 	refresh(): void {
+		REFRESHING = true;
 	  this._onDidChangeTreeData.fire();
 	  Connectors(ExtContext, TokenData);
 	}
@@ -729,9 +734,9 @@ class TreeItem extends vscode.TreeItem {
 	var tree = vscode.window.createTreeView('package-connectors', {
 		treeDataProvider: apisTreeProvider,
 	});
-
+	
 	tree.onDidChangeSelection((selection) => {
-
+		if (!REFRESHING){
 		let date_ob = new Date();
 		selection.selection.map(async (e) => {
 
@@ -758,12 +763,14 @@ class TreeItem extends vscode.TreeItem {
 				}
 				if (e.tooltip?.toString().split("|")[0] == 'API') {
 					idService = `${SelectedProject}|${e.label?.toString()}`;
-					vscode.commands.executeCommand('react-webview.start-low_code');
+					//vscode.commands.executeCommand('react-webview.start-low_code');
 				} 
 
 
 
-				else vscode.commands.executeCommand('react-webview.start');
+				else {
+				//	vscode.commands.executeCommand('react-webview.start');
+				}
 			}
 
 			if (e.description?.toString() == 'add service'){
@@ -942,7 +949,11 @@ class TreeItem extends vscode.TreeItem {
 			}
 		}
 		);
-	});
+	} else {
+		REFRESHING=false;
+	}
+	}
+	);
 	
 	try{
 	context.subscriptions.push(

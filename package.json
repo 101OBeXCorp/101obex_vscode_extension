@@ -1,9 +1,9 @@
 {
   "name": "101obex-api-extension-legacy-connectors",
-  "displayName": "101OBeX API Extension Legacy Connectors",
-  "description": "101OBeX API support extension Legacy Connectors",
-  "version": "0.0.1",
-  "publisher": "101obex",
+  "displayName": "101OBeX API Connectors",
+  "description": "101OBeX API Connectors",
+  "version": "0.0.3",
+  "publisher": "101OBEX, CORP",
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -13,8 +13,8 @@
   "extensionPack": [
     
   ],
-  "extensionDependencies":["101obex.101obex-api-extension"],
-  "recommendations": ["101obex.101obex-api-extension"],
+  "extensionDependencies":["101OBEX, CORP.101obex-api-extension"],
+  "recommendations": ["101OBEX, CORP.101obex-api-extension"],
   "icon": "images/101icon.png",
   "activationEvents": [
     "onStartupFinished"
