@@ -63,6 +63,10 @@
       {
         "title": "TestApi",
         "command": "101obex-api-extension-api-tester.SayHi"
+      },
+      {
+        "command": "101obex-api-extension-api-tester.TestSelected",
+        "title": "API Tester: request selection"
       }
     ],
     "menus": {
@@ -71,6 +75,13 @@
       ],
       "view/item/context": [
 
+      ],
+      "editor/context": [
+        {
+          "command": "101obex-api-extension-api-tester.TestSelected",
+          "when": "editorTextFocus",
+          "group": "api-tester-menu-group@1"
+        }
       ]
     }
   },

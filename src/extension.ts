@@ -372,6 +372,19 @@ export function activate(context: vscode.ExtensionContext) {
 	//  );
 	//}
 
+	context.subscriptions.push(
+		vscode.commands.registerCommand('101obex-api-extension-api-tester.TestSelected', () => 
+		{
+			const selection = vscode.window.activeTextEditor?.selection;
+			const selectedText = vscode.window.activeTextEditor?.document.getText(selection);
+			console.log("TESTANDO");
+			thisProvider.sayHi(selectedText);
+
+		}
+//			vscode.window.showInputBox({ prompt: 'What do you want to do?' })
+//			.then((value) => provider.escriberespuesta(value))
+		)
+	);
 
 
 	ExtContext = context;
