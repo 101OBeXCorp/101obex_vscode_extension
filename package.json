@@ -1,9 +1,9 @@
 {
   "name": "101obex-api-extension-ia",
-  "displayName": "101OBeX API Extension IA",
-  "description": "101OBeX API support extension",
-  "version": "0.0.1",
-  "publisher": "101obex",
+  "displayName": "101OBeX Brunix AI",
+  "description": "101OBeX Brunix AI",
+  "version": "0.0.3",
+  "publisher": "101OBEX, CORP",
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -13,8 +13,8 @@
   "extensionPack": [
    
 ],
-"extensionDependencies":["101obex.101obex-api-extension"],
-"recommendations": ["101obex.101obex-api-extension"],
+"extensionDependencies":["101OBEX, CORP.101obex-api-extension"],
+"recommendations": ["101OBEX, CORP.101obex-api-extension"],
   "icon": "images/101icon.png",
   "activationEvents": [
     "onStartupFinished"
@@ -27,12 +27,12 @@
         {
           "type": "webview",
           "id": "101obex-api-extension.chatView",
-          "name": "Marieta"
+          "name": "BRUNIX AI"
         }
       ]
     },
     "configuration": {
-      "title": "Marieta",
+      "title": "Brunix",
       "type": "object",
       "properties": {
         "101obex-api-extension-ia.promptPrefix.explain": {
@@ -70,35 +70,35 @@
     "commands": [
       {
         "command": "101obex-api-extension-ia.ask",
-        "title": "Ask Marieta"
+        "title": "Ask Brunix"
       },
       {
         "command": "101obex-api-extension-ia.explain",
-        "title": "Marieta: Explain selection"
+        "title": "Brunix: Explain selection"
       },
       {
         "command": "101obex-api-extension-ia.refactor",
-        "title": "Marieta: Refactor selection"
+        "title": "Brunix: Refactor selection"
       },
       {
         "command": "101obex-api-extension-ia.findProblems",
-        "title": "Marieta: Find problems"
+        "title": "Brunix: Find problems"
       },
       {
         "command": "101obex-api-extension-ia.optimize",
-        "title": "Marieta: Optimize selection"
+        "title": "Brunix: Optimize selection"
       },
       {
         "command": "101obex-api-extension-ia.documentation",
-        "title": "Marieta: Write documentation"
+        "title": "Brunix: Write documentation"
       },
       {
         "command": "101obex-api-extension-ia.resetConversation",
-        "title": "Reset Marieta conversation"
+        "title": "Reset Brunix conversation"
       },
       {
         "command": "101obex-api-extension-ia.tryAgain",
-        "title": "Retry Marieta request"
+        "title": "Retry Brunix request"
       }
     ],
     "menus": {

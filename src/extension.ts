@@ -10,7 +10,7 @@ let ACCESS = false;
 let extensions = vscode.extensions.all;
 extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
 extensions.forEach(ex =>{
-  if (ex.id == "101obex.101obex-api-extension") ACCESS = true;
+  if (ex.id == "101OBEX, CORP.101obex-api-extension") ACCESS = true;
 })
 
 
@@ -475,7 +475,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 				</style>
 			</head>
 			<body>
-				<input style="margin-top:10px; width:100%; height:27px; padding-left: 5px;" class="" placeholder="Ask Marieta something" id="prompt-input" />
+				<input style="margin-top:10px; width:100%; height:27px; padding-left: 5px;" class="" placeholder="Ask Brunix something" id="prompt-input" />
 				
 				<div id="response" class="pt-4 text-sm">
 				</div>
