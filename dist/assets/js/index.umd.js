@@ -721,7 +721,8 @@ let actualCanvas;
 			return this.layoutController.isMobile();
 		}
 		tryGetIconUrl(step) {
-			return this.configuration.iconUrlProvider ? this.configuration.iconUrlProvider(step.componentType, step.type) : null;
+			console.log(step);
+			return this.configuration.iconUrlProvider ? this.configuration.iconUrlProvider(step.componentType, step.name) : null;
 		}
 		/**
 		 * @param position Mouse or touch position.
@@ -1555,7 +1556,7 @@ let actualCanvas;
 			g.insertBefore(rect0, rect);
 
 			// Icon 1
-			const iconUrl = configuration.iconUrlProvider ? configuration.iconUrlProvider(step.componentType, step.type) : null;
+			const iconUrl = configuration.iconUrlProvider ? configuration.iconUrlProvider(step.componentType, step.name) : null;
 
 			//console.log(step.componentType)
 			//console.log(step.type)
