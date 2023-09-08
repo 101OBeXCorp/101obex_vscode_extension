@@ -29,7 +29,7 @@
 	z-index: 20;
 	box-sizing: border-box;
 	border-radius: 10px;
-	width: 200px;
+	width: 209px;
 	user-select: none;
 }
 .sqd-toolbox-header {
@@ -63,6 +63,7 @@
 	position: absolute;
 	top: 0;
 	left: 0;
+	width: 100%;
 }
 .sqd-toolbox-filter {
 	display: block;
@@ -90,6 +91,7 @@
 	width: 180px;
 	cursor: move;
 }
+
 .sqd-toolbox-item-icon {
 	position: absolute;
 	top: 50%;
@@ -97,6 +99,8 @@
 	margin-top: -10px;
 	width: 20px;
 	height: 20px;
+	margin-left: 12px;
+	filter: invert(100%) sepia(100%) saturate(352%) hue-rotate(87deg) brightness(119%) contrast(119%);  
 }
 .sqd-toolbox-item-icon.sqd-no-icon {
 	border-radius: 4px;
@@ -232,6 +236,30 @@
 	dominant-baseline: central;
 }
 
+.sqd-step-task-text-key {
+	text-anchor: left;
+	dominant-baseline: central;
+}
+
+.sqd-step-task-text-value {
+	text-anchor: left;
+	dominant-baseline: central;
+}
+
+
+.sqd-entry-background{
+
+/*flex: 90%;
+min-width: 90%;
+max-width: 90%;
+border-radius: 5px;*/
+fill: #6c6c6c;
+/*border-color: #6c6c6c;
+color: white;
+line-height: 0px;
+-webkit-appearance: none !important;
+outline: none;*/
+}
 /* .sqd-input + .sqd-output */
 
 .sqd-input {

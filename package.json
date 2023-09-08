@@ -2,7 +2,7 @@
   "name": "101obex-api-extension-api-creation",
   "displayName": "101OBeX API Designer",
   "description": "101OBeX API Designer",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "101OBEX, CORP",
   "engines": {
     "vscode": "^1.73.0"
