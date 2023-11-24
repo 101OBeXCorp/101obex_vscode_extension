@@ -398,7 +398,7 @@ function registerPythonCompletion(context: any, response: any){
 						}
 						posicion++;
 					})
-					snippetCompletionArray.insertText = new vscode.SnippetString(`\n\t\turl = \"http://api.101obex.com:8000${subelement.description}`+parametrosCadena+'\",\n\t\t'+`headers = {\n\t\t\t\"101ObexToken\": \"${dataObject.selected_project}\"\n\t\t}\n)`);
+					snippetCompletionArray.insertText = new vscode.SnippetString(`\n\t\turl = \"http://docking.101obex.mooo.com${subelement.description}`+parametrosCadena+'\",\n\t\t'+`headers = {\n\t\t\t\"101ObexToken\": \"${dataObject.selected_project}\"\n\t\t}\n)`);
 				} else {
 
 					parametrosCadena = "";
@@ -414,7 +414,7 @@ function registerPythonCompletion(context: any, response: any){
 					})
 
 
-					snippetCompletionArray.insertText = new vscode.SnippetString(`\n\t\turl = \"http://api.101obex.com:8000${subelement.description}\",`+
+					snippetCompletionArray.insertText = new vscode.SnippetString(`\n\t\turl = \"http://docking.101obex.mooo.com${subelement.description}\",`+
 																				`\n\t\tdata = {\n\t\t\t${parametrosCadena}}`+
 																					',\n\t\t'+`headers = {\n\t\t\t\"101ObexToken\": \"${dataObject.selected_project}\"\n\t\t}\n)`);
 
