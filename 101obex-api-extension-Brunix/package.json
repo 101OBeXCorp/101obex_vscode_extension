@@ -1,0 +1,215 @@
+{
+  "name": "101obex-api-extension-ia",
+  "displayName": "101OBeX Brunix AI",
+  "description": "101OBeX Brunix AI",
+  "version": "0.0.4",
+  "publisher": "101OBEX, CORP",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionPack": [
+   
+],
+"extensionDependencies":["101OBEX, CORP.101obex-api-extension"],
+"recommendations": ["101OBEX, CORP.101obex-api-extension"],
+  "icon": "images/101icon.png",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+
+    "views": {
+      "101obex-api-extension": [
+        {
+          "type": "webview",
+          "id": "101obex-api-extension.chatView",
+          "name": "BRUNIX AI"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Brunix",
+      "type": "object",
+      "properties": {
+        "101obex-api-extension-ia.promptPrefix.explain": {
+          "type": "string",
+          "default": "Explain what this code does: ",
+          "description": "The prompt prefix used for explaining the selected code",
+          "order": 3
+        },
+        "101obex-api-extension-ia.promptPrefix.refactor": {
+          "type": "string",
+          "default": "Refactor this code and explain what's changed: ",
+          "description": "The prompt prefix used for refactoring the selected code",
+          "order": 4
+        },
+        "101obex-api-extension-ia.promptPrefix.findProblems": {
+          "type": "string",
+          "default": "Find problems with the following code, fix them and explain what was wrong (Do not change anything else, if there are no problems say so): ",
+          "description": "The prompt prefix used for finding problems in the selected code",
+          "order": 5
+        },
+        "101obex-api-extension-ia.promptPrefix.documentation": {
+          "type": "string",
+          "default": "Write documentation for the following code: ",
+          "description": "The prompt prefix used for writing documentation for the selected code",
+          "order": 7
+        },
+        "101obex-api-extension-ia.promptPrefix.optimize": {
+          "type": "string",
+          "default": "Optimize the following code if there is anything to improve, if not say so: ",
+          "description": "The prompt prefix used for optimizing the selected code",
+          "order": 6
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "101obex-api-extension-ia.ask",
+        "title": "Ask Brunix"
+      },
+      {
+        "command": "101obex-api-extension-ia.explain",
+        "title": "Brunix: Explain selection"
+      },
+      {
+        "command": "101obex-api-extension-ia.refactor",
+        "title": "Brunix: Refactor selection"
+      },
+      {
+        "command": "101obex-api-extension-ia.findProblems",
+        "title": "Brunix: Find problems"
+      },
+      {
+        "command": "101obex-api-extension-ia.optimize",
+        "title": "Brunix: Optimize selection"
+      },
+      {
+        "command": "101obex-api-extension-ia.documentation",
+        "title": "Brunix: Write documentation"
+      },
+      {
+        "command": "101obex-api-extension-ia.resetConversation",
+        "title": "Reset Brunix conversation"
+      },
+      {
+        "command": "101obex-api-extension-ia.tryAgain",
+        "title": "Retry Brunix request"
+      }
+    ],
+    "menus": {
+      "view/title": [
+  
+      ],
+      "view/item/context": [
+
+      ],
+      "editor/context": [
+        {
+          "command": "101obex-api-extension-ia.ask",
+          "when": "editorTextFocus",
+          "group": "chatgpt-menu-group@1"
+        },
+        {
+          "command": "101obex-api-extension-ia.explain",
+          "when": "editorHasSelection",
+          "group": "chatgpt-menu-group@2"
+        },
+        {
+          "command": "101obex-api-extension-ia.refactor",
+          "when": "editorHasSelection",
+          "group": "chatgpt-menu-group@3"
+        },
+        {
+          "command": "101obex-api-extension-ia.findProblems",
+          "when": "editorHasSelection",
+          "group": "chatgpt-menu-group@4"
+        },
+        {
+          "command": "101obex-api-extension-ia.optimize",
+          "when": "editorHasSelection",
+          "group": "chatgpt-menu-group@5"
+        },
+        {
+          "command": "101obex-api-extension-ia.documentation",
+          "when": "editorHasSelection",
+          "group": "chatgpt-menu-group@6"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "101obex-api-extension-ia.ask"
+        },
+        {
+          "command": "101obex-api-extension-ia.explain",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "101obex-api-extension-ia.refactor",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "101obex-api-extension-ia.findProblems",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "101obex-api-extension-ia.optimize",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "101obex-api-extension-ia.documentation",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "101obex-api-extension-ia.resetConversation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "16.x",
+    "@types/request": "^2.48.8",
+    "@types/vscode": "^1.73.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "@vscode/test-electron": "^2.2.0",
+    "eslint": "^8.26.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "axios": "^1.2.0",
+    "chatgpt": "^5.1.2",
+    "expiry-map": "^2.0.0",
+    "gpt3-tokenizer": "^1.1.5",
+    "node-datetime": "^2.1.2",
+    "node-fetch": "^3.3.1",
+    "request": "^2.88.2",
+    "requests": "^0.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/101OBeXCorp/101obex_vscode_extension.git"
+  }
+}

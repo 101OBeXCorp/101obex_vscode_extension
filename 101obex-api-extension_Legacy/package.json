@@ -1,0 +1,128 @@
+{
+  "name": "101obex-api-extension-legacy-connectors",
+  "displayName": "101OBeX API Connectors",
+  "description": "101OBeX API Connectors",
+  "version": "0.0.7",
+  "publisher": "101OBEX, CORP",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionPack": [
+    
+  ],
+  "extensionDependencies":["101OBEX, CORP.101obex-api-extension"],
+  "recommendations": ["101OBEX, CORP.101obex-api-extension"],
+  "icon": "images/101icon.png",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "views": {
+      "101obex-api-extension": [
+        {
+          "id": "package-connectors",
+          "name": "CONNECTORS",
+          "type": "tree"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "react-webview.start",
+        "title": "Start React Webview",
+        "category": "React",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "101obex-api-extension-legacy-connectors.refreshEntry-connectors",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "101obex-api-extension-legacy-connectors.RemoveConnection",
+        "title": "Remove Connection"
+      },
+      {
+        "command": "101obex-api-extension-legacy-connectors.RemoveService",
+        "title": "Remove Service"
+      }
+      ,
+      {
+        "command": "101obex-api-extension-legacy-connectors.EditConnection",
+        "title": "Edit Connection"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "101obex-api-extension-legacy-connectors.refreshEntry-connectors",
+          "when": "view == package-connectors",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+
+        {
+          "command": "101obex-api-extension-legacy-connectors.RemoveConnection",
+          "when": "view == package-connectors && viewItem == CONECT"
+        },
+        {
+          "command": "101obex-api-extension-legacy-connectors.RemoveService",
+          "when": "view == package-connectors && viewItem == SERV"
+        }
+        ,
+        {
+          "command": "101obex-api-extension-legacy-connectors.EditConnection",
+          "when": "view == package-connectors && viewItem == EDCONF"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "16.x",
+    "@types/request": "^2.48.8",
+    "@types/vscode": "^1.73.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "@vscode/test-electron": "^2.2.0",
+    "eslint": "^8.26.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "axios": "^1.2.0",
+    "chatgpt": "^5.1.2",
+    "expiry-map": "^2.0.0",
+    "gpt3-tokenizer": "^1.1.5",
+    "node-datetime": "^2.1.2",
+    "node-fetch": "^3.3.1",
+    "request": "^2.88.2",
+    "requests": "^0.3.0",
+    "vscode-uri": "^3.0.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/101OBeXCorp/101obex_vscode_extension.git"
+  }
+}
