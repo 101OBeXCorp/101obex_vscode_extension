@@ -133,6 +133,7 @@ class TreeDataProviderAPIs implements vscode.TreeDataProvider<TreeItem> {
 					responses.push(new TreeItem(element["name"], subresponses));
 					
 				});
+				try {
 				var subresponses2: TreeItem[] = [];
 				response.data.data[0].results[SelectedProject].dynamic_apis.forEach((element: any) => {
 					subresponses2.push(
@@ -145,7 +146,9 @@ class TreeDataProviderAPIs implements vscode.TreeDataProvider<TreeItem> {
 
 				});
 				responses.push(new TreeItem("Dynamic APIS", subresponses2));
+			} catch {}
 				this.data = responses;
+			
 	}
   
 	private _onDidChangeTreeData: vscode.EventEmitter<undefined | null | void> = 
