@@ -1,8 +1,8 @@
 {
-  "name": "101obex-api-extension-api-creation",
-  "displayName": "101OBeX API Designer",
-  "description": "101OBeX API Designer",
-  "version": "0.0.6",
+  "name": "101obex-api-extension-api-code",
+  "displayName": "AVAP API Code",
+  "description": "AVAP API Code",
+  "version": "0.0.11",
   "publisher": "101OBEX, CORP",
   "engines": {
     "vscode": "^1.73.0"
@@ -10,24 +10,33 @@
   "categories": [
     "Other"
   ],
-  "extensionPack": [
-    
+  "extensionPack": [],
+  "extensionDependencies": [
+    "101OBEX, CORP.101obex-api-extension"
   ],
-  "extensionDependencies":["101OBEX, CORP.101obex-api-extension"],
-  "recommendations": ["101OBEX, CORP.101obex-api-extension"],
+  "recommendations": [
+    "101OBEX, CORP.101obex-api-extension"
+  ],
   "icon": "images/101icon.png",
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
-
   "contributes": {
-    "views": {
-
-      "101obex-api-extension": [
+    "viewsContainers": {
+      "activitybar": [
         {
-          "id": "101obex-api-extension.package-creation",
-          "name": "API DESIGNER",
+          "id": "101obex-api-code",
+          "title": "AVAP API Code",
+          "icon": "images/api-code-activo.png"
+        }
+      ]
+    },
+    "views": {
+      "101obex-api-code": [
+        {
+          "id": "101obex-api-code.package-creation",
+          "name": "AVAP API Code",
           "type": "tree"
         }
       ]
@@ -45,23 +54,57 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "101obex-api-extension-api-creation.addAPI-api-creator",
+        "title": "add API",
+        "icon": "$(plus)"
+      },
+      {
+        "command": "101obex-api-extension-api-creation.commitPush-api-creator",
+        "title": "commit push",
+        "icon": "$(repo-push)"
+      },
+      {
+        "command": "101obex-api-extension-api-creation.checkout-api-creator",
+        "title": "commit checkout",
+        "icon": "$(repo-push)"
+      },
+
+      {
         "command": "101obex-api-extension-api-creation.RemoveAPI",
-        "title": "Remove API configuration"
+        "title": "Clone API"
+      },
+
+      {
+        "command": "101obex-api-extension-api-creation.CheckoutAPI",
+        "title": "Checkout this Commit"
       }
     ],
     "menus": {
       "view/title": [
         {
           "command": "101obex-api-extension-api-creation.refreshEntry-api-creator",
-          "when": "view == 101obex-api-extension.package-creation",
+          "when": "view == 101obex-api-code.package-creation",
+          "group": "navigation"
+        },
+        {
+          "command": "101obex-api-extension-api-creation.addAPI-api-creator",
+          "when": "view == 101obex-api-code.package-creation",
+          "group": "navigation"
+        },
+        {
+          "command": "101obex-api-extension-api-creation.commitPush-api-creator",
+          "when": "view == 101obex-api-code.package-creation",
           "group": "navigation"
         }
       ],
       "view/item/context": [
-
         {
           "command": "101obex-api-extension-api-creation.RemoveAPI",
-          "when": "view == 101obex-api-extension.package-creation && viewItem == APICONF"
+          "when": "view == 101obex-api-code.package-creation && viewItem == APICONF"
+        },
+        {
+          "command": "101obex-api-extension-api-creation.CheckoutAPI",
+          "when": "view == 101obex-api-code.package-creation && viewItem == COMMITCONF"
         }
       ]
     }
@@ -103,6 +146,7 @@
     "node-fetch": "^3.3.1",
     "request": "^2.88.2",
     "requests": "^0.3.0",
+    "vsce": "^2.15.0",
     "vscode-uri": "^3.0.7"
   },
   "repository": {

@@ -5,9 +5,10 @@ import os = require("os");
 import path = require('path');
 import { Response } from 'node-fetch';
 import { Script } from 'vm';
+// import { AppModel } from "./appModel";
 
 let ACCESS = false;
-var SelectedProject = 384;
+var SelectedProject = 356;
 var SelectedProjectToken ='';
 let REFRESHING = false;
 
@@ -23,10 +24,11 @@ extensions.forEach(ex =>{
 
 
 var UPDATE_APIS = false;
+var UPDATE_API_OBJ : {endpoint: string, entrypoint: string, apiname: string, pathfolder: vscode.Uri}
 
 var Services: any;
 
-var con2: { [x: string]: { apis: { model: string; connections: { name: string; description: string; ip: string; username: string; password: string; id: string; services: { name: string; connection: string}[]; }[]; }[]; erp: { model: string; connections: never[]; }[]; databases: { model: string; connections: never[]; }[]; low_code: { model: string; apis: {name: string }[];}[] ;finnancials: { core_banking: { model: string; connections: never[]; }[]; open_banking: { model: string; connections: never[]; }[]; baas: { model: string; connections: never[]; }[]; payment_methods: { model: string; connections: never[]; }[]; }; }; };
+var con2: { [x: string]: any[]; }[] //: { [x: string]: { apis: { model: string; connections: { name: string; description: string; ip: string; username: string; password: string; id: string; services: { name: string; connection: string}[]; }[]; }[]; erp: { model: string; connections: never[]; }[]; databases: { model: string; connections: never[]; }[]; low_code: { model: string; apis: {name: string }[];}[] ;finnancials: { core_banking: { model: string; connections: never[]; }[]; open_banking: { model: string; connections: never[]; }[]; baas: { model: string; connections: never[]; }[]; payment_methods: { model: string; connections: never[]; }[]; }; }; };
 var AccesToken: string;
 var idService: string;
 var con1 = {
@@ -140,7 +142,7 @@ var con1 = {
 		
 }
 
-var TEST = 1;
+var TEST = 0;
 
 var SelectedOrganization = '';
 var DevOrganization = '';
@@ -153,6 +155,8 @@ var ExtContext: vscode.ExtensionContext;
 var consultando = false;
 
 const url = "https://hesperidium.101obex.mooo.com:3001/info_extension?developer_token=";
+const url2 = "http://0.0.0.0:3000/api_catalog/history?developer_token=";
+const url3 = "http://216.238.84.25:3000/api_catalog/history?developer_token=";
 const userHomeDir = os.homedir();
 const configFile = userHomeDir+'/.101obex/config.json';
 const contextFile = userHomeDir+'/context.txt';
@@ -273,6 +277,8 @@ function getWebviewContent(url: any, headers: any, api_parameters: any) {
 
 export function activate(context: vscode.ExtensionContext) {
 
+	
+
 	const thisProvider = {
 		resolveWebviewView:function(thisWebviewView : any, thisWebviewContext: any, thisToken: any){
 			
@@ -357,6 +363,343 @@ export function activate(context: vscode.ExtensionContext) {
 	//  );
 	//}
 
+	try{
+		context.subscriptions.push(
+			vscode.commands.registerCommand('101obex-api-extension-api-creation.checkout-api-creator', async (e) =>
+			{
+	let checkaborted = false;
+	let workspacePath = '';
+	if (vscode.workspace.workspaceFolders?.length) {
+		workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+		workspacePath = path.normalize(workspacePath);
+	}
+	let API_Name = workspacePath.split('/').slice(-1);
+
+	let commits: string[] = [];
+	con2[0].APIs.forEach(api=>{
+		if (api.api_name == API_Name){
+			api.history.forEach((version: any) =>{
+				version.commits.forEach((element:any) => {
+					console.log(element.commit);
+					console.log(commits.includes(element.commit));
+					if (!commits.includes(element.commit)){
+						commits.push(`${element.datetime.replace('T',' ').replace('.000Z','')} ${element.commit} ${element.comment}`);
+					}
+				});
+			})
+		}
+
+	})
+
+	const pageType = await vscode.window.showQuickPick(			/// COMMIT DESDE EL CONTROL DE REPOSITORIO
+		commits,
+		{ placeHolder: 'Select Commit' }).then(async (pageType)=>{
+			// console.log(pageType);
+
+			if (pageType!=undefined){
+			if (vscode.workspace.workspaceFolders?.length) {
+				workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+				workspacePath = path.normalize(workspacePath);
+			}
+			
+			let API_Name = workspacePath.split('/').slice(-1);
+			let commit_id = pageType.split(' ')[2];
+			//////////
+
+			vscode.window.showInformationMessage(`Checking Out ${commit_id} Commit.`);
+
+			axios.get('http://216.238.84.25:3000/api_catalog/checkout?developer_token=' + AccesToken+`&obex_project_id=${SelectedProject}&api=${API_Name}&commit_id=${commit_id}`, axiosConfig)
+			.then(async (response) => {
+			
+	
+			if (response.data.data.code!=null) {
+			let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
+			responseFinal = response.data.data.code.replace(/\\/g,'');
+			let respondeJson = JSON.parse(responseFinal);
+	
+			const files = await vscode.workspace.findFiles('**/*.avap');
+			files.forEach((file)=>{ 
+				fs.unlink(file.path, (err) => {
+					if (err) throw err;
+				  });
+			});
+	
+			let contador = 0;
+			respondeJson.forEach((fichero: { file: any; code: any; })=>{
+	
+				let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
+				CodigoReal = CodigoReal.replace(/\\n/g,'\n');
+				fs.writeFile(workspacePath+`/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
+					if (err){
+						console.log(err);
+					} else {
+	
+						contador++;
+						if (contador===respondeJson.length){
+							console.log(contador);
+							vscode.window.showInformationMessage(`API ${API_Name} Checked on commit ${commit_id} Successfully`);
+	
+						}
+						}
+					});
+	
+	
+			})
+			
+			} else {
+				const files = await vscode.workspace.findFiles('**/*.avap');
+				files.forEach((file)=>{ 
+					fs.unlink(file.path, (err) => {
+						if (err) throw err;
+					  });
+				});
+	
+				vscode.window.showInformationMessage(`API ${API_Name} Checked on commit ${pageType} Successfully`);
+			}
+	
+		}
+			);
+
+	} else {
+		vscode.window.showErrorMessage("Checkout Aborted");
+		checkaborted = true;
+	}
+
+			//////////
+
+		});
+
+				if (!checkaborted) vscode.window.showInformationMessage(`Checking Out Repository`);
+	
+			 } ) );
+
+	} catch {}
+
+	try{
+		context.subscriptions.push(
+			vscode.commands.registerCommand('101obex-api-extension-api-creation.commitPush-api-creator', async () =>
+			{
+
+
+				let workspacePath = '';
+					if (vscode.workspace.workspaceFolders?.length) {
+						workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+						workspacePath = path.normalize(workspacePath);
+					}
+
+				let APIsAvailables = []
+				try{
+				APIsAvailables = con2[0]["APIs"];
+				} catch{
+					APIsAvailables =[];
+				}
+				let valid = false;
+				let API_Name = workspacePath.split('/').slice(-1);
+				
+				APIsAvailables.forEach((API__Name: { [x: string]: { toString: () => string; }; })=>{
+					// console.log(`${API__Name["api_name"].toString()} - ${API_Name[0]}`);
+					if (API__Name["api_name"].toString() === API_Name[0]){
+						valid = true;
+					}
+				})
+
+
+				if (valid){
+	
+				let error = false;
+				let commitDescription = await vscode.window.showInputBox({
+					placeHolder: "Describe the commit",
+					validateInput: text => {
+					return text === text ? null : 'Not 123!';
+					
+				}});
+	
+				if (commitDescription!=undefined && commitDescription!=""){
+
+				} else error = true;
+
+				if (error){
+					vscode.window.showErrorMessage(
+						'API Push aborted'
+					);
+				} else {
+					vscode.window.showInformationMessage(`Pushing commit`);
+
+					const files = await vscode.workspace.findFiles('**/*.avap');
+					//console.log(files);
+			
+					let codeFiles: { file: string; code: string; }[] = []
+					let coont = 0;
+					files.forEach((file)=>{
+						fs.readFile(file.fsPath, 'utf8', (err, data) => {
+							let fileAPI = file.path.split('/').slice(-1)[0];
+							console.log(fileAPI);
+							codeFiles.push({file: fileAPI, code: Buffer.from(data).toString('base64')})
+							//console.log(Buffer.from(data).toString('base64'));
+							coont++;
+							if (coont == files.length) {
+								
+								console.log(codeFiles);
+
+								let workspacePath = '';
+								if (vscode.workspace.workspaceFolders?.length) {
+									workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+									workspacePath = path.normalize(workspacePath);
+								}
+
+								let APIPUSH = workspacePath.split('/').slice(-1)[0]
+								commitDescription = commitDescription?.replace(/ /g, '%20')
+
+								axios.post(`http://216.238.84.25:3000/api_catalog/push_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${APIPUSH}&message=${commitDescription}`, {
+								// axios.post(`http://0.0.0.0:3000/api_catalog/push_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${APIPUSH}&message=${commitDescription}`, {
+
+									code: codeFiles
+								})
+								.then((response) => {
+									console.log(response);
+									
+									vscode.window.showInformationMessage(`Commit Pushed to ${APIPUSH} Repository`);
+								
+									axios.get(url3 + AccesToken+`&obex_project_id=${SelectedProject}`, axiosConfig)
+									.then((response) => {
+										TokenData = response;
+										Services = response.data.data[0].services
+										var resultss = response.data.data[0].results;
+										con2 = response.data.data;
+										Connectors(context, response, thisProvider);
+									});
+								
+								
+								
+								});
+			
+							}
+						
+						})
+						
+					})
+
+				}
+
+			} else {
+
+				vscode.window.showErrorMessage(
+					'You are not in an API Repository'
+				);
+				// ERROR
+			}
+
+
+
+
+			 } ) );
+
+	} catch {}
+
+	try{
+		context.subscriptions.push(
+			vscode.commands.registerCommand('101obex-api-extension-api-creation.addAPI-api-creator', async () =>
+			{
+
+				let error = false;
+				let ApiName = await vscode.window.showInputBox({
+					placeHolder: "Name of the API",
+					validateInput: text => {
+					return text === text ? null : 'Not 123!';
+					
+				}});
+				
+				if (ApiName!=undefined && ApiName!=""){
+					let endPoint = await vscode.window.showInputBox({
+						placeHolder: "Endpoint",
+						validateInput: text => {
+						return text === text ? null : 'Not 123!';
+						
+					}});
+				
+					if (endPoint!=undefined && endPoint!=""){
+					let entryPoint = await vscode.window.showInputBox({
+						placeHolder: "Entrypoint",
+						validateInput: text => {
+						return text === text ? null : 'Not 123!';
+						
+					}});
+
+					if (entryPoint!=undefined && entryPoint!=""){
+
+						if (entryPoint.split('.')[1] != '.avap'){
+							entryPoint = entryPoint.split('.')[0] + '.avap'
+						}
+
+
+						vscode.window.showInformationMessage(`Creating ${ApiName} Repository`);
+
+
+						// const folderPath = `/`;
+
+						let workspacePath = '';
+						if (vscode.workspace.workspaceFolders?.length) {
+							workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+							workspacePath = path.normalize(workspacePath);
+						}
+
+						
+							const wsedit = new vscode.WorkspaceEdit();
+							const wsPath = workspacePath;
+
+							const filePath2 = vscode.Uri.file(wsPath + `/${ApiName}`);
+							const filePath = vscode.Uri.file(wsPath + `/`);
+							/*
+							vscode.window.showInformationMessage(filePath.toString());
+							wsedit.createFile(filePath, { ignoreIfExists: true });
+							vscode.workspace.applyEdit(wsedit);
+						*/
+
+						
+					
+
+						const folderPath = workspacePath;
+
+						const folderPathParsed = folderPath.split(`\\`).join(`/`);
+						const folderUri = vscode.Uri.parse(folderPathParsed);
+						const folderUri2 = vscode.Uri.parse(folderPathParsed);
+
+
+						// const appModel = new AppModel();
+
+						fs.mkdirSync(filePath2.fsPath);
+						//appModel.createFileOrFolder('folder', appModel.findDir(filePath2.fsPath));
+
+						//vscode.workspace.updateWorkspaceFolders(0,undefined,{uri: filePath2 ,name: ApiName });
+						// vscode.commands.executeCommand(`vscode.createFolder`, filePath);
+
+						UPDATE_API_OBJ = {
+							endpoint: endPoint,
+							entrypoint: entryPoint,
+							apiname: ApiName,
+							pathfolder: filePath2
+						}
+
+						UPDATE_APIS = true;
+						Connectors(context, TokenData, thisProvider);
+					
+						// vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
+
+
+
+					} else error = true;
+				} else error = true;
+			} else error = true;
+				
+			if (error){
+				vscode.window.showErrorMessage(
+					'API Creation aborted'
+				);
+			}
+			}
+			)
+				);
+		} catch { }
 
 
 	ExtContext = context;
@@ -383,13 +726,21 @@ export function activate(context: vscode.ExtensionContext) {
 		
 		AccesToken = dataObj.id_token;
 
-		axios.get(url + dataObj.id_token, axiosConfig)
+		let porSel = getCurrentProject();
+		SelectedProject = porSel.obex_project_id;
+		SelectedProjectToken = porSel.selected_project;
+
+
+
+		axios.get(url2 + dataObj.id_token+`&obex_project_id=${SelectedProject}`, axiosConfig)
 			.then((response) => {
 				TokenData = response;
 
 				Services = response.data.data[0].services
 				var resultss = response.data.data[0].results;
-				con2 = resultss;
+				con2 = response.data.data;
+
+				createStatusBarItem(context) ;
 
 				Connectors(context, response, thisProvider);
 //				thisProvider.sayHi('');
@@ -397,8 +748,94 @@ export function activate(context: vscode.ExtensionContext) {
 					ReactPanel.createOrShow(context.extensionPath, 'API');
 				}));
 
+				vscode.commands.registerCommand(`101obex-api-extension-api-creation.CheckoutAPI`, async (e) => {
 
-				vscode.commands.registerCommand(`101obex-api-extension-api-creation.RemoveAPI`, (e) => {
+					//const files = await vscode.workspace.findFiles('**/*.*', '**/node_modules/**');
+					//console.log(files);
+
+					vscode.window.showInformationMessage(`Checking Out Repository`);
+
+
+
+				});
+
+				vscode.commands.registerCommand(`101obex-api-extension-api-creation.RemoveAPI`, async (e) => {
+
+					let APIClone = e.label;
+					axios.get(/*url3*/'http://216.238.84.25:3000/api_catalog/clone?developer_token=' + dataObj.id_token+`&obex_project_id=${SelectedProject}&api=${APIClone}`, axiosConfig)
+					.then((response) => {
+			
+						//console.log(response);
+						//console.log(response.data.data.code);
+						let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
+						responseFinal = response.data.data.code.replace(/\\/g,'');
+						let respondeJson = JSON.parse(responseFinal);
+						console.log(respondeJson);
+
+						let workspacePath = '';
+						if (vscode.workspace.workspaceFolders?.length) {
+							workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+							workspacePath = path.normalize(workspacePath);
+						}
+
+
+							const wsedit = new vscode.WorkspaceEdit();
+							const wsPath = workspacePath;
+
+							const filePath2 = vscode.Uri.file(wsPath + `/${APIClone}`);
+
+											
+
+						const folderPath = workspacePath;
+
+						const folderPathParsed = folderPath.split(`\\`).join(`/`);
+						const folderUri = vscode.Uri.parse(folderPathParsed);
+						const folderUri2 = vscode.Uri.parse(folderPathParsed);
+
+
+						// const appModel = new AppModel();
+						try{
+						fs.mkdirSync(filePath2.fsPath)
+
+						
+
+						///
+						let contador = 0;
+						respondeJson.forEach((fichero: { file: any; code: any; })=>{
+
+							let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
+							CodigoReal = CodigoReal.replace(/\\n/g,'\n');
+							fs.writeFile(workspacePath+`/${APIClone}/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
+								if (err){
+									console.log(err);
+								} else {
+									//refresh101ObeXExtensions();
+									contador++;
+									if (contador===respondeJson.length){
+										console.log(contador);
+										vscode.window.showInformationMessage(`API ${APIClone} Cloned Successfully`);
+
+
+										const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
+
+
+										vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
+									}
+									}
+								});
+
+
+						})
+					} catch {
+						vscode.window.showErrorMessage(
+							`API ${APIClone} Already Cloned.`
+						);
+					}
+
+					});
+
+
+	/*				
 					var arr:any;
 					
 					con1.low_code[0].apis.forEach((pooo:any)=>{
@@ -412,13 +849,19 @@ export function activate(context: vscode.ExtensionContext) {
 					
 					con1.low_code[0].apis = arr;
 					UPDATE_APIS=true;
+					
+
 					Connectors(context, response, thisProvider);
+*/
+					
 //					thisProvider.sayHi('');
 				});
 				
 				
 				})
 			.catch((error) => {
+
+				/*
 				if ('success' in error.response.data) {
 				vscode.window.showErrorMessage(
 							'Your Token is not a valid Token.'
@@ -430,13 +873,273 @@ export function activate(context: vscode.ExtensionContext) {
 						);
 					} 
 				nullRegistration(context,'101obex-api-extension-api-creation.refreshEntry-api-creator');
+*/
+
+axios.get(url3 + dataObj.id_token+`&obex_project_id=${SelectedProject}`, axiosConfig)
+.then((response) => {
+	TokenData = response;
+
+	Services = response.data.data[0].services
+	var resultss = response.data.data[0].results;
+	con2 = response.data.data;
+	createStatusBarItem(context) ;
+	Connectors(context, response, thisProvider);
+//				thisProvider.sayHi('');
+	context.subscriptions.push(vscode.commands.registerCommand('react-webview-creation.start-low_code', () => {
+		ReactPanel.createOrShow(context.extensionPath, 'API');
+	}));
+
+
+	vscode.commands.registerCommand(`101obex-api-extension-api-creation.CheckoutAPI`, async (e) => {
+
+		//console.log(e);
+
+		let API_Selected = e.tooltip.toString().split(' ')[0]
+
+		//console.log(API_Selected);
+
+		let workspacePath = '';
+		if (vscode.workspace.workspaceFolders?.length) {
+			workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+			workspacePath = path.normalize(workspacePath);
+		}
+
+		let APIsAvailables = []
+		try{
+		APIsAvailables = con2[0]["APIs"];
+		} catch{
+			APIsAvailables =[];
+		}
+		let valid = false;
+		let API_Name = workspacePath.split('/').slice(-1);
+		
+		APIsAvailables.forEach((API__Name: { [x: string]: { toString: () => string; }; })=>{
+			// console.log(`${API__Name["api_name"].toString()} - ${API_Name[0]}`);
+			if (API__Name["api_name"].toString() === API_Name[0]){
+				valid = API_Selected === API_Name[0];
+			}
+		})
+
+		if (!valid){
+			vscode.window.showErrorMessage(
+				`You are not in API ${API_Selected}, cant checkout`
+			);
+		} else {
+
+		vscode.window.showInformationMessage(`Checking Out ${e.tooltip.split('-')[1].substring(1,e.tooltip.length-1)} Commit.`);
+
+		axios.get('http://216.238.84.25:3000/api_catalog/checkout?developer_token=' + dataObj.id_token+`&obex_project_id=${SelectedProject}&api=${API_Selected}&commit_id=${e.tooltip.split('-')[1].substring(1,e.tooltip.length-1)}`, axiosConfig)
+		.then(async (response) => {
+		
+
+		if (response.data.data.code!=null) {
+		let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
+		responseFinal = response.data.data.code.replace(/\\/g,'');
+		let respondeJson = JSON.parse(responseFinal);
+
+		const files = await vscode.workspace.findFiles('**/*.avap');
+		files.forEach((file)=>{ 
+			fs.unlink(file.path, (err) => {
+				if (err) throw err;
+			  });
+		});
+
+		let contador = 0;
+		respondeJson.forEach((fichero: { file: any; code: any; })=>{
+
+			let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
+			CodigoReal = CodigoReal.replace(/\\n/g,'\n');
+			fs.writeFile(workspacePath+`/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
+				if (err){
+					console.log(err);
+				} else {
+
+					contador++;
+					if (contador===respondeJson.length){
+						console.log(contador);
+						vscode.window.showInformationMessage(`API ${API_Selected} Checked on commit ${e.label} Successfully`);
+
+
+						//const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
+
+
+						//vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
+					}
+					}
+				});
+
+
+		})
+		
+		} else {
+			const files = await vscode.workspace.findFiles('**/*.avap');
+			files.forEach((file)=>{ 
+				fs.unlink(file.path, (err) => {
+					if (err) throw err;
+				  });
+			});
+
+			vscode.window.showInformationMessage(`API ${API_Selected} Checked on commit ${e.label} Successfully`);
+		}
+
+	}
+		);
+
+
+		}
+
+	});
+
+/*
+	vscode.commands.registerCommand(`101obex-api-extension-api-creation.commitPush-api-creator`, async (e) => {
+
+
+		
+	});
+*/
+	vscode.commands.registerCommand(`101obex-api-extension-api-creation.RemoveAPI`, (e) => {
+
+		let APIClone = e.label;
+		axios.get(/*url3*/'http://216.238.84.25:3000/api_catalog/clone?developer_token=' + dataObj.id_token+`&obex_project_id=${SelectedProject}&api=${APIClone}`, axiosConfig)
+		.then((response) => {
+
+			//console.log(response);
+			//console.log(response.data.data.code);
+
+			if (response.data.data.code == undefined) { 
+
+				let workspacePath = '';
+				if (vscode.workspace.workspaceFolders?.length) {
+					workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+					workspacePath = path.normalize(workspacePath);
+				}
+	
+	
+					const wsedit = new vscode.WorkspaceEdit();
+
+	
+									
+	
+				const folderPath = workspacePath;
+	
+				const folderPathParsed = folderPath.split(`\\`).join(`/`);
+				const folderUri = vscode.Uri.parse(folderPathParsed);
+				const folderUri2 = vscode.Uri.parse(folderPathParsed);
+	
+	
+				// const appModel = new AppModel();
+				try{
+
+					const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
+					
+				fs.mkdirSync(filePath2.fsPath)
+
+				
+
+
+				vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
+				
+	
+				} catch {
+					vscode.window.showErrorMessage(
+						`API ${APIClone} Already Cloned.`
+					);
+				}	
+
+			} else {
+			
+			let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
+			responseFinal = response.data.data.code.replace(/\\/g,'');
+			let respondeJson = JSON.parse(responseFinal);
+			console.log(respondeJson);
+
+			let workspacePath = '';
+			if (vscode.workspace.workspaceFolders?.length) {
+				workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+				workspacePath = path.normalize(workspacePath);
+			}
+
+
+				const wsedit = new vscode.WorkspaceEdit();
+				const wsPath = workspacePath;
+
+				const filePath2 = vscode.Uri.file(wsPath + `/${APIClone}`);
+
+								
+
+			const folderPath = workspacePath;
+
+			const folderPathParsed = folderPath.split(`\\`).join(`/`);
+			const folderUri = vscode.Uri.parse(folderPathParsed);
+			const folderUri2 = vscode.Uri.parse(folderPathParsed);
+
+
+			// const appModel = new AppModel();
+			try{
+			fs.mkdirSync(filePath2.fsPath)
+
+			
+
+			///
+			let contador = 0;
+			respondeJson.forEach((fichero: { file: any; code: any; })=>{
+
+				let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
+				CodigoReal = CodigoReal.replace(/\\n/g,'\n');
+				fs.writeFile(workspacePath+`/${APIClone}/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
+					if (err){
+						console.log(err);
+					} else {
+						//refresh101ObeXExtensions();
+						contador++;
+						if (contador===respondeJson.length){
+							console.log(contador);
+							vscode.window.showInformationMessage(`API ${APIClone} Cloned Successfully`);
+
+
+							const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
+
+
+							vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
+						}
+						}
+					});
+
+
+			})
+		} catch {
+			vscode.window.showErrorMessage(
+				`API ${APIClone} Already Cloned.`
+			);
+		}
+	}
+		});
+	});
+	
+	
+	})
+.catch((error) => {
+	if ('success' in error.response.data) {
+	vscode.window.showErrorMessage(
+				'Your Token is not a valid Token.'
+			);
+		} 
+	else{
+		vscode.window.showErrorMessage(
+				'101OBeX Server is not responding.'
+			);
+		} 
+	nullRegistration(context,'101obex-api-extension-api-creation.refreshEntry-api-creator');
+
+	});	
+
 
 				});	
 		}
 	
 	);
 	sayHi("", true);
-	vscode.window.showInformationMessage('101OBeX API Creation Extension activated');
+	vscode.window.showInformationMessage('AVAP API Code activated');
 	} else {
 		vscode.window.showErrorMessage("You must have 101OBeX API Extension Base installed");
 	}
@@ -459,35 +1162,61 @@ class TreeDataProviderAPICreator implements vscode.TreeDataProvider<TreeItem> {
 		var res = { data : res_data}
 
 		var category: TreeItem[] = [];
-
-		res.data.data[0].low_code.forEach((element: any) => {
+		
+		response.data.data.forEach((element: any) => {
+			//console.log(element);
 			var subresponses8: TreeItem[] = [];
-			element.apis.forEach((subelement: any) => {
-				var ttt: TreeItem[] = [];
-				ttt.push(new TreeItem(`ws/low_code.py/${subelement.name.replaceAll(' ','_')}`, undefined,'test',`test|${subelement.name}`))
+			element.APIs.forEach((subelement: any) => {
+				var tttt: TreeItem[] = [];
+				
+
+				subelement.history.forEach((subsubelement:any) =>{
+					var ttt: TreeItem[] = [];
+					subsubelement.commits.forEach((subsubsubelement:any)=>{
+					var tttfilesystem: TreeItem[] = [];
+					if (subsubsubelement.code!=undefined) {
+						let code_parsed = subsubsubelement.code.replace(/\\"/g,'\"');
+						
+						code_parsed = JSON.parse(code_parsed);
+						code_parsed.forEach((subfile:any)=>{
+
+							tttfilesystem.push(new TreeItem(`${subfile.file}`,undefined,`file|${subelement.entrypoint}`,''));
+						})
+					}
+
+						ttt.push(new TreeItem(`${subsubsubelement.commit.substring(0,8)} ${subsubsubelement.comment} \t${subsubsubelement.dev_id}`, tttfilesystem,'commit',`${subelement.api_name} - ${subsubsubelement.commit}`));
+					})
+
+					let version_modified = subsubelement.version.charAt(0).toUpperCase() + subsubelement.version.slice(1);
+					tttt.push(new TreeItem(`${version_modified}`, ttt,`version ${subelement.v_commit}`,`${subsubelement.v_commit}`));
+				} )
+
 				subresponses8.push(
 					new TreeItem(
-						`${subelement["name"]}`,
-						ttt,
-						'config',
-						`${element.model}|${subelement.name}`)
+						`${subelement.api_name}`,
+						tttt,
+						`API ${subelement.endpoint}`,
+						`API`)
 						);
 			});
 
-			if (element.model === 'API'){
+			/*
+			if (element.model === 'API' || true){
 				subresponses8.push(
 					new TreeItem(
 						`+`,
 						undefined,
 						'add api',
-						element.model)
+						element.api_name)
 						);
 					}
-
-			category.push(new TreeItem('APIs', subresponses8,'','LOW_CODE'));
+*/
+			let name_efective = element.name.charAt(0).toUpperCase() + element.name.slice(1);
+			
+			category.push(new TreeItem(name_efective, subresponses8,'ambient','API_VIRTUAL'));
 			
 		});
-
+		//category.push(new TreeItem('Add API', undefined,'','ADD_API_VIRTUAL'));
 		this.data = category;
 	}
   
@@ -538,8 +1267,10 @@ class TreeItem extends vscode.TreeItem {
 	  this.iconPath = this.description === 'DEVELOPERS' ? path.join(__filename, '..', '..', 'images', 'person.svg') :  this.iconPath
 	  this.description = this.description === 'DEVELOPERS' ? "" : this.description
 
-	  this.iconPath = this.tooltip !== undefined ? path.join(__filename, '..', '..', 'images', 'code.svg') :  this.iconPath
+	  this.iconPath = this.tooltip !== undefined ? path.join(__filename, '..', '..', 'images', 'settings.svg') :  this.iconPath
 	  
+if (this.tooltip == "ADD_API_VIRTUAL") {this.iconPath = path.join(__filename, '..', '..', 'images', 'plus.png');}
+
 
 		if (this.tooltip == 'CONNECTOR'){
 			this.iconPath = path.join(__filename, '..', '..', 'images', 'plug.png');
@@ -558,6 +1289,40 @@ class TreeItem extends vscode.TreeItem {
 		if (this.description == 'add api'){
 			this.iconPath = ''; 
 		}
+		let addsd1= this.description?.split('|')[0];
+		let addsd2= this.description?.split('|')[1];
+
+		let addsd= this.description?.split(' ')[0];
+		if (addsd == 'commit'){
+			this.contextValue = 'COMMITCONF'
+			this.description = '';
+			this.iconPath = path.join(__filename, '..', '..', 'images', 'git-commit-line.svg');
+		}
+
+		if (addsd1 == 'file'){
+			//this.contextValue = 'COMMITCONF'
+			this.description = '';
+			if (this.label?.toString() == addsd2) this.iconPath = path.join(__filename, '..', '..', 'images', 'code_color.svg');
+			else this.iconPath = path.join(__filename, '..', '..', 'images', 'code.svg');
+		}
+
+		if (addsd == 'version'){
+			//this.contextValue = 'COMMITCONF'
+			this.description = '';
+			this.iconPath = path.join(__filename, '..', '..', 'images', 'version.svg');
+		}
+
+		if (addsd == 'API'){
+			//this.contextValue = 'COMMITCONF'
+			this.description = this.description?.split(' ')[1];
+		}
+
+		if (this.description == 'ambient'){
+			//this.contextValue = 'COMMITCONF'
+			this.description = '';
+			this.iconPath = undefined//; path.join(__filename, '..', '..', 'images', 'ambients.svg');
+		}
+
 		if (this.tooltip?.toString().split('|')[1]=='connection'){
 			this.contextValue = 'CONECT'
 		} else if (this.tooltip?.toString().split('|')[0].toString()=='IBM3270'){
@@ -580,10 +1345,87 @@ class TreeItem extends vscode.TreeItem {
 			let porSel = getCurrentProject();
 			SelectedProject = porSel.obex_project_id;
 			SelectedProjectToken = porSel.selected_project;
-			con1 = con2[SelectedProject];
+			con1 = response.data.data; //con2[SelectedProject];
 
 			if (UPDATE_APIS){
+				
+				// /api_catalog/init_repo
 
+				axios.post(`http://216.238.84.25:3000/api_catalog/init_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${UPDATE_API_OBJ.apiname}&entrypoint=${UPDATE_API_OBJ.entrypoint}&endpoint=${UPDATE_API_OBJ.endpoint}`, {
+					// obex_project_id: SelectedProject,
+					// value_json: JSON.stringify(con1),
+					// developer_token: AccesToken
+				})
+				.then((response) => {
+					//console.log(response);
+					
+					axios.get(url3 + AccesToken+`&obex_project_id=${SelectedProject}`, axiosConfig)
+				
+					.then((response) => {
+						TokenData = response;
+					
+						Services = response.data.data[0].services
+						var resultss = response.data.data[0].results;
+						con2 = response.data.data;
+					
+
+
+						Connectors(context, response, thisProvider);
+
+						let workspacePath = '';
+						if (vscode.workspace.workspaceFolders?.length) {
+							workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+							workspacePath = path.normalize(workspacePath);
+						}
+						let filetemplate = 'Ly8gQVZBUCBBUEkgVGVtcGxhdGUKCi8vIENyZWF0aW9uIG9mIGdsb2JhbCB2YXJpYWJsZXMKCi8vIENhcHR1cmluZyBhcGkgcmVxdWVzdCBwYXJhbWV0ZXJzCgovLyBSZWFkIC8gV3JpdGUgZnJvbSBkYXRhYmFzZSBpbnRvIHZhcmlhYmxlcwoKLy8gQWRkIHZhcmlhYmxlcyB0byByZXN1bHQ='
+						let CodigoReal = JSON.stringify(Buffer.from(filetemplate,'base64').toString('ascii'));
+						CodigoReal = CodigoReal.replace(/\\n/g,'\n');
+						fs.writeFile(workspacePath+`/${UPDATE_API_OBJ.apiname}/${UPDATE_API_OBJ.entrypoint}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
+							if (err){
+								console.log(err);
+							} else {
+								if (UPDATE_API_OBJ.pathfolder != undefined) {
+									setTimeout(() => {vscode.workspace.openTextDocument(UPDATE_API_OBJ.pathfolder+`/${UPDATE_API_OBJ.entrypoint}`);}, 3000);
+									vscode.commands.executeCommand(`vscode.openFolder`, UPDATE_API_OBJ.pathfolder).then(()=>{
+									vscode.workspace.openTextDocument(UPDATE_API_OBJ.pathfolder+`/${UPDATE_API_OBJ.entrypoint}`);
+									});
+								}
+
+
+								}
+							});
+						
+
+						
+
+
+			
+						})
+					.catch((error) => {
+						if ('success' in error.response.data) {
+						vscode.window.showErrorMessage(
+									'Your Token is not a valid Token.'
+								);
+							} 
+						else{
+							vscode.window.showErrorMessage(
+									'101OBeX Server is not responding.'
+								);
+							} 
+						nullRegistration(context,'101obex-api-extension-api-creation.refreshEntry-api-creator');
+					
+						});	
+
+				}).catch((error) => { 
+					console.log(error);
+				});
+
+
+
+
+
+
+				/*
 				axios.post("https://hesperidium.101obex.mooo.com:3001/info_extension", {
 					obex_project_id: SelectedProject,
 					value_json: JSON.stringify(con1),
@@ -595,12 +1437,14 @@ class TreeItem extends vscode.TreeItem {
 					console.log(error);
 				});
 
+				*/
+
 				UPDATE_APIS = false;
 			}
 
 			var apisTreeProvider = new TreeDataProviderAPICreator(response);
 			
-			var tree = vscode.window.createTreeView('101obex-api-extension.package-creation', {
+			var tree = vscode.window.createTreeView('101obex-api-code.package-creation', {
 				treeDataProvider: apisTreeProvider,
 			});
 
@@ -827,6 +1671,71 @@ async function setTestData(url: string, params: Object, init = false){
 		}
 	}
   }
+
+
+  function createStatusBarItem(context: vscode.ExtensionContext)
+{
+
+
+
+let workspacePath = '';
+if (vscode.workspace.workspaceFolders?.length) {
+    workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    workspacePath = path.normalize(workspacePath);
+}
+
+
+    // register a command that is invoked when the status bar
+    // item is clicked.
+
+
+    // create a new status bar item that we can now manage
+    const item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    
+
+    context.subscriptions.push(item);
+
+	// console.log(con2);
+	//console.log(con2[0]["APIs"]);
+	let APIsAvailables = []
+	try{
+	APIsAvailables = con2[0]["APIs"];
+	} catch{
+		APIsAvailables =[];
+	}
+	let valid = false;
+	let API_Name = workspacePath.split('/').slice(-1);
+	
+	APIsAvailables.forEach((API__Name: { [x: string]: { toString: () => string; }; })=>{
+		// console.log(`${API__Name["api_name"].toString()} - ${API_Name[0]}`);
+		if (API__Name["api_name"].toString() === API_Name[0]){
+			valid = true;
+		}
+	})
+	
+    item.text = valid ? `$(repo) ${API_Name}`: 'No API';
+    item.tooltip = `AVAP API Repository`;
+
+	const myCommandId = 'myExtension.statusBarClick';
+    context.subscriptions.push(vscode.commands.registerCommand(myCommandId, async () => 
+    {
+        const pageType = await vscode.window.showQuickPick(
+            valid ? ['Push Commit', 'Checkout'] : [],
+            { placeHolder: 'Select action on repository' }).then(async (pageType)=>{
+				console.log(pageType);
+
+				if (pageType == 'Push Commit') await vscode.commands.executeCommand('101obex-api-extension-api-creation.commitPush-api-creator');
+				if (pageType == 'Checkout') await vscode.commands.executeCommand('101obex-api-extension-api-creation.checkout-api-creator');
+
+			});
+
+    }));
+
+	if (valid) item.command =  myCommandId;
+
+    item.show();
+}
+
 
 
 function sayHi(url: any, init = false) {  
