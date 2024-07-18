@@ -1,8 +1,8 @@
 {
-  "name": "101obex-api-extension-api-code",
-  "displayName": "AVAP API Code",
-  "description": "AVAP API Code",
-  "version": "0.0.11",
+  "name": "101obex-api-extension-api-publish",
+  "displayName": "AVAP API Publisher",
+  "description": "AVAP API Publisher",
+  "version": "1.30.75",
   "publisher": "101OBEX, CORP",
   "engines": {
     "vscode": "^1.73.0"
@@ -17,7 +17,7 @@
   "recommendations": [
     "101OBEX, CORP.101obex-api-extension"
   ],
-  "icon": "images/101icon.png",
+  "icon": "images/icono_DS.png",
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -26,85 +26,99 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "101obex-api-code",
-          "title": "AVAP API Code",
-          "icon": "images/api-code-activo.png"
+          "id": "101obex-api-publish",
+          "title": "AVAP API Publisher",
+          "icon": "images/icono_avap.png"
         }
       ]
     },
     "views": {
-      "101obex-api-code": [
+      "101obex-api-extension": [
         {
-          "id": "101obex-api-code.package-creation",
-          "name": "AVAP API Code",
+          "id": "101obex-api-publish.package-publisher",
+          "name": "AVAP API Publisher",
           "type": "tree"
         }
       ]
     },
     "commands": [
       {
-        "command": "react-webview-creation.start",
-        "title": "Start React Webview",
-        "category": "React",
-        "icon": "$(refresh)"
-      },
-      {
-        "command": "101obex-api-extension-api-creation.refreshEntry-api-creator",
+        "command": "101obex-api-extension-api-publisher.refreshEntry-api-publisher",
         "title": "Refresh",
         "icon": "$(refresh)"
       },
       {
-        "command": "101obex-api-extension-api-creation.addAPI-api-creator",
-        "title": "add API",
+        "command": "101obex-api-extension-api-publisher.addAPI-api-publisher",
+        "title": "add API Product",
         "icon": "$(plus)"
       },
       {
-        "command": "101obex-api-extension-api-creation.commitPush-api-creator",
+        "command": "101obex-api-extension-api-publisher.linkAPI-api-publisher",
+        "title": "Link External API",
+        "icon": "$(link)"
+      },
+      {
+        "command": "101obex-api-extension-api-publisher.commitPush-api-publisher",
         "title": "commit push",
         "icon": "$(repo-push)"
       },
       {
-        "command": "101obex-api-extension-api-creation.checkout-api-creator",
+        "command": "101obex-api-extension-api-publisher.checkout-api-publisher",
         "title": "commit checkout",
         "icon": "$(repo-push)"
       },
-
       {
-        "command": "101obex-api-extension-api-creation.RemoveAPI",
-        "title": "Clone API"
+        "command": "101obex-api-extension-api-publisher.eraseAPI",
+        "title": "Erase API",
+        "icon": {
+          "light": "images/bin.svg",
+          "dark": "images/bin-white.svg"
+        }
       },
 
       {
-        "command": "101obex-api-extension-api-creation.CheckoutAPI",
+        "command": "101obex-api-extension-api-publisher.CloneAPI",
+        "title": "Publish API"
+      },
+
+      {
+        "command": "101obex-api-extension-api-publisher.CheckoutAPI",
         "title": "Checkout this Commit"
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "101obex-api-extension-api-creation.refreshEntry-api-creator",
-          "when": "view == 101obex-api-code.package-creation",
+          "command": "101obex-api-extension-api-publisher.refreshEntry-api-publisher",
+          "when": "view == 101obex-api-publish.package-publisher",
           "group": "navigation"
         },
         {
-          "command": "101obex-api-extension-api-creation.addAPI-api-creator",
-          "when": "view == 101obex-api-code.package-creation",
-          "group": "navigation"
-        },
-        {
-          "command": "101obex-api-extension-api-creation.commitPush-api-creator",
-          "when": "view == 101obex-api-code.package-creation",
+          "command": "101obex-api-extension-api-publisher.addAPI-api-publisher",
+          "when": "view == 101obex-api-publish.package-publisher",
           "group": "navigation"
         }
+        ,
+        {
+          "command": "101obex-api-extension-api-publisher.linkAPI-api-publisher",
+          "when": "view == 101obex-api-publish.package-publisher",
+          "group": "navigation"
+        }
+
       ],
       "view/item/context": [
         {
-          "command": "101obex-api-extension-api-creation.RemoveAPI",
-          "when": "view == 101obex-api-code.package-creation && viewItem == APICONF"
+          "command": "101obex-api-extension-api-publisher.CloneAPI",
+          "when": "view == 101obex-api-publish.package-publisher && viewItem == APICONF"
         },
+          {
+            "command": "101obex-api-extension-api-publisher.eraseAPI",
+            "when": "view == 101obex-api-publish.package-publisher && viewItem == API_NOT_PUBLISHED",
+            "group": "inline"
+          },
         {
-          "command": "101obex-api-extension-api-creation.CheckoutAPI",
-          "when": "view == 101obex-api-code.package-creation && viewItem == COMMITCONF"
+          "command": "101obex-api-extension-api-publisher.CheckoutAPI",
+          "when": "view == 101obex-api-publish.package-publisher && viewItem == COMMITCONF"
         }
       ]
     }
