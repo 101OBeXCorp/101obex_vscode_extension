@@ -1,8 +1,8 @@
 {
   "name": "101obex-api-extension",
-  "displayName": "101OBeX API Extension for Visual Code",
-  "description": "101OBeX API Extension for Visual Code",
-  "version": "0.0.2",
+  "displayName": "AVAP DEV Extensions for Microsoft Visual Studio",
+  "description": "AVAP DEV Extensions for Microsoft Visual Studio",
+  "version": "1.30.75",
   "publisher": "101OBEX, CORP",
   "engines": {
     "vscode": "^1.73.0"
@@ -10,7 +10,7 @@
   "categories": [
     "Other"
   ],
-  "icon": "images/101icon.png",
+  "icon": "images/icono_DS.png",
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -20,8 +20,8 @@
       "activitybar": [
         {
           "id": "101obex-api-extension",
-          "title": "101OBeX API Extension for Visual Code",
-          "icon": "images/101icon.png"
+          "title": "AVAP DEV Extensions for Microsoft Visual Studio",
+          "icon": "images/icono_avap.png"
         }
       ]
     },
@@ -29,7 +29,7 @@
       "101obex-api-extension": [
         {
           "id": "package-organizations",
-          "name": "Organizations",
+          "name": "Deployment and Organizations",
           "type": "tree"
         },
         {
@@ -39,7 +39,7 @@
         },
         {
           "id": "package-projects",
-          "name": "Projects",
+          "name": "API Projects",
           "type": "tree"
         }
       ]
@@ -59,9 +59,24 @@
         "command": "101obex-api-extension.refreshEntry-teams",
         "title": "Refresh",
         "icon": "$(refresh)"
-      }
+      },
+      {
+				"command": "run-button-script.run",
+				"title": "Run script button",
+				"icon": {
+					"light": "./images/play-icon.svg",
+					"dark": "./images/play-icon.svg"
+				}
+			}
     ],
     "menus": {
+      "editor/title": [
+				{
+					"command": "run-button-script.run",
+					"when": "resourceLangId == avap ",
+					"group": "navigation"
+				}
+			],
       "view/title": [
         {
           "command": "101obex-api-extension.refreshEntry-organizations",

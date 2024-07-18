@@ -4,24 +4,34 @@ import axios, { AxiosResponse } from 'axios';
 import os = require("os");
 import { ChatGPTAPI } from 'chatgpt';
 import path = require('path');
+import { showScripts } from './select-script';
 
-var TEST = 1;
+var TEST = 0;
 
 type AuthInfo = {apiKey?: string};
 type Settings = {selectedInsideCodeblock?: boolean, codeblockWithLanguageId?: false, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
 
 var SelectedOrganization = '';
 var DevOrganization = '';
+var DevOrganizationID = '';
 var SelectedDevToken = '';
 var DevToken = '';
 var CONTEXT = "";
-
+var DEVTOKEN = "";
+var selDep = 0;
+var erDep = 0;
 var consultando = false;
 
-const url = "https://hesperidium.101obex.mooo.com:3001/info_extension?developer_token=";
+const url = "http://45.32.141.48:3000/info_extension?developer_token=";
+const url0 = "http://45.32.141.48:3000";
+const url_p2p = "http://45.77.2.228:3000/info_extension?developer_token=";
+const url_p2p0 = "http://45.77.2.228:3000";
+const url_stand = "http://0.0.0.0:3000/info_extension?developer_token=";
+const url_stand0 = "http://0.0.0.0:3000";
+let selected_deploy = url;
 const userHomeDir = os.homedir();
-console.log("---------");
-console.log(userHomeDir);
+// console.log("---------");
+// console.log(userHomeDir);
 const configFile = userHomeDir+'/.101obex/config.json';
 const contextFile = userHomeDir+'/context.txt';
 const axiosConfig = {
@@ -64,12 +74,21 @@ export function activate(context: vscode.ExtensionContext) {
 		if (TEST==0) var dataObj = JSON.parse( data.replace(/\'/g,"\"") ); else var dataObj: any = {}
 
 		if (TEST==1) dataObj.id_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1MmRlMjdmNTE1NzM3NTM5NjAwZDg5YjllZTJlNGVkNTM1ZmI1MTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgwNzE4ODU4MTA0MzU5OTg4ODIiLCJoZCI6IndheW5ub3ZhdGUuY29tIiwiZW1haWwiOiJyYWZhLnJ1aXpAd2F5bm5vdmF0ZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Il9GTk5wSlRvNEd5X2NaYS10d0hUVVEiLCJuYW1lIjoiUmFmYWVsIFJ1aXoiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUVkRlRwNG4xaF9RbUoxelhUd3NUdDNBRTdkVVVRUGhkTlFaN0hRek5zQVdrZz1zOTYtYyIsImdpdmVuX25hbWUiOiJSYWZhZWwiLCJmYW1pbHlfbmFtZSI6IlJ1aXoiLCJsb2NhbGUiOiJlcyIsImlhdCI6MTY3MDk1Mjc2NCwiZXhwIjoxNjcwOTU2MzY0fQ.uFMoDEhjZW-FKxnBg9BVxp_sSrjcrvw5_sxMOQZrREvJjv11W2GxLuQfMjMTtTPXhDCa8GeQOlzCllWxQRlOr3irEdu19y4qJQT1ut0RSi7pEIb6E6KcsdiAZtRSlA-6feIuj2u9gC2HXnGvBHtlO3FhWw4Et1zl_menGTCLOMqeq6v2QiMOfFlFzzE2t1TSo5_Be9AZQNfB7E1SLGHnbKXdR9ij9yqwMD2spjpxvnw4l4k5q23eS5Zz0Qz_WNm5PBgqF5NJwTeky-7-Aeq-ulUSnQ3qY-SsmQJunyt_miiwDyVOQkEWNDMRF4FJPuXDGJatWEeCsKXWe877pL4nVA';
+		// console.log(dataObj);
+		DEVTOKEN = dataObj.id_token;
 
+		selDep = 0;
+
+		//Cloud License
+		
 		axios.get(url + dataObj.id_token, axiosConfig)
 			.then((response) => {
+				selDep = 1;
 				TokenData = response;
+				//console.log("CLOUD NETWORK!!!")
 				setActiveProject(response.data.data[0].authorizations[0].token);
 				setActiveOrganization(response.data.data[0].organizations[0].name);
+				setActiveCloud(url0);
 				organizations(context, response, true);
 				teams(context, response, true);
 				projects(context, response, false);
@@ -77,24 +96,115 @@ export function activate(context: vscode.ExtensionContext) {
 				})
 			.catch((error) => {
 				if ('success' in error.response.data) {
-				vscode.window.showErrorMessage(
-							'Your Token is not a valid Token.'
-						);
+
+
+						//p2p License
+			if (selDep === 0){
+				axios.get(url_p2p + dataObj.id_token, axiosConfig)
+				.then((response) => {
+					selDep = 2;
+					console.log("P2P NETWORK!!!")
+					TokenData = response;
+					setActiveProject(response.data.data[0].authorizations[0].token);
+					setActiveOrganization(response.data.data[0].organizations[0].name);
+					setActiveCloud(url_p2p0);
+					organizations(context, response, true);
+					teams(context, response, true);
+					projects(context, response, false);
+			
+					})
+				.catch((error) => {
+					if ('success' in error.response.data) {
+
+						if (selDep == 0)
+							{
+								if (erDep == 0) {
+									vscode.window.showErrorMessage(
+										'Your Token is not a valid Token.'
+									);
+				
+								} else {
+									vscode.window.showErrorMessage(
+										'101OBeX Server is not responding.'
+									);
+				
+								}
+								
+							}	
+			
+						} 
+					else{
+						erDep = 1;
+
+						if (selDep == 0)
+							{
+								if (erDep == 0) {
+									vscode.window.showErrorMessage(
+										'Your Token is not a valid Token.'
+									);
+				
+								} else {
+									vscode.window.showErrorMessage(
+										'101OBeX Server is not responding.'
+									);
+				
+								}
+								
+							}	
+			
+						} 
+					
+					});	
+			
+			
+					}
+					
+
 					} 
 				else{
-					vscode.window.showErrorMessage(
-							'101OBeX Server is not responding.'
-						);
+					erDep = 1
+					if (selDep == 0)
+						{
+							if (erDep == 0) {
+								vscode.window.showErrorMessage(
+									'Your Token is not a valid Token.'
+								);
+			
+							} else {
+								vscode.window.showErrorMessage(
+									'101OBeX Server is not responding.'
+								);
+			
+							}
+							
+						}	
+
 					} 
-				nullRegistration(context,'101obex-api-extension.refreshEntry-organizations');
-				nullRegistration(context,'101obex-api-extension.refreshEntry-teams');
-				nullRegistration(context,'101obex-api-extension.refreshEntry-projects');
 				
 				});	
-		}
-	
+
+
+
+
+
+
+			console.log(selDep);
+
+	}
+
+		
+
 	);
 	vscode.window.showInformationMessage('101OBeX API Extension activated');
+
+
+	let disposable = vscode.commands.registerCommand('run-button-script.run', () => {
+		showScripts();
+	});
+
+	context.subscriptions.push(disposable);
+
+	
 }
 
 export function deactivate() {}
@@ -155,33 +265,43 @@ class TreeDataProviderProjects implements vscode.TreeDataProvider<TreeItem> {
 				var responses: TreeItem[] = [];
 				response.data.data[0].authorizations.forEach((element: any) => {
 					var subresponses: TreeItem[] = [];
-					subresponses.push(new TreeItem(`Description: ${element["description"]}`));
+					var incluir = false;
+					var _proj = element.obex_user_id;
+					response.data.data[0].organizations.forEach((uiy: any)=>{
+						if (uiy.id.toString() == DevOrganizationID){
+							if (uiy.obex_user_id == _proj){ incluir = true;}
+
+						}
+
+					})
+
+					subresponses.push(new TreeItem(`ID: ${element["name"]}`));
 					subresponses.push(new TreeItem(`Manager: ${element["username"]}`));
 					subresponses.push(new TreeItem(`Creation: ${element["creation_date"]}`));
-					subresponses.push(new TreeItem(`Country Code: ${element["country_code"]}`));
+					subresponses.push(new TreeItem(`Location: ${element["country_code"]}`));
 					subresponses.push(new TreeItem(`Auth Token: ${element["token"]}`));
 					
-					subresponses.push(new TreeItem(`Mode: ${element["Staging"] ? 'staging':'Productive'}`));
+					//subresponses.push(new TreeItem(`Mode: ${element["Staging"] ? 'staging':'Productive'}`));
 					if (!control){
 					if (element["token"] == SelectedDevToken) {
-						responses.push(new TreeItem(`>>${element["name"]}`, subresponses,'PROJECT'));
+						if (incluir) responses.push(new TreeItem(`>>${element["description"]}`, subresponses,'PROJECT'));
 					} else {
-						responses.push(new TreeItem(`${element["name"]}`, subresponses,'PROJECT'));
+						if (incluir) responses.push(new TreeItem(`${element["description"]}`, subresponses,'PROJECT'));
 					}
 				} else {
 					if (SelectedDevToken!=''){
 					if (element["token"] == SelectedDevToken){
 
-						responses.push(new TreeItem(`>>${element["name"]}`, subresponses,'PROJECT'))
+						responses.push(new TreeItem(`>>${element["description"]}`, subresponses,'PROJECT'))
 				} else {
-						responses.push(new TreeItem(`${element["name"]}`, subresponses,'PROJECT'))
+						responses.push(new TreeItem(`${element["description"]}`, subresponses,'PROJECT'))
 					}
 
 				} else {
 					if (element["token"] == DevToken) {
-						responses.push(new TreeItem(`>>${element["name"]}`, subresponses,'PROJECT'));
+						responses.push(new TreeItem(`>>${element["description"]}`, subresponses,'PROJECT'));
 					} else {
-						responses.push(new TreeItem(`${element["name"]}`, subresponses,'PROJECT'));
+						responses.push(new TreeItem(`${element["description"]}`, subresponses,'PROJECT'));
 					}
 
 				}
@@ -219,15 +339,23 @@ class TreeDataProviderOrganization implements vscode.TreeDataProvider<TreeItem> 
 	constructor(response: AxiosResponse<any, any>) {
 
 				var responses: TreeItem[] = [];
-				
+				var acls: TreeItem[] = [];
+				var stand: TreeItem[] = [];
+				var colla: TreeItem[] = [];
 				response.data.data[0].organizations.forEach((element: any) => {
 					var subresponses: TreeItem[] = [];
 					subresponses.push(new TreeItem(`Description: ${element["description"]}`));
 					subresponses.push(new TreeItem(`Admin: ${element["username"]}`));
 					subresponses.push(new TreeItem(`Subscription type: ${element["subscription_name"]}`));
-					responses.push(new TreeItem(element["name"], subresponses,'ORGANIZATIONS'));
+					responses.push(new TreeItem(element["name"], subresponses,`ORGANIZATIONS|${element.id}`));
 				});
-				this.data = responses;
+
+				if (responses.length>0 && selDep == 2) acls.push(new TreeItem('AVAP Collaborative Network',selDep == 2 ? responses : colla))
+				if (responses.length>0 && selDep == 1) acls.push(new TreeItem('AVAP Cloud', selDep == 1 ? responses : colla))
+				if (responses.length>0 && selDep == 0) acls.push(new TreeItem('AVAP Standalone',stand ))
+
+
+				this.data = acls;
 	}
   
 	getTreeItem(element: TreeItem): vscode.TreeItem|Thenable<vscode.TreeItem> {
@@ -259,16 +387,34 @@ class TreeItem extends vscode.TreeItem {
 	  super(
 		  label,
 		  children === undefined ? vscode.TreeItemCollapsibleState.None :
-								   vscode.TreeItemCollapsibleState.Collapsed
+								   
+		  (label === 'AVAP Collaborative Network' || label === 'AVAP Cloud' || label === 'AVAP Standalone' ||  document == 'ORGANIZATIONS' ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed)
 								   );
+								   
 	  this.children = children;
+	  if (this.children === undefined) vscode.TreeItemCollapsibleState.Collapsed
+	  if (label  == 'AVAP Collaborative Network' || label == 'My Organization'){
+		vscode.TreeItemCollapsibleState.Expanded
+	  }
 	  this.description = document;
+	  let org_id = '0';
+	  if (document?.split('|')[0] === 'ORGANIZATIONS'){
+		this.description = document?.split('|')[0]
+		org_id  = document?.split('|')[1]
+	  }
 	  this.tooltip = api_category;
 	  this.iconPath = this.children === undefined ? vscode.ThemeIcon.File: vscode.ThemeIcon.Folder;
 
+
+	  if (label == 'AVAP Collaborative Network' || label == 'AVAP Cloud' || label == 'AVAP Standalone')
+	  {
+		this.iconPath = path.join(__filename, '..', '..', 'images', 'globe.svg')
+	  }
+	  this.iconPath = this.tooltip !== undefined ? path.join(__filename, '..', '..', 'images', 'code.svg') :  this.iconPath
+	  this.iconPath = this.tooltip !== undefined ? path.join(__filename, '..', '..', 'images', 'code.svg') :  this.iconPath
 	  if (this.description === 'ORGANIZATIONS'){
-		
-		if (this.label==DevOrganization){
+		this.tooltip = org_id.toString();
+		if (org_id==DevOrganizationID.toString()){
 			//this.description = 'Active'
 			this.iconPath = this.description === 'ORGANIZATIONS' ? path.join(__filename, '..', '..', 'images', 'home_selected.png') :  this.iconPath
 			this.description = 'Active';
@@ -285,7 +431,7 @@ class TreeItem extends vscode.TreeItem {
 	  this.iconPath = this.description === 'DEVELOPERS' ? path.join(__filename, '..', '..', 'images', 'person.svg') :  this.iconPath
 	  this.description = this.description === 'DEVELOPERS' ? "" : this.description
 
-	  this.iconPath = this.tooltip !== undefined ? path.join(__filename, '..', '..', 'images', 'code.svg') :  this.iconPath
+	  
 	  
 		if (this.description == 'PROJECT'){
 			this.description = '';
@@ -361,7 +507,67 @@ class TreeItem extends vscode.TreeItem {
 
 	tree2.onDidChangeSelection((selection) => {
 		var projToken: string = '';
+		var selected_deploy_base = ''
+		let ss = ''
 		selection.selection.map((e) => {
+			
+			if(e.tooltip!=undefined) ss = e.tooltip?.toString()
+			let hh = selected_deploy;
+			if (e.label?.toString() === 'AVAP Collaborative Network') {
+				selected_deploy = url_p2p;
+				selected_deploy_base = url_p2p0;
+				
+			}
+
+			if (e.label?.toString() === 'AVAP Cloud') {
+				selected_deploy = url
+				selected_deploy_base = url0;
+			}
+
+			if (e.label?.toString() === 'AVAP Standalone') {
+				selected_deploy = url_stand;
+				selected_deploy_base = url_stand0;
+			}
+
+			if (hh != selected_deploy){
+				TokenData.data.data[0].authorizations= [];
+				setActiveCloud(selected_deploy_base);
+
+				try{
+				axios.get(selected_deploy + DEVTOKEN, axiosConfig)
+				.then((response) => {
+					TokenData = response;
+					setActiveProject(response.data.data[0].authorizations[0].token);
+					setActiveOrganization(response.data.data[0].organizations[0].name);
+					organizations(context, response, true);
+					teams(context, response, true);
+					projects(context, response, false);
+	
+					})
+				.catch((error) => {
+					projects(context, TokenData, false);
+					if ('success' in error.response.data) {
+					vscode.window.showErrorMessage(
+								'Your Token is not a valid Token.'
+							);
+						} 
+					else{
+						vscode.window.showErrorMessage(
+								'101OBeX Server is not responding.'
+							);
+						} 
+					nullRegistration(context,'101obex-api-extension.refreshEntry-organizations');
+					nullRegistration(context,'101obex-api-extension.refreshEntry-teams');
+					nullRegistration(context,'101obex-api-extension.refreshEntry-projects');
+					
+					});	
+				} catch{
+					projects(context, TokenData, false);
+				}
+
+
+			}
+
 			if (!e.label?.toString().includes(':'))	
 			{
 				var label = e.label?.toString();
@@ -370,11 +576,13 @@ class TreeItem extends vscode.TreeItem {
 			}
 		}
 		);
-		setActiveOrganization(projToken);
+		setActiveOrganization(ss);
 		if (projToken!='')
 			{
+				DevOrganizationID=ss;
 				teams(context, response, false);
 				organizations(context, response, false);
+				projects(context,response,false);
 				organizationsTreeProvider.refresh();
 			}
 	
@@ -425,6 +633,21 @@ class TreeItem extends vscode.TreeItem {
 	}
   }
 
+  function setActiveCloud(cloud: string){
+
+	var selectedProject = {'selected_cloud': `${cloud}`};
+
+	if (cloud!='') {
+		fs.writeFile(userHomeDir+'/.101obex/selectedcloud.json', JSON.stringify(selectedProject), (err) => {
+		if (err){
+			console.log(err);
+		} else {
+			refresh101ObeXExtensions();
+			}
+		});
+	}
+  }
+
   async function refresh101ObeXExtensions(){
 	let comandos = await vscode.commands.getCommands();
 	if (comandos!= null){
@@ -442,6 +665,9 @@ class TreeItem extends vscode.TreeItem {
 				if (com == '101obex-api-extension-api-creation.refreshEntry-api-creator'){
 					vscode.commands.executeCommand("101obex-api-extension-api-creation.refreshEntry-api-creator");
 				}
+				if (com == '101obex-api-extension-api-publisher.refreshEntry-api-publisher'){
+				vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
+				}
 			}
 			catch{
 				
@@ -454,7 +680,7 @@ class TreeItem extends vscode.TreeItem {
   }
 
   function setActiveOrganization(organization: string){
-
+	//console.log('COD ORG')
 	if (organization=='') return;
 	var cod_org;
 	TokenData.data.data[0].organizations.forEach((entry: any)=>{
@@ -462,7 +688,10 @@ class TreeItem extends vscode.TreeItem {
 	})
 	var selectedOrganization = {'selected_organization': `${cod_org}`};
 	SelectedOrganization = cod_org || '0';
+	//console.log(cod_org);
 	if (organization!='') DevOrganization = organization;
+	if (cod_org!=undefined) DevOrganizationID = cod_org;
+	else selectedOrganization = {'selected_organization': `${organization}`};
 	fs.writeFile(userHomeDir+'/.101obex/selectedorganization.json', JSON.stringify(selectedOrganization), (err) => {
 	if (err)
 		console.log(err);
