@@ -1,36 +1,65 @@
-# 101obex-api-extension README
+# AVAP API Version Control
 
-This extension is intended to help you to use 101OBeX APIs
+The AVAP API Version Control extension for Visual Studio Code makes it easy to build and manage versions of your AVAP APIs.
 
-## Features
+To get started, check out: Working with AVAP API Version Control extension for Visual Studio Code at AVAP Alexandria, our resource site, www.alexandria.avapframework.com. You can also find more information at AVAP Developer Portal www.developer.avapframework.com.
 
+Find troubleshooting tips and additional technical information at AVAP Communities, www.communities.avapframework.com
 
-![Imagen](./images/layout.png?raw=true "Layout")
-
-## Requirements
-
-For the extension to work, you must have configured your access to the 101OBeX API through 101obexcli.
-
-## Release Notes
-
-This extension has the purpose of facilitating the developer, the management of permissions, organizations and development teams, showing him at all times, the organizations to which he has access, the development teams to which he belongs and the APIs that he is authorized to consume.
+AVAP API Version Control requires the installation of the base extension, AVAP Dev Extensions for Visual Studio Code
 
 
-### 0.0.1
+## Support for Developers
 
-Initial version, advisory only.
+The AVAP API Version Control extension for Visual Studio Code offers support when running on vscode.dev. This includes free access to www.alexandria.avapframework.com and www.communities.avapframework.com.
 
-### 0.0.2
+## Installed Extensions
 
-Show online APIs documentation.
+The AVAP API Version Control extension for Visual Studio Code will not install any other extension. It is necessary to install the base extension: AVAP Dev Extensions for Visual Studio Code.
 
-### 0.0.3
+## Quick start
 
-Project selection.
+- Step 1. Install the AVAP API Version Control extension.
 
-### 0.0.4
+- Step 2. You can now view all your environments, APIs, and tests per environment.
 
-Integration with Marieta ChatGPT-3 IA.
+- Step 3. Create a new API.
 
+- Step 4. Create a new AVAP (.avap) file or use the proposed template to start coding!
 
+## Overview of the extension features
 
+The AVAP API Version Control for Visual Studio Code allows you to navigate between different environments in your deployment, creating new APIs or managing versions of existing APIs
+
+- Navigation system set for easy location of API products, APIs, and published versions.
+- Creation of API products.
+- Version control.
+- API cloning.
+- Commit management.
+
+AÑADIR IMAGEN DE LA SECCIÓN ABIERTA CON CONTENIDO DE EJEMPLO
+
+## AVAP CLI integration
+
+AVAP CLI gives you access to the full AVAP management command set in an isolated environment. For more information on available commands, see Get started with AVAP CLI.
+
+## Feedback
+
+- Join the AVAP Community and share your feedback with us at www.communites.avapframework.com
+- Find us on Twitter
+
+## License
+
+AVAP API Version Control extension for Microsoft Visual Studio Code
+
+Copyright (c) 101OBEX, CORP
+
+All rights reserved.
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ""Software""), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

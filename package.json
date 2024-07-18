@@ -1,8 +1,8 @@
 {
   "name": "101obex-api-extension-api-code",
-  "displayName": "AVAP API Code",
-  "description": "AVAP API Code",
-  "version": "0.0.11",
+  "displayName": "AVAP API Control Version",
+  "description": "AVAP API Control Version",
+  "version": "1.30.75",
   "publisher": "101OBEX, CORP",
   "engines": {
     "vscode": "^1.73.0"
@@ -17,7 +17,7 @@
   "recommendations": [
     "101OBEX, CORP.101obex-api-extension"
   ],
-  "icon": "images/101icon.png",
+  "icon": "images/icono_DS.png",
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -27,16 +27,16 @@
       "activitybar": [
         {
           "id": "101obex-api-code",
-          "title": "AVAP API Code",
-          "icon": "images/api-code-activo.png"
+          "title": "AVAP API Control Version",
+          "icon": "images/icono_avap.png"
         }
       ]
     },
     "views": {
-      "101obex-api-code": [
+      "101obex-api-extension": [
         {
           "id": "101obex-api-code.package-creation",
-          "name": "AVAP API Code",
+          "name": "AVAP API Control Version",
           "type": "tree"
         }
       ]
@@ -55,12 +55,12 @@
       },
       {
         "command": "101obex-api-extension-api-creation.addAPI-api-creator",
-        "title": "add API",
+        "title": "Add API",
         "icon": "$(plus)"
       },
       {
         "command": "101obex-api-extension-api-creation.commitPush-api-creator",
-        "title": "commit push",
+        "title": "Commit Push",
         "icon": "$(repo-push)"
       },
       {
@@ -70,7 +70,7 @@
       },
 
       {
-        "command": "101obex-api-extension-api-creation.RemoveAPI",
+        "command": "101obex-api-extension-api-creation.CloneAPI",
         "title": "Clone API"
       },
 
@@ -99,7 +99,7 @@
       ],
       "view/item/context": [
         {
-          "command": "101obex-api-extension-api-creation.RemoveAPI",
+          "command": "101obex-api-extension-api-creation.CloneAPI",
           "when": "view == 101obex-api-code.package-creation && viewItem == APICONF"
         },
         {
