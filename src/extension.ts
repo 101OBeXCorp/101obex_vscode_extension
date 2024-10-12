@@ -21,7 +21,7 @@ let ventanaNueva: vscode.WebviewView;
 let extensions = vscode.extensions.all;
 extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
 extensions.forEach(ex =>{
-  if (ex.id == "101OBEX, CORP.101obex-api-extension") ACCESS = true;
+  if (ex.id == "101OBeXCorp.101obex-api-extension") ACCESS = true;
 })
 
 var API_FOLDER_ACTIVE = '';
@@ -513,6 +513,37 @@ export function activate(context: vscode.ExtensionContext) {
 
 	} catch {}
 
+
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('101obex-api-extension-api-creation.eraseAPI', async (e)=>{
+					
+			const pageType = await vscode.window.showQuickPick(
+				['YES', 'NO'],
+				{ placeHolder: 'Are You Sure?' }).then(async (pageType)=>{
+					//console.log(pageType);
+	
+					if (pageType == 'YES') {
+						
+						// 216.238.84.25
+						axios.post(/*url3*/`${cloud}/api_catalog/erase_repository?developer_token=` + AccesToken+`&obex_project_id=${SelectedProject}&api=${e.label}`, axiosConfig)
+						.then((response) => {
+
+							vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
+							vscode.commands.executeCommand('101obex-api-extension-api-creation.refreshEntry-api-creator')
+
+						})
+						.catch((error) => { 
+							console.log(error)
+						});	
+					}
+					
+	
+				});
+
+		})
+	)
+
 	try{
 		context.subscriptions.push(
 			vscode.commands.registerCommand('101obex-api-extension-api-creation.commitPush-api-creator', async () =>
@@ -545,11 +576,12 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				let valid = false;
 				let API_Name = workspacePath.split('/').slice(-1);
-				
+				let entry_point = "";
 				APIsAvailables.forEach((API__Name: { [x: string]: { toString: () => string; }; })=>{
 					// console.log(`${API__Name["api_name"].toString()} - ${API_Name[0]}`);
 					if (API__Name["api_name"].toString() === API_Name[0]){
 						valid = true;
+						entry_point = API__Name["entrypoint"].toString();
 					}
 				})
 
@@ -580,9 +612,11 @@ export function activate(context: vscode.ExtensionContext) {
 			
 					let codeFiles: { file: string; code: string; }[] = []
 					let coont = 0;
+					let hasEntrypoint = false;
 					files.forEach((file)=>{
 						fs.readFile(file.fsPath, 'utf8', (err, data) => {
 							let fileAPI = file.path.split('/').slice(-1)[0];
+							if (fileAPI == entry_point) hasEntrypoint = true;
 							//console.log(fileAPI);
 							codeFiles.push({file: fileAPI, code: Buffer.from(data).toString('base64')})
 							//console.log(Buffer.from(data).toString('base64'));
@@ -599,7 +633,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 								let APIPUSH = workspacePath.split('/').slice(-1)[0]
 								commitDescription = commitDescription?.replace(/ /g, '%20')
-
+								if (hasEntrypoint == true){
 								axios.post(`${cloud}/api_catalog/push_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${APIPUSH}&message=${commitDescription}`, {
 								// axios.post(`http://0.0.0.0:3000/api_catalog/push_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${APIPUSH}&message=${commitDescription}`, {
 
@@ -622,11 +656,17 @@ export function activate(context: vscode.ExtensionContext) {
 								
 								
 								});
-			
+							} else {
+
+								               //// Mostrar error de sin entrypoint
+											   vscode.window.showErrorMessage('Entrypoint not present.');
+
+
+							}
 							}
 						
 						})
-						
+					
 					})
 
 				}
@@ -667,7 +707,7 @@ export function activate(context: vscode.ExtensionContext) {
 				let error = false;
 				let endPoint = undefined;
 				let ApiName = await vscode.window.showInputBox({
-					placeHolder: "Name of the API",
+					placeHolder: "Name of your API",
 					validateInput: text => {
 					return text === text ? null : 'Not 123!';
 					
@@ -675,7 +715,7 @@ export function activate(context: vscode.ExtensionContext) {
 				paso = 1;
 				if (ApiName!=undefined && ApiName!="" && !API_NAMES_LIST.includes(ApiName)){
 					endPoint = await vscode.window.showInputBox({
-						placeHolder: "Endpoint",
+						placeHolder: "Name endpoint API",
 						validateInput: text => {
 						return text === text ? null : 'Not 123!';
 						
@@ -683,7 +723,7 @@ export function activate(context: vscode.ExtensionContext) {
 				
 					if (endPoint!=undefined && endPoint!="" && !API_ENDPOINT_LIST.includes(endPoint)){
 					let entryPoint = await vscode.window.showInputBox({
-						placeHolder: "Entrypoint",
+						placeHolder: "Name of the entrypoint file",
 						validateInput: text => {
 						return text === text ? null : 'Not 123!';
 						
@@ -1305,7 +1345,7 @@ class TreeDataProviderAPICreator implements vscode.TreeDataProvider<TreeItem> {
 	data!: TreeItem[];
 	
 	constructor(response: AxiosResponse<any, any>) {
-		
+		let ActualAmbient = 'local';
 		var res_data_array = con1
 		var res_data = { data: [
 			res_data_array
@@ -1319,12 +1359,13 @@ class TreeDataProviderAPICreator implements vscode.TreeDataProvider<TreeItem> {
 		let resss = []
 		if (response !== undefined) resss= response.data.data;
 		resss.forEach((element: any) => {
+			ActualAmbient = element.name;
 			//console.log(element);
 			var subresponses8: TreeItem[] = [];
 			element.APIs.forEach((subelement: any) => {
 				var tttt: TreeItem[] = [];
 				
-
+				
 				subelement.history.forEach((subsubelement:any) =>{
 					var ttt: TreeItem[] = [];
 					subsubelement.commits.forEach((subsubsubelement:any)=>{
@@ -1339,7 +1380,7 @@ class TreeDataProviderAPICreator implements vscode.TreeDataProvider<TreeItem> {
 						})
 					}
 
-						ttt.push(new TreeItem(`${subsubsubelement.commit.substring(0,8)} ${subsubsubelement.comment} \t${subsubsubelement.dev_id}`, tttfilesystem,'commit',`${subelement.api_name} - ${subsubsubelement.commit}`));
+						ttt.push(new TreeItem(`${subsubsubelement.commit.substring(0,8)} ${subsubsubelement.comment}`, tttfilesystem,'commit',`${subelement.api_name} - ${subsubsubelement.commit}`));
 					})
 
 					let version_modified = subsubelement.version.charAt(0).toUpperCase() + subsubelement.version.slice(1);
@@ -1350,7 +1391,7 @@ class TreeDataProviderAPICreator implements vscode.TreeDataProvider<TreeItem> {
 						  version_modified = `v${vv}`;
 						  
 					  }
-					tttt.push(new TreeItem(`${version_modified}`, ttt,`version ${subelement.v_commit}`,`${subsubelement.v_commit}`));
+					tttt.push(new TreeItem(`${version_modified}`, ttt.reverse(),`version ${subelement.v_commit}`,`${subsubelement.v_commit}`));
 				} )
 
 				API_NAMES_LIST.push(subelement.api_name)
@@ -1360,7 +1401,7 @@ class TreeDataProviderAPICreator implements vscode.TreeDataProvider<TreeItem> {
 						`${subelement.api_name}`,
 						tttt,
 						`API ${subelement.endpoint}`,
-						`API`)
+						`API|${ActualAmbient}`)
 						);
 			});
 
@@ -1431,7 +1472,7 @@ class TreeItem extends vscode.TreeItem {
 	  this.iconPath = this.description === 'DEVELOPERS' ? path.join(__filename, '..', '..', 'images', 'person.svg') :  this.iconPath
 	  this.description = this.description === 'DEVELOPERS' ? "" : this.description
 
-	  this.iconPath = this.tooltip !== undefined ? path.join(__filename, '..', '..', 'images', 'settings.svg') :  this.iconPath
+	  this.iconPath = this.tooltip !== undefined ? /*path.join(__filename, '..', '..', 'images', 'settings.svg')*/ new vscode.ThemeIcon('extensions-view-icon') :  this.iconPath
 	  
 if (this.tooltip == "ADD_API_VIRTUAL") {this.iconPath = path.join(__filename, '..', '..', 'images', 'plus.png');}
 
@@ -1465,9 +1506,15 @@ if (this.tooltip == "ADD_API_VIRTUAL") {this.iconPath = path.join(__filename, '.
 
 		if (addsd1 == 'file'){
 			//this.contextValue = 'COMMITCONF'
-			this.description = 'entrypoint';
-			if (this.label?.toString() == addsd2) this.iconPath = path.join(__filename, '..', '..', 'images', 'code_color.svg');
-			else this.iconPath = path.join(__filename, '..', '..', 'images', 'code.svg');
+			
+			if (this.label?.toString() == addsd2) {
+				this.description = '(Entrypoint)';
+				this.iconPath = path.join(__filename, '..', '..', 'images', 'code_color.svg');
+			}
+			else {
+				this.iconPath = path.join(__filename, '..', '..', 'images', 'code.svg');
+				this.description = '';
+			}
 		}
 
 		if (addsd == 'version'){
@@ -1480,7 +1527,7 @@ if (this.tooltip == "ADD_API_VIRTUAL") {this.iconPath = path.join(__filename, '.
             //this.contextValue = 'COMMITCONF'
             this.description = this.description?.split(' ')[1];
             if (this.label === API_FOLDER_ACTIVE) {
-				this.iconPath = path.join(__filename, '..', '..', 'images', 'settings_green.svg')
+				this.iconPath = path.join(__filename, '..', '..', 'images', 'cubos.svg')
             }
 		}
 
@@ -1496,12 +1543,20 @@ if (this.tooltip == "ADD_API_VIRTUAL") {this.iconPath = path.join(__filename, '.
 			this.contextValue = 'SERV'
 		}
 		else if (this.tooltip?.toString().split('|')[0].toString()=='API'){
-			this.contextValue = 'APICONF'
+            this.contextValue = 'APICONF';
+            if (this.children?.length === 1 &&
+                this.children[0].label === 'Unpublished'){
+                if (this.tooltip?.toString().split('|').length>1){
+                  if (this.tooltip?.toString().split('|')[0].toString() == 'local') this.contextValue = 'UNPUBLISHED';
+                }
+                }
 		}
 
 		if (this.tooltip?.toString().indexOf('edit_config')!=-1 && this.label?.toString().indexOf('id')==-1 && this.tooltip!=undefined){
 			this.contextValue = 'EDCONF'
 		}
+
+		//if (this.tooltip?.toString().includes('Initialization')) this.contextValue = "UNPUBLISHED"
 	}
   }
 
@@ -1960,9 +2015,12 @@ class ReactPanel {
 }
 
 function getCurrentProject(){
-
+	try{
 	var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedproject.json');
 	var objectdata = JSON.parse(rawdata.toString());
+	} catch {
+		return 0;
+	}
 	return objectdata
 }
 

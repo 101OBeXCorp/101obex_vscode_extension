@@ -37,7 +37,7 @@ The AVAP API Version Control for Visual Studio Code allows you to navigate betwe
 - API cloning.
 - Commit management.
 
-AÑADIR IMAGEN DE LA SECCIÓN ABIERTA CON CONTENIDO DE EJEMPLO
+![Control Version](https://developer.101obex.com/static_images/control.png)
 
 ## AVAP CLI integration
 

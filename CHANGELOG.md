@@ -1,19 +1,18 @@
 # Change Log
 
+1.30.79 - Oct 4, 2024
 
-- Initial release
+Fixed
+- Change activity bar icon.
 
-    Show info about you Organization, Development Teams an APIs availables.
+1.30.78 - Oct 4, 2024
 
-- 0.0.2
+Fixed
+- Change extension icon.
 
-    Show online APIs documentation.
+1.30.77 - July 25, 2024
 
-- 0.0.3
+Fixed
+- Display name of the extension.
 
-    Project selection.
-
-- 0.0.4
-
-    Integration with Marieta ChatGPT-3 IA.
     
