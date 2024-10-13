@@ -1,9 +1,9 @@
 {
   "name": "101obex-api-extension-ia",
-  "displayName": "101OBeX Brunix AI",
-  "description": "101OBeX Brunix AI",
-  "version": "0.0.3",
-  "publisher": "101OBEX, CORP",
+  "displayName": "AVAP AI aka Brunix",
+  "description": "AVAP AI aka Brunix",
+  "version": "0.0.4",
+  "publisher": "101OBeXCorp",
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -13,21 +13,29 @@
   "extensionPack": [
    
 ],
-"extensionDependencies":["101OBEX, CORP.101obex-api-extension"],
-"recommendations": ["101OBEX, CORP.101obex-api-extension"],
+"extensionDependencies":["101OBeXCorp.101obex-api-extension"],
+"recommendations": ["101OBeXCorp.101obex-api-extension"],
   "icon": "images/101icon.png",
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
-
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "101obex-api-extension-ia",
+          "title": "AVAP AI aka Brunix",
+          "icon": "images/brunixicon.png"
+        }
+      ]
+    },
     "views": {
-      "101obex-api-extension": [
+      "101obex-api-extension-ia": [
         {
           "type": "webview",
-          "id": "101obex-api-extension.chatView",
-          "name": "BRUNIX AI"
+          "id": "101obex-api-extension-ia.chatView",
+          "name": "AVAP AI aka Brunix"
         }
       ]
     },
@@ -64,6 +72,12 @@
           "default": "Optimize the following code if there is anything to improve, if not say so: ",
           "description": "The prompt prefix used for optimizing the selected code",
           "order": 6
+        },
+        "101obex-api-extension-ia.promptPrefix.apikey": {
+          "type": "string",
+          "default": "apikey",
+          "description": "OPENAI Api Key",
+          "order": 8
         }
       }
     },

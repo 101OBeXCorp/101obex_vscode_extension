@@ -10,11 +10,11 @@ let ACCESS = false;
 let extensions = vscode.extensions.all;
 extensions = extensions.filter(extension => !extension.id.startsWith('vscode.'));
 extensions.forEach(ex =>{
-  if (ex.id == "101OBEX, CORP.101obex-api-extension") ACCESS = true;
+  if (ex.id == "101OBeXCorp.101obex-api-extension") ACCESS = true;
 })
 
 
-var TEST = 1;
+var TEST = 0;
 
 type AuthInfo = {apiKey?: string};
 type Settings = {selectedInsideCodeblock?: boolean, codeblockWithLanguageId?: true, pasteOnClick?: boolean, keepConversation?: boolean, timeoutLength?: number};
@@ -75,9 +75,13 @@ export function activate(context: vscode.ExtensionContext) {
 				// Create a new ChatGPTViewProvider instance and register it with the extension's context
 				const provider = new ChatGPTViewProvider(context.extensionUri);
 			
+
+				const config = vscode.workspace.getConfiguration('101obex-api-extension-ia');
+				//var prompt = config.get(command) as string;
+
 				// Put configuration settings into the provider
 				provider.setAuthenticationInfo({
-					apiKey: ''//config.get('apiKey')
+					apiKey: config.get('apiKey')
 				});
 				provider.setSettings({
 					selectedInsideCodeblock: true,//config.get('selectedInsideCodeblock') || false,
@@ -180,7 +184,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	
 	);
-	vscode.window.showInformationMessage('101OBeX API Extension IA activated');
+	vscode.window.showInformationMessage('AVAP IA Assistant');
 
 	} else {
 		vscode.window.showErrorMessage("You must have 101OBeX API Extension Base installed");
@@ -196,7 +200,7 @@ export function deactivate() {
 /////
 
 class ChatGPTViewProvider implements vscode.WebviewViewProvider {
-	public static readonly viewType = '101obex-api-extension.chatView';
+	public static readonly viewType = '101obex-api-extension-ia.chatView';
 	private _view?: vscode.WebviewView;
 
 	private _chatGPTAPI?: ChatGPTAPI;
@@ -286,7 +290,7 @@ class ChatGPTViewProvider implements vscode.WebviewViewProvider {
 
 
 		if (!this._view) {
-			await vscode.commands.executeCommand('101obex-api-extension.chatView.focus');
+			await vscode.commands.executeCommand('101obex-api-extension-ia.chatView.focus');
 		} else {
 			this._view?.show?.(true);
 		}
