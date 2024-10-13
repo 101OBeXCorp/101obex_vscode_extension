@@ -643,7 +643,7 @@ export function activate(context: vscode.ExtensionContext) {
 									//console.log(response);
 									
 									vscode.window.showInformationMessage(`Commit Pushed to ${APIPUSH} Repository`);
-								
+									vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
 									axios.get(url3 + AccesToken+`&obex_project_id=${SelectedProject}`, axiosConfig)
 									.then((response) => {
 										TokenData = response;
@@ -668,6 +668,8 @@ export function activate(context: vscode.ExtensionContext) {
 						})
 					
 					})
+					/// Refrescar Publisher
+					vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
 
 				}
 
@@ -1547,7 +1549,7 @@ if (this.tooltip == "ADD_API_VIRTUAL") {this.iconPath = path.join(__filename, '.
             if (this.children?.length === 1 &&
                 this.children[0].label === 'Unpublished'){
                 if (this.tooltip?.toString().split('|').length>1){
-                  if (this.tooltip?.toString().split('|')[0].toString() == 'local') this.contextValue = 'UNPUBLISHED';
+                  if (this.tooltip?.toString().split('|')[1].toString() == 'local') this.contextValue = 'UNPUBLISHED';
                 }
                 }
 		}
