@@ -37,7 +37,7 @@ The AVAP API Publisher extension for Visual Studio Code allows you to navigate b
 - Version control for published APIs.
 - Version management by environment.
 
-AÑADIR IMAGEN DE LA SECCIÓN ABIERTA CON CONTENIDO DE EJEMPLO
+![Publishe](https://developer.101obex.com/static_images/publish.png)
 
 ## AVAP CLI integration
 

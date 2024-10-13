@@ -1,19 +1,47 @@
 # Change Log
 
+1.30.83 - Oct 8 2024
 
-- Initial release
+Added
+Execution unitary test formulary creation format
 
-    Show info about you Organization, Development Teams an APIs availables.
+1.30.82 - Oct 7 2024
 
-- 0.0.2
+Added 
 
-    Show online APIs documentation.
+- Execution unitary test configuration.
 
-- 0.0.3
+1.30.81 - Oct 1 2024
 
-    Project selection.
+Fixed
+- Redirections
 
-- 0.0.4
+1.30.80 - Oct 1 2025
 
-    Integration with Marieta ChatGPT-3 IA.
-    
+Added 
+- Test APIs
+
+1.30.79 - July 28 2024
+
+Fixed
+- Show unitary test results better.
+
+1.30.78 - July 28 2024
+
+Fixed
+- Links was not published in the correct API Product.
+
+1.30.77 - July 25 2024
+
+Added
+- Ability to publish external links under API Products
+- Help information about publications on Collaborative Network.
+
+
+
+
+
+
+
+
+

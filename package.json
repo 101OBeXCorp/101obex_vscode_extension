@@ -2,8 +2,8 @@
   "name": "101obex-api-extension-api-publish",
   "displayName": "AVAP API Publisher",
   "description": "AVAP API Publisher",
-  "version": "1.30.75",
-  "publisher": "101OBEX, CORP",
+  "version": "1.30.83",
+  "publisher": "101OBeXCorp",
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -12,12 +12,12 @@
   ],
   "extensionPack": [],
   "extensionDependencies": [
-    "101OBEX, CORP.101obex-api-extension"
+    "101OBeXCorp.101obex-api-extension"
   ],
   "recommendations": [
-    "101OBEX, CORP.101obex-api-extension"
+    "101OBeXCorp.101obex-api-extension"
   ],
-  "icon": "images/icono_DS.png",
+  "icon": "images/icono_AVAP_API-Publisher.png",
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -78,13 +78,32 @@
 
       {
         "command": "101obex-api-extension-api-publisher.CloneAPI",
-        "title": "Publish API"
+        "title": "Publish API",
+        "icon": "$(megaphone)"
       },
 
       {
         "command": "101obex-api-extension-api-publisher.CheckoutAPI",
         "title": "Checkout this Commit"
+      },
+
+      {
+        "command": "101obex-api-extension-api-publisher.TestThisAPI",
+        "title": "Test this API",
+        "icon": "$(testing-run-icon)"
+      },
+
+      {
+        "command": "101obex-api-extension-api-publisher.GetLink",
+        "title": "Get API Link"
+      },
+
+      {
+        "command": "101obex-api-extension-api-publisher.ConfigTests",
+        "title": "Unit Test",
+         "icon": "$(beaker)"
       }
+
     ],
     "menus": {
       "view/title": [
@@ -111,6 +130,24 @@
           "command": "101obex-api-extension-api-publisher.CloneAPI",
           "when": "view == 101obex-api-publish.package-publisher && viewItem == APICONF"
         },
+
+        
+        {
+          "command": "101obex-api-extension-api-publisher.ConfigTests",
+          "when": "view == 101obex-api-publish.package-publisher && viewItem == API_CONF",
+          "group": "inline"
+        },
+        {
+          "command": "101obex-api-extension-api-publisher.TestThisAPI",
+          "when": "view == 101obex-api-publish.package-publisher && viewItem == API_Published",
+          "group": "inline"
+        },
+        {
+          "command": "101obex-api-extension-api-publisher.CloneAPI",
+          "when": "view == 101obex-api-publish.package-publisher && viewItem == APICONF",
+          "group": "inline"
+        },
+
           {
             "command": "101obex-api-extension-api-publisher.eraseAPI",
             "when": "view == 101obex-api-publish.package-publisher && viewItem == API_NOT_PUBLISHED",
@@ -119,6 +156,15 @@
         {
           "command": "101obex-api-extension-api-publisher.CheckoutAPI",
           "when": "view == 101obex-api-publish.package-publisher && viewItem == COMMITCONF"
+        },
+        {
+          "command": "101obex-api-extension-api-publisher.TestThisAPI",
+          "when": "view == 101obex-api-publish.package-publisher && viewItem == API_Published"
+        },
+
+        {
+          "command": "101obex-api-extension-api-publisher.ConfigTests",
+          "when": "view == 101obex-api-publish.package-publisher && viewItem == API_CONF"
         }
       ]
     }
