@@ -723,7 +723,7 @@ export function activate(context: vscode.ExtensionContext) {
 						
 					}});
 				
-					if (endPoint!=undefined && endPoint!="" && !API_ENDPOINT_LIST.includes(endPoint)){
+					if (endPoint!=undefined && endPoint!="" && !API_ENDPOINT_LIST.includes(endPoint) && !API_ENDPOINT_LIST.includes('/'+endPoint)){
 					let entryPoint = await vscode.window.showInputBox({
 						placeHolder: "Name of the entrypoint file",
 						validateInput: text => {
@@ -802,7 +802,7 @@ export function activate(context: vscode.ExtensionContext) {
 				if (ApiName!=undefined){
 					if (API_NAMES_LIST.includes(ApiName)) message = `API ${ApiName} already exists.`
 				}
-				if (endPoint!=undefined && API_ENDPOINT_LIST.includes(endPoint)) message = `Endpoint ${endPoint} already used.`
+				if (endPoint!=undefined && (API_ENDPOINT_LIST.includes(endPoint) || API_ENDPOINT_LIST.includes('/'+endPoint))) message = `Endpoint ${endPoint} already used.`
 				vscode.window.showErrorMessage(
 					`API Creation aborted ${message}`
 				);
@@ -2030,6 +2030,7 @@ function getCurrentCloud(){
 
 	var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedcloud.json');
 	var objectdata = JSON.parse(rawdata.toString());
+	//objectdata.selected_cloud = 'http://0.0.0.0:3000';
 	return objectdata
 }
 
