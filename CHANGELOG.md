@@ -1,5 +1,9 @@
 # Change Log
 
+1.30.84 - Oct 15 2024
+
+- Fixed several bugs.
+
 1.30.83 - Oct 8 2024
 
 Added

@@ -1633,6 +1633,8 @@ async function setTestData(url: string, params: Object, init = false){
 	function createForm(){
 		let llo = document.getElementById("loader_spinner");
 		llo.hidden = true;
+		let predata = {}
+		let predata2 = {}
 		let datat = {}
 		let datad = {}
 		let arrr = '${parameters}'
@@ -1663,16 +1665,16 @@ async function setTestData(url: string, params: Object, init = false){
 	  
 		  var x = arrrr[i]
 		  
+
 		  
 		  const inputHandler = function(e) {
 
 
-
 			  
-		  datad[e.target.id] = e.target.value;
+		  predata[e.target.id] = e.target.value;
 
 		  let gfd = document.getElementById("respuestas2");
-		  gfd.innerText = JSON.stringify(datad);
+		  gfd.innerText = JSON.stringify(predata);
 		  
 		  //let paramss= '?'
 		  //for (v in arrrr){
@@ -1692,7 +1694,19 @@ async function setTestData(url: string, params: Object, init = false){
 			let jjjjj1 = '${configuration.parameters}'
 			let jjjjjj1 = JSON.parse(jjjjj1)
 			if (jjjjjj1[x]!=undefined) input.value = jjjjjj1[x];
-  		} catch{}
+  		
+			let gfd0 = document.getElementById("respuestas2");
+		  	predata[x]=jjjjjj1[x];
+		  	gfd0.innerText =  JSON.stringify(predata);
+
+  		} catch{
+
+  			let gfd0 = document.getElementById("respuestas2");
+			predata[x]='';
+		  	gfd0.innerText =  JSON.stringify(predata);
+  		}
+
+
 
 		 // if (yrrrr[i] != undefined && yrrrr!=undefined) input.value = yrrrr[i];
 		  //input.style.cssText = 'padding-top:3px;padding-bottom:3px;height:24px;padding-left:5px; border-style: solid; width: 32.87pc; background-color: transparent; border-width: 0.5px; border-color: grey; color: white;';
@@ -1818,10 +1832,10 @@ async function setTestData(url: string, params: Object, init = false){
 		  
 		  const inputHandler = function(e) {
 			  
-		  datat[e.target.id] = e.target.value;
+		  predata2[e.target.id] = e.target.value;
 		  
 		  let gfd = document.getElementById("respuestas");
-		  gfd.innerText = JSON.stringify(datat);
+		  gfd.innerText = JSON.stringify(predata2);
 
 		  //let paramss= '?'
 		  //for (v in arrrr){
@@ -1839,7 +1853,17 @@ async function setTestData(url: string, params: Object, init = false){
 			let jjjjj = '${configuration.results}'
 			let jjjjjj = JSON.parse(jjjjj)
 			if (jjjjjj[x]!=undefined) input.value = jjjjjj[x];
-		} catch {}
+
+			let gfd0 = document.getElementById("respuestas");
+		  	predata2[x]=jjjjjj[x];
+		  	gfd0.innerText =  JSON.stringify(predata2);
+
+		} catch {
+			let gfd0 = document.getElementById("respuestas");
+		  	predata2[x]="";
+		  	gfd0.innerText =  JSON.stringify(predata2);
+
+		}
 
 		 // if (yrrrr[i] != undefined && yrrrr!=undefined) input.value = yrrrr[i];
 		  //input.style.cssText = 'padding-top: 3px; padding-bottom:3px; height:24px;padding-left:5px; width:32.87pc; color: lightgrey;border-style: solid;  background-color: transparent; border-width: 0.5px; border-color: grey;';
