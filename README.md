@@ -25,7 +25,7 @@ However, we highly recommend installing the AVAP API Version Control and AVAP AP
 
 - Step 1. Create your AVAP ID at www.avapid.com. Log in and download AVAP CLI and AVAP Interpreter & Language Server from the Downloads section.
 
-- Step 2. Open a terminal window, activate your developer token and select your deployment: avapcli init (standalone, cloud or p2p) and follow the steps to create your developer token.The download of your developer token will be automatically stored in ??????.
+- Step 2. Open a terminal window, activate your developer token and select your deployment: avapcli init (standalone, cloud or p2p) and follow the steps to create your developer token.
 
 - Step 3. Install AVAP Interpreter & Server Language on your system or set up a service that provides AVAP Interpreter & Server Language, such as AVAP Cloud www.avapcloud.com or AVAP Collaborative Network www.avapcollaborativenetwork.com.
 
@@ -47,19 +47,19 @@ Navigate through the different deployments you are part of and select the deploy
 
 In this section, based on the active deployment, the AVAP Dev Extension for Visual Studio Code will display the available organizations with active projects for you to work on.
 
-AÑADIR IMAGEN DE LA SECCIÓN ABIERTA CON CONTENIDO DE EJEMPLO
+![Deployments](https://developer.101obex.com/static_images/deployments.png)
 
 ### API Projects
 
 Based on the selected deployment and organization, you will see the projects you are participating in. Simply click on the project name to activate and start working on it.
 
-AÑADIR IMAGEN DE LA SECCIÓN ABIERTA CON CONTENIDO DE EJEMPLO
+![API Projects](https://developer.101obex.com/static_images/teams.png)
 
 ### Developer Teams
 
 In this section, you can view the different teams you participate in as a developer, along with each team's information and contact details of the respective team leader.
 
-AÑADIR IMAGEN DE LA SECCIÓN ABIERTA CON CONTENIDO DE EJEMPLO
+![Teams](https://developer.101obex.com/static_images/projects.png)
 
 ## AVAP CLI integration
 

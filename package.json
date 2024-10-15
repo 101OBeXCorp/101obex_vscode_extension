@@ -2,8 +2,8 @@
   "name": "101obex-api-extension",
   "displayName": "AVAP DEV Extensions for Microsoft Visual Studio",
   "description": "AVAP DEV Extensions for Microsoft Visual Studio",
-  "version": "1.30.75",
-  "publisher": "101OBEX, CORP",
+  "version": "1.30.80",
+  "publisher": "101OBeXCorp",
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -51,6 +51,26 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "101obex-api-extension.select-organizations",
+        "title": "Activate",
+        "icon": "$(check)"
+      },
+      {
+        "command": "101obex-api-extension.select-deployment",
+        "title": "Activate",
+        "icon": "$(check)"
+      },
+      {
+        "command": "101obex-api-extension.copy-address",
+        "title": "Copy",
+        "icon": "$(files)"
+      },
+      {
+        "command": "101obex-api-extension.copy-token",
+        "title": "Copy",
+        "icon": "$(files)"
+      },
+      {
         "command": "101obex-api-extension.refreshEntry-projects",
         "title": "Refresh",
         "icon": "$(refresh)"
@@ -84,6 +104,27 @@
           "group": "navigation"
         },
         {
+          "command": "101obex-api-extension.select-organizations",
+          "when": "view == package-organizations && viewItem == ORGANIZATION",
+          "group": "inline"
+        },
+        {
+          "command": "101obex-api-extension.copy-address",
+          "when": "viewItem == COPYADDRESS",
+          "group": "inline"
+        },
+        {
+          "command": "101obex-api-extension.copy-token",
+          "when": "view == package-projects && viewItem == COPYTOKEN",
+          "group": "inline"
+        },
+        {
+          "command": "101obex-api-extension.select-deployment",
+          "when": "view == package-organizations && viewItem == DEPLOYMENT",
+          "group": "inline"
+        },
+
+        {
           "command": "101obex-api-extension.refreshEntry-teams",
           "when": "view == package-teams",
           "group": "navigation"
@@ -95,8 +136,35 @@
         }
       ],
       "view/item/context": [
+        {
+          "command": "101obex-api-extension.select-organizations",
+          "when": "viewItem == ORGANIZATION"
+        },
+        {
+          "command": "101obex-api-extension.select-organizations",
+          "when": "view == package-organizations && viewItem == ORGANIZATION",
+          "group": "inline"
+        },
+        {
+          "command": "101obex-api-extension.copy-address",
+          "when": "viewItem == COPYADDRESS",
+          "group": "inline"
+        }
+        ,
+        {
+          "command": "101obex-api-extension.copy-token",
+          "when": "view == package-projects && viewItem == COPYTOKEN",
+          "group": "inline"
+        }
+        ,
+        {
+          "command": "101obex-api-extension.select-deployment",
+          "when": "view == package-organizations && viewItem == DEPLOY",
+          "group": "inline"
+        }
       ],
       "editor/context": [
+
       ],
       "commandPalette": [
       ]
