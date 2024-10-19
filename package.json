@@ -2,7 +2,7 @@
   "name": "101obex-api-extension-ia",
   "displayName": "AVAP AI aka Brunix",
   "description": "AVAP AI aka Brunix",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "101OBeXCorp",
   "engines": {
     "vscode": "^1.73.0"
@@ -15,7 +15,7 @@
 ],
 "extensionDependencies":["101OBeXCorp.101obex-api-extension"],
 "recommendations": ["101OBeXCorp.101obex-api-extension"],
-  "icon": "images/101icon.png",
+  "icon": "images/icono_AI.png",
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -35,7 +35,12 @@
         {
           "type": "webview",
           "id": "101obex-api-extension-ia.chatView",
-          "name": "AVAP AI aka Brunix"
+          "name": "Chat"
+        },
+        {
+          "type": "tree",
+          "id": "101obex-api-extension-ia.previous",
+          "name": "Previous Chats"
         }
       ]
     },
@@ -43,45 +48,45 @@
       "title": "Brunix",
       "type": "object",
       "properties": {
-        "101obex-api-extension-ia.promptPrefix.explain": {
-          "type": "string",
-          "default": "Explain what this code does: ",
-          "description": "The prompt prefix used for explaining the selected code",
-          "order": 3
-        },
-        "101obex-api-extension-ia.promptPrefix.refactor": {
-          "type": "string",
-          "default": "Refactor this code and explain what's changed: ",
-          "description": "The prompt prefix used for refactoring the selected code",
-          "order": 4
-        },
-        "101obex-api-extension-ia.promptPrefix.findProblems": {
-          "type": "string",
-          "default": "Find problems with the following code, fix them and explain what was wrong (Do not change anything else, if there are no problems say so): ",
-          "description": "The prompt prefix used for finding problems in the selected code",
-          "order": 5
-        },
-        "101obex-api-extension-ia.promptPrefix.documentation": {
-          "type": "string",
-          "default": "Write documentation for the following code: ",
-          "description": "The prompt prefix used for writing documentation for the selected code",
-          "order": 7
-        },
-        "101obex-api-extension-ia.promptPrefix.optimize": {
-          "type": "string",
-          "default": "Optimize the following code if there is anything to improve, if not say so: ",
-          "description": "The prompt prefix used for optimizing the selected code",
-          "order": 6
-        },
-        "101obex-api-extension-ia.promptPrefix.apikey": {
+        "brunix.openAI.apikey": {
           "type": "string",
           "default": "apikey",
-          "description": "OPENAI Api Key",
+          "description": "OpenAI Api Key",
           "order": 8
         }
       }
     },
     "commands": [
+
+      {
+        "command": "101obex-api-extension-ia.chatRecover",
+        "title": "Recover Chat",
+        "icon": "$(comment)"
+      },
+      {
+        "command": "101obex-api-extension-ia.editChatName",
+        "title": "Edit chat name",
+        "icon":"$(pencil)"
+      },
+      {
+        "command": "101obex-api-extension-ia.deleteChat",
+        "title": "Delete Chat",
+        "icon":"$(terminal-kill)"
+      },
+
+      {
+        "command": "101obex-api-extension-ia.recoverChats",
+        "title": "Recover Chats",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "extension.showCodeProposal",
+        "title": "Show Proposition"
+      },
+      {
+        "command": "101obex-api-extension-ia-recibe.ask",
+        "title": "recive ask"
+      },
       {
         "command": "101obex-api-extension-ia.ask",
         "title": "Ask Brunix"
@@ -107,9 +112,16 @@
         "title": "Brunix: Write documentation"
       },
       {
-        "command": "101obex-api-extension-ia.resetConversation",
-        "title": "Reset Brunix conversation"
+        "command": "101obex-api-extension-ia.saveChat",
+        "title": "Save Brunix chat",
+        "icon": "$(save)"
       },
+      {
+        "command": "101obex-api-extension-ia.resetConversation",
+        "title": "Reset Brunix chat",
+        "icon": "$(terminal-kill)"
+      },
+
       {
         "command": "101obex-api-extension-ia.tryAgain",
         "title": "Retry Brunix request"
@@ -117,16 +129,62 @@
     ],
     "menus": {
       "view/title": [
+        {
+          "command": "101obex-api-extension-ia.recoverChats",
+          "when": "view == 101obex-api-extension-ia.previous",
+          "group": "navigation@0"
+        },
+        {
+          "command": "101obex-api-extension-ia.saveChat",
+          "when": "view == 101obex-api-extension-ia.chatView",
+          "group": "navigation@0"
+        },
+        {
+          "command": "101obex-api-extension-ia.resetConversation",
+          "when": "view == 101obex-api-extension-ia.chatView",
+          "group": "navigation@1"
+        }
+      
   
       ],
       "view/item/context": [
-
+        {
+          "command": "101obex-api-extension-ia.resetConversation",
+          "when": "view == 101obex-api-extension-ia.chatView",
+          "group": "inline"
+        },
+        {
+          "command": "101obex-api-extension-ia.chatRecover",
+          "when": "view == 101obex-api-extension-ia.previous",
+          "group": "inline@0"
+        },
+        {
+          "command": "101obex-api-extension-ia.editChatName",
+          "when": "view == 101obex-api-extension-ia.previous",
+          "group": "inline@1"
+        },
+        {
+          "command": "101obex-api-extension-ia.deleteChat",
+          "when": "view == 101obex-api-extension-ia.previous",
+          "group": "inline@2"
+        }
       ],
       "editor/context": [
+        {
+          "command": "101obex-api-extension-ia.resetConversation",
+          "when": "view == 101obex-api-extension-ia.chatView",
+          "group": "inline"
+        },
+        
         {
           "command": "101obex-api-extension-ia.ask",
           "when": "editorTextFocus",
           "group": "chatgpt-menu-group@1"
+        },
+        {
+          "command": "extension.showCodeProposal",
+          "when": "editorTextFocus",
+          "group": "chatgpt-menu-group@7"
         },
         {
           "command": "101obex-api-extension-ia.explain",
@@ -157,6 +215,9 @@
       "commandPalette": [
         {
           "command": "101obex-api-extension-ia.ask"
+        },
+        {
+          "command": "extension.showCodeProposal"
         },
         {
           "command": "101obex-api-extension-ia.explain",

@@ -21,7 +21,7 @@
         break;
       }
       case "setPrompt": {
-        document.getElementById("prompt-input").value = message.value;
+        document.getElementById("prompt-input").innerText = message.value;
         break;
       }
     }
@@ -53,7 +53,15 @@
         });
         response = fixCodeBlocks(response);
         html = converter.makeHtml(response);
-        document.getElementById("response").innerHTML = html;
+
+        let rr = document.getElementById("response");
+        rr.style.marginTop = '10px';
+        rr.style.paddingBottom = '10px';
+        rr.style.paddingTop ='0px';
+        rr.style.maxHeight = "calc(100vh - 60px)";
+        rr.style.overflow = "scroll";
+        rr.scrollTop = rr.scrollHeight;
+        rr.innerHTML = html;
 
         var preCodeBlocks = document.querySelectorAll("pre code");
         for (var i = 0; i < preCodeBlocks.length; i++) {
@@ -100,7 +108,7 @@
     if (e.keyCode === 13) {
       vscode.postMessage({
         type: 'prompt',
-        value: this.value
+        value: this.innerText
       });
     }
   });
