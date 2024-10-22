@@ -21,6 +21,17 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "colors": [
+      {
+        "id": "myExtension.treeItemForeground",
+        "description": "Foreground color for TreeView items in my extension.",
+        "defaults": {
+          "light": "#00FF00",
+          "dark": "#00FF00",
+          "highContrast": "#00FF00"
+        }
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {
@@ -41,6 +52,11 @@
           "type": "tree",
           "id": "101obex-api-extension-ia.previous",
           "name": "Previous Chats"
+        },
+        {
+          "type": "tree",
+          "id": "101obex-api-extension-ia.library",
+          "name": "Contexts library"
         }
       ]
     },
@@ -53,15 +69,41 @@
           "default": "apikey",
           "description": "OpenAI Api Key",
           "order": 8
+        },
+        "brunix.openAI.proposalsStandBy": {
+          "type": "number",
+          "default": 1000,
+          "description": "Waiting time until predictive response (ms)",
+          "order": 10
         }
+
       }
     },
     "commands": [
+      {
+        "command": "extension.newProposals",
+        "title": "New Code Proposal"
+      },
+      {
+        "command": "101obex-api-extension-ia.openSettings",
+        "title": "Open Brunix Settings",
+        "icon": "$(settings)"
+      },
 
       {
         "command": "101obex-api-extension-ia.chatRecover",
         "title": "Recover Chat",
-        "icon": "$(comment)"
+        "icon": "$(check)"
+      },
+      {
+        "command": "101obex-api-extension-ia.contextRecover",
+        "title": "Recover Chat",
+        "icon": "$(check)"
+      },
+      {
+        "command": "101obex-api-extension-ia.contextDiscard",
+        "title": "Discard Context",
+        "icon": "$(discard)"
       },
       {
         "command": "101obex-api-extension-ia.editChatName",
@@ -69,9 +111,24 @@
         "icon":"$(pencil)"
       },
       {
+        "command": "101obex-api-extension-ia.editContextName",
+        "title": "Edit context name",
+        "icon":"$(pencil)"
+      },
+      {
         "command": "101obex-api-extension-ia.deleteChat",
         "title": "Delete Chat",
         "icon":"$(terminal-kill)"
+      },
+      {
+        "command": "101obex-api-extension-ia.deleteContext",
+        "title": "Delete Context",
+        "icon":"$(terminal-kill)"
+      },
+      {
+        "command": "101obex-api-extension-ia.recoverContexts",
+        "title": "Recover Contexts",
+        "icon": "$(refresh)"
       },
 
       {
@@ -117,6 +174,11 @@
         "icon": "$(save)"
       },
       {
+        "command": "101obex-api-extension-ia.addContext",
+        "title": "Add Context to chat",
+        "icon": "$(plus)"
+      },
+      {
         "command": "101obex-api-extension-ia.resetConversation",
         "title": "Reset Brunix chat",
         "icon": "$(terminal-kill)"
@@ -135,14 +197,30 @@
           "group": "navigation@0"
         },
         {
+          "command": "101obex-api-extension-ia.recoverContexts",
+          "when": "view == 101obex-api-extension-ia.library",
+          "group": "navigation@0"
+        },
+        {
           "command": "101obex-api-extension-ia.saveChat",
           "when": "view == 101obex-api-extension-ia.chatView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "101obex-api-extension-ia.addContext",
+          "when": "view == 101obex-api-extension-ia.library",
           "group": "navigation@0"
+        },
+        
+        {
+          "command": "101obex-api-extension-ia.openSettings",
+          "when": "view == 101obex-api-extension-ia.chatView",
+          "group": "navigation@3"
         },
         {
           "command": "101obex-api-extension-ia.resetConversation",
           "when": "view == 101obex-api-extension-ia.chatView",
-          "group": "navigation@1"
+          "group": "navigation@2"
         }
       
   
@@ -167,6 +245,26 @@
           "command": "101obex-api-extension-ia.deleteChat",
           "when": "view == 101obex-api-extension-ia.previous",
           "group": "inline@2"
+        },
+        {
+          "command": "101obex-api-extension-ia.deleteContext",
+          "when": "view == 101obex-api-extension-ia.library",
+          "group": "inline@2"
+        },
+        {
+          "command": "101obex-api-extension-ia.contextRecover",
+          "when": "view == 101obex-api-extension-ia.library",
+          "group": "inline@0"
+        },
+        {
+          "command": "101obex-api-extension-ia.contextDiscard",
+          "when": "view == 101obex-api-extension-ia.library && viewItem == LOADED",
+          "group": "inline@0"
+        },
+        {
+          "command": "101obex-api-extension-ia.editContextName",
+          "when": "view == 101obex-api-extension-ia.library",
+          "group": "inline@1"
         }
       ],
       "editor/context": [
