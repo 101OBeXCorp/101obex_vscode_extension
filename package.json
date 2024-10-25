@@ -111,7 +111,13 @@
         },
         {
           "command": "101obex-api-extension-api-creation.CloneAPI",
-          "when": "view == 101obex-api-code.package-creation && viewItem == APICONF"
+          "when": "view == 101obex-api-code.package-creation && (viewItem == APICONF || viewItem == UNPUBLISHED)"
+        },
+        
+        {
+          "command": "101obex-api-extension-api-creation.CloneAPI",
+          "when": "view == 101obex-api-code.package-creation && (viewItem == APICONF || viewItem == UNPUBLISHED)",
+          "group": "inline"
         },
         {
           "command": "101obex-api-extension-api-creation.CloneAPI",
