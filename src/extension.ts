@@ -9,6 +9,8 @@ import { Script } from 'vm';
 
 let hh: AxiosResponse<any, any>
 
+let OverToken:any = '';
+let PATHS_SPECS: never[] = [];
 let ACCESS = false;
 var SelectedProject = 356;
 var SelectedProjectToken ='';
@@ -34,114 +36,114 @@ var con2: { [x: string]: any[]; }[] //: { [x: string]: { apis: { model: string; 
 var AccesToken: string;
 var idService: string;
 var con1 = {
-	apis : [
-		{
-			model:	'IBM3270',
-			connections: [
-				{
-					'name':'conexion_prueba', 
-					'description':'localhost',
-					'ip':'127.0.0.1',
-					'id': '00000000000',
-					'username':'admin',
-					'password':'*****',
-					'services': [
-						{
-						'name':'test',
-						 'connection':'/ws/util.py/paises'
-					}
-					]
-				}
-			]
-		},
-		{					
-			model:	'IBM3090',
-			connections: []
-		},
-		{					
-			model:	'MQS',
-			connections: []
-		},
-	],
-	erp : [
-		{
-			model:	'SAP',
-			connections: []
-		},
-		{					
-			model:	'ORACLE ',
-			connections: []
-		}
-	],
-	databases : [
-		{
-			model:	'DB2',
-			connections: []
-		},
-		{					
-			model:	'SQL',
-			connections: []
-		},
-		{					
-			model:	'ORACLE',
-			connections: []
-		},
-	],
-	low_code: [
-		{
-			model: 'API',
-			apis: [
-				{
-					name: 'countries'
-				}
-			]
-		}
-	],
-	finnancials : 
-		{
-		core_banking:
-			[
-				{
-					model:	'ANTA',
-					connections: []
-				},
-				{
-					model:	'INFICAJA',
-					connections: []
-				},
+    apis : [
+        {
+            model:  'IBM3270',
+            connections: [
+                {
+                    'name':'conexion_prueba', 
+                    'description':'localhost',
+                    'ip':'127.0.0.1',
+                    'id': '00000000000',
+                    'username':'admin',
+                    'password':'*****',
+                    'services': [
+                        {
+                        'name':'test',
+                         'connection':'/ws/util.py/paises'
+                    }
+                    ]
+                }
+            ]
+        },
+        {                   
+            model:  'IBM3090',
+            connections: []
+        },
+        {                   
+            model:  'MQS',
+            connections: []
+        },
+    ],
+    erp : [
+        {
+            model:  'SAP',
+            connections: []
+        },
+        {                   
+            model:  'ORACLE ',
+            connections: []
+        }
+    ],
+    databases : [
+        {
+            model:  'DB2',
+            connections: []
+        },
+        {                   
+            model:  'SQL',
+            connections: []
+        },
+        {                   
+            model:  'ORACLE',
+            connections: []
+        },
+    ],
+    low_code: [
+        {
+            model: 'API',
+            apis: [
+                {
+                    name: 'countries'
+                }
+            ]
+        }
+    ],
+    finnancials : 
+        {
+        core_banking:
+            [
+                {
+                    model:  'ANTA',
+                    connections: []
+                },
+                {
+                    model:  'INFICAJA',
+                    connections: []
+                },
 
-			],
-		
-		open_banking:
-			[
-				{
-					model:	'BELVO',
-					connections: []
-				}
-			],
-		
-		baas:
-			[
-				{
-					model:	'BAAS01',
-					connections: []
-				}
-			],
-		
-		payment_methods:
-			[
-				{
-					model:	'STRIPE',
-					connections: []
-				},
-				{
-					model:	'PAYPAL',
-					connections: []
-				}
-			]
-	},
+            ],
+        
+        open_banking:
+            [
+                {
+                    model:  'BELVO',
+                    connections: []
+                }
+            ],
+        
+        baas:
+            [
+                {
+                    model:  'BAAS01',
+                    connections: []
+                }
+            ],
+        
+        payment_methods:
+            [
+                {
+                    model:  'STRIPE',
+                    connections: []
+                },
+                {
+                    model:  'PAYPAL',
+                    connections: []
+                }
+            ]
+    },
 
-		
+        
 }
 
 var TEST = 0;
@@ -168,117 +170,117 @@ const userHomeDir = os.homedir();
 const configFile = userHomeDir+'/.101obex/config.json';
 const contextFile = userHomeDir+'/context.txt';
 const axiosConfig = {
-	headers: {
-		accept: 'application/json',
-		'Content-Type': 'application/json;charset=UTF-8',
-		'Accept-Encoding': 'identity',
-		'disable-cache': 'true'
-	},
-	data: {}
+    headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Accept-Encoding': 'identity',
+        'disable-cache': 'true'
+    },
+    data: {}
   };
 var TokenData: AxiosResponse<any, any>;
 
 function getWebviewContent(url: any, headers: any, api_parameters: any) {
 
-	let fromularie = `<!DOCTYPE html>
-	<style>
-	.loader {
-		margin-left: 10px;
-		border: 6px solid #f3f3f3; /* Light grey */
-		border-top: 6px solid #3498db; /* Blue */
-		border-radius: 50%;
-		width: 10px;
-		height: 10px;
-		animation: spin 2s linear infinite;
-	  }
-	  
-	  @keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
-	  }
-	</style>
+    let fromularie = `<!DOCTYPE html>
+    <style>
+    .loader {
+        margin-left: 10px;
+        border: 6px solid #f3f3f3; /* Light grey */
+        border-top: 6px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        animation: spin 2s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
     <html>
-	<body onload="createForm();">
-	<div style="display: flex;">
-	<div style="min-width: 20px;margin-right: 10px;">URL: </div> <div id='req_url'>${cloud.replace(':3000','')}/${url}</div>
-	</div>
-	<div style="display: flex;">
-	<div style="min-width: 20px;margin-right: 10px;">101ObeX Dev Token:</div> <div>${headers}</div>
-	</div>
-	<form style="margin-top: 10px;" id="formed"></form>
-	<div style="display: flex; margin-top: 20px;"> 
-	<button onclick="test2();" id="Test">Test</button> <div id='loader_spinner' class="loader"></div> 
-	</div>
-	<form id="response"></form>
-	</body>
-	</html>
-	<script>
+    <body onload="createForm();">
+    <div style="display: flex;">
+    <div style="min-width: 20px;margin-right: 10px;">URL: </div> <div id='req_url'>${cloud.replace(':3000','')}/${url}</div>
+    </div>
+    <div style="display: flex;">
+    <div style="min-width: 20px;margin-right: 10px;">101ObeX Dev Token:</div> <div>${headers}</div>
+    </div>
+    <form style="margin-top: 10px;" id="formed"></form>
+    <div style="display: flex; margin-top: 20px;"> 
+    <button onclick="test2();" id="Test">Test</button> <div id='loader_spinner' class="loader"></div> 
+    </div>
+    <form id="response"></form>
+    </body>
+    </html>
+    <script>
 
     async function test2 () {
-    	let response_label = document.getElementById("response");
-		response_label.innerText = 'Performing Request...';
-		let llo = document.getElementById("loader_spinner");
-		llo.hidden = false;
+        let response_label = document.getElementById("response");
+        response_label.innerText = 'Performing Request...';
+        let llo = document.getElementById("loader_spinner");
+        llo.hidden = false;
 
-		llo.hidden = false;
-		jkl = document.getElementById('req_url').innerText.toString().replace('${cloud.replace(':3000','')}/','')
-    	let response = await fetch("${cloud}/ws/low_code.py/"+jkl.toString(),{headers:{'101ObexToken':'${headers}'}});
-    	if (response.ok) { // si el HTTP-status es 200-299
-		  // obtener cuerpo de la respuesta (método debajo)
-		  let json = await response.json();
-		//  console.log(json)
-		  response_label.innerText = JSON.stringify(json);
-		} else {
-		  alert("Error-HTTP: " + response.status);
-		} 
-		llo.hidden = true;
+        llo.hidden = false;
+        jkl = document.getElementById('req_url').innerText.toString().replace('${cloud.replace(':3000','')}/','')
+        let response = await fetch("${cloud}/ws/low_code.py/"+jkl.toString(),{headers:{'101ObexToken':'${headers}'}});
+        if (response.ok) { // si el HTTP-status es 200-299
+          // obtener cuerpo de la respuesta (método debajo)
+          let json = await response.json();
+        //  console.log(json)
+          response_label.innerText = JSON.stringify(json);
+        } else {
+          alert("Error-HTTP: " + response.status);
+        } 
+        llo.hidden = true;
     };
 
-	function createForm(){
-		let llo = document.getElementById("loader_spinner");
-		llo.hidden = true;
-		let datat = {}
-		let arrr = '${api_parameters}'
-		arrrr = arrr.split(',');
-		let arra = ['usuario','contrase']
-		for (i in arrrr) {
-		  form = document.getElementById("formed");
-	  
-		  var x = arrrr[i]
-		  
-		  
-		  const inputHandler = function(e) {
-			  
-		  datat[e.target.id] = e.target.value;
-		  
-		  let paramss= '?'
-		  for (v in arrrr){
-			  paramss+=arrrr[v]+'='+datat[arrrr[v]]+'&';
-		  }
-		  let req_urls = document.getElementById('req_url');
-		  req_urls.innerText = '${cloud.replace(':3000','')}/${url}'+paramss.substring(0,paramss.length-1);
-		  
-		}
+    function createForm(){
+        let llo = document.getElementById("loader_spinner");
+        llo.hidden = true;
+        let datat = {}
+        let arrr = '${api_parameters}'
+        arrrr = arrr.split(',');
+        let arra = ['usuario','contrase']
+        for (i in arrrr) {
+          form = document.getElementById("formed");
+      
+          var x = arrrr[i]
+          
+          
+          const inputHandler = function(e) {
+              
+          datat[e.target.id] = e.target.value;
+          
+          let paramss= '?'
+          for (v in arrrr){
+              paramss+=arrrr[v]+'='+datat[arrrr[v]]+'&';
+          }
+          let req_urls = document.getElementById('req_url');
+          req_urls.innerText = '${cloud.replace(':3000','')}/${url}'+paramss.substring(0,paramss.length-1);
+          
+        }
 
 
 
-		  var input = document.createElement('input');
-		  input.setAttribute('placeholder', x)
-		  input.setAttribute('id', x)
-		  input.addEventListener('input', inputHandler);
-	  
-		  if (x=!null && x!='') form.appendChild(input);
-		}
+          var input = document.createElement('input');
+          input.setAttribute('placeholder', x)
+          input.setAttribute('id', x)
+          input.addEventListener('input', inputHandler);
+      
+          if (x=!null && x!='') form.appendChild(input);
+        }
 
-		if (arrrr.length == 0 ) {
-			form = document.getElementById("formed");
-			form.visivility = 'hidden';
-		}
-	  }
-	</script>
-	`;
-	//console.log(fromularie);
-	
+        if (arrrr.length == 0 ) {
+            form = document.getElementById("formed");
+            form.visivility = 'hidden';
+        }
+      }
+    </script>
+    `;
+    //console.log(fromularie);
+    
     return fromularie;
 }
 
@@ -289,767 +291,906 @@ var API_ENDPOINT_LIST: any[] = [];
 
 export function activate(context: vscode.ExtensionContext) {
 
-	
+    
 
-	const thisProvider = {
-		resolveWebviewView:function(thisWebviewView : any, thisWebviewContext: any, thisToken: any){
-			
-			thisWebviewView.webview.options={enableScripts:true};
-			thisWebviewView.webview.html= getWebviewContent("","",[]); 
-			thisWebviewView.enableScripts= true
-			thisWebviewView.webview.onDidReceiveMessage(
-				(message:any) => {
-				  switch (message.command) {
-				  case 'alert':
-					vscode.window.showErrorMessage(message.text);
-					thisWebviewView.webview.html = getWebviewContent("","",[]);
-					return;
-				  }
-				},
-				undefined,
-				context.subscriptions
-			  );
-			  ventanaNueva = thisWebviewView;
+    const thisProvider = {
+        resolveWebviewView:function(thisWebviewView : any, thisWebviewContext: any, thisToken: any){
+            
+            thisWebviewView.webview.options={enableScripts:true};
+            thisWebviewView.webview.html= getWebviewContent("","",[]); 
+            thisWebviewView.enableScripts= true
+            thisWebviewView.webview.onDidReceiveMessage(
+                (message:any) => {
+                  switch (message.command) {
+                  case 'alert':
+                    vscode.window.showErrorMessage(message.text);
+                    thisWebviewView.webview.html = getWebviewContent("","",[]);
+                    return;
+                  }
+                },
+                undefined,
+                context.subscriptions
+              );
+              ventanaNueva = thisWebviewView;
 
-		},
-		sayHi:function(url: any) {  
-			//console.log(ventanaNueva);
-			let url_config = `${cloud}/info_api_parameters?developer_token=`
-			let pamameters_config = `&id_service=${url}&obex_project_id=${SelectedProject}`;
-			if (url!=null && url!=''){
-			axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
-			.then((response) => {
-				let api_parameters = response.data.data || [];
-				//console.log(api_parameters);
+        },
+        sayHi:function(url: any) {  
+            //console.log(ventanaNueva);
+            let url_config = `${cloud}/info_api_parameters?developer_token=`
+            let pamameters_config = `&id_service=${url}&obex_project_id=${SelectedProject}`;
+            if (url!=null && url!=''){
+            axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
+            .then((response) => {
+                let api_parameters = response.data.data || [];
+                //console.log(api_parameters);
 
-				ventanaNueva.webview.html = getWebviewContent(`${url}`,`${SelectedProjectToken}`,api_parameters);
-			}
-			);
-		}
-		},
-	  };
+                ventanaNueva.webview.html = getWebviewContent(`${url}`,`${SelectedProjectToken}`,api_parameters);
+            }
+            );
+        }
+        },
+      };
 
-	  thisProviderGlobal = thisProvider;
+      thisProviderGlobal = thisProvider;
 
 /*
-	  const panel = vscode.window.createWebviewPanel(
-		'Panel',
-		'myPanel',
-		vscode.ViewColumn.Beside,
-		{// Enable scripts in the webview
-			enableScripts: true
-		}
-	  );
+      const panel = vscode.window.createWebviewPanel(
+        'Panel',
+        'myPanel',
+        vscode.ViewColumn.Beside,
+        {// Enable scripts in the webview
+            enableScripts: true
+        }
+      );
 
-	  panel.webview.html = getWebviewContent(url);
-	  panel.webview.onDidReceiveMessage(
-		message => {
-		  switch (message.command) {
-		  case 'alert':
-			vscode.window.showErrorMessage(message.text);
-			return;
-		  }
-		},
-		undefined,
-		context.subscriptions
-	  );
-	*/
+      panel.webview.html = getWebviewContent(url);
+      panel.webview.onDidReceiveMessage(
+        message => {
+          switch (message.command) {
+          case 'alert':
+            vscode.window.showErrorMessage(message.text);
+            return;
+          }
+        },
+        undefined,
+        context.subscriptions
+      );
+    */
 
-//	  context.subscriptions.push(
-//		vscode.window.registerWebviewViewProvider('101obex-api-extension.myPanel', thisProvider
-//		)
-//	  );
+//    context.subscriptions.push(
+//      vscode.window.registerWebviewViewProvider('101obex-api-extension.myPanel', thisProvider
+//      )
+//    );
 
 
 // -------
-//	  context.subscriptions.push(
-//		vscode.window.registerWebviewViewProvider('101obex-api-extension.myPanel', thisProvider
-//		)
-//	  );
-// -------	
-		
-	  
+//    context.subscriptions.push(
+//      vscode.window.registerWebviewViewProvider('101obex-api-extension.myPanel', thisProvider
+//      )
+//    );
+// -------  
+        
+      
 
-	//  context.subscriptions.push(
-	//	vscode.commands.registerCommand('101obex-api-extension.package-panel.start', function () {thisProvider.sayHi();})
-	//  );
-	//}
-
-	try{
-		context.subscriptions.push(
-			vscode.commands.registerCommand('101obex-api-extension-api-creation.checkout-api-creator', async (e) =>
-			{
-
-
-
-				if(vscode.workspace.workspaceFolders===undefined){
-            
-					vscode.window.showInformationMessage(`Please Open an API Folder to checkout commits`,'Open').then(
-					  async (selection) => {
-						if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
-					  }
-					);
-					
-					return
-				  }
-
-				if (API_FOLDER_ACTIVE===''){
-					vscode.window.showInformationMessage(`You cant checkout a commit outside his folder`,'Open').then(
-						async (selection) => {
-						  if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
-						}
-					  );
-					  
-					  return
-
-				}
-
-
-	let checkaborted = false;
-	let workspacePath = '';
-	if (vscode.workspace.workspaceFolders?.length) {
-		workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-		workspacePath = path.normalize(workspacePath);
-	}
-	let API_Name = workspacePath.split('/').slice(-1);
-
-	let commits: string[] = [];
-	con2[0].APIs.forEach(api=>{
-		if (api.api_name == API_Name){
-			api.history.forEach((version: any) =>{
-				version.commits.forEach((element:any) => {
-					//console.log(element.commit);
-					//console.log(commits.includes(element.commit));
-					if (!commits.includes(element.commit)){
-						commits.push(`${element.datetime.replace('T',' ').replace('.000Z','')} ${element.commit} ${element.comment}`);
-					}
-				});
-			})
-		}
-
-	})
-
-	const pageType = await vscode.window.showQuickPick(			/// COMMIT DESDE EL CONTROL DE REPOSITORIO
-		commits,
-		{ placeHolder: 'Select Commit' }).then(async (pageType)=>{
-			// console.log(pageType);
-
-			if (pageType!=undefined){
-			if (vscode.workspace.workspaceFolders?.length) {
-				workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-				workspacePath = path.normalize(workspacePath);
-			}
-			
-			let API_Name = workspacePath.split('/').slice(-1);
-			let commit_id = pageType.split(' ')[2];
-			//////////
-
-			vscode.window.showInformationMessage(`Checking Out ${commit_id} Commit.`);
-
-			axios.get(`${cloud}/api_catalog/checkout?developer_token=` + AccesToken+`&obex_project_id=${SelectedProject}&api=${API_Name}&commit_id=${commit_id}`, axiosConfig)
-			.then(async (response) => {
-			
-	
-			if (response.data.data.code!=null) {
-			let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
-			responseFinal = response.data.data.code.replace(/\\/g,'');
-			let respondeJson = JSON.parse(responseFinal);
-	
-			const files = await vscode.workspace.findFiles('**/*.avap');
-			files.forEach((file)=>{ 
-				fs.unlink(file.path, (err) => {
-					if (err) throw err;
-				  });
-			});
-	
-			let contador = 0;
-			respondeJson.forEach((fichero: { file: any; code: any; })=>{
-	
-				let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
-				CodigoReal = CodigoReal.replace(/\\n/g,'\n');
-				fs.writeFile(workspacePath+`/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
-					if (err){
-						console.log(err);
-					} else {
-	
-						contador++;
-						if (contador===respondeJson.length){
-							//console.log(contador);
-							vscode.window.showInformationMessage(`API ${API_Name} Checked on commit ${commit_id} Successfully`);
-	
-						}
-						}
-					});
-	
-	
-			})
-			
-			} else {
-				const files = await vscode.workspace.findFiles('**/*.avap');
-				files.forEach((file)=>{ 
-					fs.unlink(file.path, (err) => {
-						if (err) throw err;
-					  });
-				});
-	
-				vscode.window.showInformationMessage(`API ${API_Name} Checked on commit ${pageType} Successfully`);
-			}
-			vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
-		}
-			);
-
-	} else {
-		vscode.window.showErrorMessage("Checkout Aborted");
-		checkaborted = true;
-	}
-
-			//////////
-
-		});
-
-				if (!checkaborted) vscode.window.showInformationMessage(`Checking Out Repository`);
-	
-			 } ) );
-
-	} catch {}
-
-
+    //  context.subscriptions.push(
+    //  vscode.commands.registerCommand('101obex-api-extension.package-panel.start', function () {thisProvider.sayHi();})
+    //  );
+    //}
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('101obex-api-extension-api-creation.eraseAPI', async (e)=>{
-					
-			const pageType = await vscode.window.showQuickPick(
-				['YES', 'NO'],
-				{ placeHolder: 'Are You Sure?' }).then(async (pageType)=>{
-					//console.log(pageType);
-	
-					if (pageType == 'YES') {
-						
-						// 216.238.84.25
-						axios.post(/*url3*/`${cloud}/api_catalog/erase_repository?developer_token=` + AccesToken+`&obex_project_id=${SelectedProject}&api=${e.label}`, axiosConfig)
-						.then((response) => {
-
-							vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
-							vscode.commands.executeCommand('101obex-api-extension-api-creation.refreshEntry-api-creator')
-
-						})
-						.catch((error) => { 
-							console.log(error)
-						});	
-					}
-					
-	
-				});
-
-		})
-	)
-
-	try{
-		context.subscriptions.push(
-			vscode.commands.registerCommand('101obex-api-extension-api-creation.commitPush-api-creator', async () =>
-			{
+        vscode.commands.registerCommand('101obex-api-extension-specs.openSettings', ()=>{
+            vscode.commands.executeCommand('workbench.action.openSettings', { query: 'AVAP:authtoken,AVAP Specs' });
+        }));
 
 
-				if(vscode.workspace.workspaceFolders===undefined){
+    try{
+        context.subscriptions.push(
+            vscode.commands.registerCommand('101obex-api-extension-api-specs.checkout-api-creator', async (e) =>
+            {
+
+
+
+                if(vscode.workspace.workspaceFolders===undefined){
             
-					vscode.window.showInformationMessage(`Please Open a Folder to create APIs`,'Open').then(
-					  async (selection) => {
-						if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
-					  }
-					);
-					
-					return
-				  }
+                    vscode.window.showInformationMessage(`Please Open an API Folder to checkout commits`,'Open').then(
+                      async (selection) => {
+                        if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
+                      }
+                    );
+                    
+                    return
+                  }
+
+                if (API_FOLDER_ACTIVE===''){
+                    vscode.window.showInformationMessage(`You cant checkout a commit outside his folder`,'Open').then(
+                        async (selection) => {
+                          if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
+                        }
+                      );
+                      
+                      return
+
+                }
 
 
-				let workspacePath = '';
-					if (vscode.workspace.workspaceFolders?.length) {
-						workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-						workspacePath = path.normalize(workspacePath);
-					}
+    let checkaborted = false;
+    let workspacePath = '';
+    if (vscode.workspace.workspaceFolders?.length) {
+        workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        workspacePath = path.normalize(workspacePath);
+    }
+    let API_Name = workspacePath.split('/').slice(-1);
 
-				let APIsAvailables = []
-				try{
-				APIsAvailables = con2[0]["APIs"];
-				} catch{
-					APIsAvailables =[];
-				}
-				let valid = false;
-				let API_Name = workspacePath.split('/').slice(-1);
-				let entry_point = "";
-				APIsAvailables.forEach((API__Name: { [x: string]: { toString: () => string; }; })=>{
-					// console.log(`${API__Name["api_name"].toString()} - ${API_Name[0]}`);
-					if (API__Name["api_name"].toString() === API_Name[0]){
-						valid = true;
-						entry_point = API__Name["entrypoint"].toString();
-					}
-				})
+    const os = require('os');
 
+    if (os.platform() === 'win32') {
+    
+        API_Name = workspacePath.split('\\').slice(-1);
+    
+    }
 
-				if (valid){
-	
-				let error = false;
-				let commitDescription = await vscode.window.showInputBox({
-					placeHolder: "Describe the commit",
-					validateInput: text => {
-					return text === text ? null : 'Not 123!';
-					
-				}});
-	
-				if (commitDescription!=undefined && commitDescription!=""){
+    let commits: string[] = [];
+    con2[0].APIs.forEach(api=>{
+        if (api.api_name == API_Name){
+            api.history.forEach((version: any) =>{
+                version.commits.forEach((element:any) => {
+                    //console.log(element.commit);
+                    //console.log(commits.includes(element.commit));
+                    if (!commits.includes(element.commit)){
+                        commits.push(`${element.datetime.replace('T',' ').replace('.000Z','')} ${element.commit} ${element.comment}`);
+                    }
+                });
+            })
+        }
 
-				} else error = true;
+    })
 
-				if (error){
-					vscode.window.showErrorMessage(
-						'API Push aborted'
-					);
-				} else {
-					vscode.window.showInformationMessage(`Pushing commit`);
+    const pageType = await vscode.window.showQuickPick(         /// COMMIT DESDE EL CONTROL DE REPOSITORIO
+        commits,
+        { placeHolder: 'Select Commit' }).then(async (pageType)=>{
+            // console.log(pageType);
 
-					const files = await vscode.workspace.findFiles('**/*.avap');
-					//console.log(files);
-			
-					let codeFiles: { file: string; code: string; }[] = []
-					let coont = 0;
-					let hasEntrypoint = false;
-					files.forEach((file)=>{
-						fs.readFile(file.fsPath, 'utf8', (err, data) => {
-							let fileAPI = file.path.split('/').slice(-1)[0];
-							if (fileAPI == entry_point) hasEntrypoint = true;
-							//console.log(fileAPI);
-							codeFiles.push({file: fileAPI, code: Buffer.from(data).toString('base64')})
-							//console.log(Buffer.from(data).toString('base64'));
-							coont++;
-							if (coont == files.length) {
-								
-								//console.log(codeFiles);
-
-								let workspacePath = '';
-								if (vscode.workspace.workspaceFolders?.length) {
-									workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-									workspacePath = path.normalize(workspacePath);
-								}
-
-								let APIPUSH = workspacePath.split('/').slice(-1)[0]
-								commitDescription = commitDescription?.replace(/ /g, '%20')
-								if (hasEntrypoint == true){
-								axios.post(`${cloud}/api_catalog/push_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${APIPUSH}&message=${commitDescription}`, {
-								// axios.post(`http://0.0.0.0:3000/api_catalog/push_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${APIPUSH}&message=${commitDescription}`, {
-
-									code: codeFiles
-								})
-								.then((response) => {
-									//console.log(response);
-									
-									vscode.window.showInformationMessage(`Commit Pushed to ${APIPUSH} Repository`);
-									vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
-									axios.get(url3 + AccesToken+`&obex_project_id=${SelectedProject}`, axiosConfig)
-									.then((response) => {
-										TokenData = response;
-										Services = response.data.data[0].services
-										var resultss = response.data.data[0].results;
-										con2 = response.data.data;
-										Connectors(context, response, thisProvider);
-									});
-								
-								
-								
-								});
-							} else {
-
-								               //// Mostrar error de sin entrypoint
-											   vscode.window.showErrorMessage('Entrypoint not present.');
-
-
-							}
-							}
-						
-						})
-					
-					})
-					/// Refrescar Publisher
-					vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
-
-				}
-
-			} else {
-
-				vscode.window.showErrorMessage(
-					'You are not in an API Repository'
-				);
-				// ERROR
-			}
-
-
-
-
-			 } ) );
-
-	} catch {}
-
-	try{
-		context.subscriptions.push(
-			vscode.commands.registerCommand('101obex-api-extension-api-creation.addAPI-api-creator', async () =>
-			{
-
-				if(vscode.workspace.workspaceFolders===undefined){
+            if (pageType!=undefined){
+            if (vscode.workspace.workspaceFolders?.length) {
+                workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                workspacePath = path.normalize(workspacePath);
+            }
             
-					vscode.window.showInformationMessage(`Please Open a Folder to create APIs`,'Open').then(
-					  async (selection) => {
-						if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
-					  }
-					);
-					
-					return
-				  }
+            let API_Name = workspacePath.split('/').slice(-1);
+            const os = require('os');
 
-
-				let paso = 0;
-				let error = false;
-				let endPoint = undefined;
-				let ApiName = await vscode.window.showInputBox({
-					placeHolder: "Name of your API",
-					validateInput: text => {
-					return text === text ? null : 'Not 123!';
-					
-				}});
-				paso = 1;
-				if (ApiName!=undefined && ApiName!="" && !API_NAMES_LIST.includes(ApiName)){
-					endPoint = await vscode.window.showInputBox({
-						placeHolder: "Name endpoint API",
-						validateInput: text => {
-						return text === text ? null : 'Not 123!';
-						
-					}});
-				
-					if (endPoint!=undefined && endPoint!="" && !API_ENDPOINT_LIST.includes(endPoint) && !API_ENDPOINT_LIST.includes('/'+endPoint)){
-					let entryPoint = await vscode.window.showInputBox({
-						placeHolder: "Name of the entrypoint file",
-						validateInput: text => {
-						return text === text ? null : 'Not 123!';
-						
-					}});
-
-					if (entryPoint!=undefined && entryPoint!=""){
-
-						if (entryPoint.split('.')[1] != '.avap'){
-							entryPoint = entryPoint.split('.')[0] + '.avap'
-						}
-
-
-						vscode.window.showInformationMessage(`Creating ${ApiName} Repository`);
-
-
-						// const folderPath = `/`;
-
-						let workspacePath = '';
-						if (vscode.workspace.workspaceFolders?.length) {
-							workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-							workspacePath = path.normalize(workspacePath);
-						}
-
-						
-							const wsedit = new vscode.WorkspaceEdit();
-							const wsPath = workspacePath;
-
-							const filePath2 = vscode.Uri.file(wsPath + `/${ApiName}`);
-							const filePath = vscode.Uri.file(wsPath + `/`);
-							/*
-							vscode.window.showInformationMessage(filePath.toString());
-							wsedit.createFile(filePath, { ignoreIfExists: true });
-							vscode.workspace.applyEdit(wsedit);
-						*/
-
-						
-					
-
-						const folderPath = workspacePath;
-
-						const folderPathParsed = folderPath.split(`\\`).join(`/`);
-						const folderUri = vscode.Uri.parse(folderPathParsed);
-						const folderUri2 = vscode.Uri.parse(folderPathParsed);
-
-
-						// const appModel = new AppModel();
-
-						fs.mkdirSync(filePath2.fsPath);
-						//appModel.createFileOrFolder('folder', appModel.findDir(filePath2.fsPath));
-
-						//vscode.workspace.updateWorkspaceFolders(0,undefined,{uri: filePath2 ,name: ApiName });
-						// vscode.commands.executeCommand(`vscode.createFolder`, filePath);
-
-						UPDATE_API_OBJ = {
-							endpoint: endPoint,
-							entrypoint: entryPoint,
-							apiname: ApiName,
-							pathfolder: filePath2
-						}
-
-						UPDATE_APIS = true;
-						Connectors(context, TokenData, thisProvider);
-					
-						// vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
-
-
-
-					} else error = true;
-				} else error = true;
-			} else error = true;
-				
-			if (error){
-				let message= '';
-				if (ApiName!=undefined){
-					if (API_NAMES_LIST.includes(ApiName)) message = `API ${ApiName} already exists.`
-				}
-				if (endPoint!=undefined && (API_ENDPOINT_LIST.includes(endPoint) || API_ENDPOINT_LIST.includes('/'+endPoint))) message = `Endpoint ${endPoint} already used.`
-				vscode.window.showErrorMessage(
-					`API Creation aborted ${message}`
-				);
-			}
-			}
-			)
-				);
-		} catch { }
-
-
-	ExtContext = context;
-
-	if (ACCESS) {
-
-	fs.readFile(contextFile, 'utf8', (err, data) => {
-		CONTEXT = data.toString();
-	});
-
-	fs.readFile(configFile, 'utf8', (err, data) => {
-		if (err && TEST == 0) { 
-			vscode.window.showErrorMessage(
-				'101OBeX Developer Token was not found. '+
-				'Please use 101obexcli to get your 101OBeX Developer Token'
-				);
-			nullRegistration(context,'101obex-api-extension-api-creation.refreshEntry-api-creator');
-			throw err; 
-		} 
-
-		if (TEST == 0) var dataObj = JSON.parse( data.replace(/\'/g,"\"") ); else var dataObj: any = {}
-
-		if (TEST == 1) dataObj.id_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1MmRlMjdmNTE1NzM3NTM5NjAwZDg5YjllZTJlNGVkNTM1ZmI1MTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgwNzE4ODU4MTA0MzU5OTg4ODIiLCJoZCI6IndheW5ub3ZhdGUuY29tIiwiZW1haWwiOiJyYWZhLnJ1aXpAd2F5bm5vdmF0ZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Il9GTk5wSlRvNEd5X2NaYS10d0hUVVEiLCJuYW1lIjoiUmFmYWVsIFJ1aXoiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUVkRlRwNG4xaF9RbUoxelhUd3NUdDNBRTdkVVVRUGhkTlFaN0hRek5zQVdrZz1zOTYtYyIsImdpdmVuX25hbWUiOiJSYWZhZWwiLCJmYW1pbHlfbmFtZSI6IlJ1aXoiLCJsb2NhbGUiOiJlcyIsImlhdCI6MTY3MDk1Mjc2NCwiZXhwIjoxNjcwOTU2MzY0fQ.uFMoDEhjZW-FKxnBg9BVxp_sSrjcrvw5_sxMOQZrREvJjv11W2GxLuQfMjMTtTPXhDCa8GeQOlzCllWxQRlOr3irEdu19y4qJQT1ut0RSi7pEIb6E6KcsdiAZtRSlA-6feIuj2u9gC2HXnGvBHtlO3FhWw4Et1zl_menGTCLOMqeq6v2QiMOfFlFzzE2t1TSo5_Be9AZQNfB7E1SLGHnbKXdR9ij9yqwMD2spjpxvnw4l4k5q23eS5Zz0Qz_WNm5PBgqF5NJwTeky-7-Aeq-ulUSnQ3qY-SsmQJunyt_miiwDyVOQkEWNDMRF4FJPuXDGJatWEeCsKXWe877pL4nVA';
-		
-		AccesToken = dataObj.id_token;
-
-		let porSel = getCurrentProject();
-		SelectedProject = porSel.obex_project_id;
-		SelectedProjectToken = porSel.selected_project;
-
-		let clo = getCurrentCloud()
-
-		selectedCloud = clo.selected_cloud;
-		cloud = selectedCloud;
-
-		url = `${selectedCloud}/info_extension?developer_token=`;
-		url2 = `${selectedCloud}/api_catalog/history?developer_token=`;
-		url3 = `${selectedCloud}/api_catalog/history?developer_token=`;
-
-		axios.get(url2 + dataObj.id_token+`&obex_project_id=${SelectedProject}`, axiosConfig)
-			.then((response) => {
-				TokenData = response;
-
-				Services = response.data.data[0].services
-				var resultss = response.data.data[0].results;
-				con2 = response.data.data;
-
-				createStatusBarItem(context) ;
-
-				Connectors(context, response, thisProvider);
-//				thisProvider.sayHi('');
-				context.subscriptions.push(vscode.commands.registerCommand('react-webview-creation.start-low_code', () => {
-					ReactPanel.createOrShow(context.extensionPath, 'API');
-				}));
-
-				vscode.commands.registerCommand(`101obex-api-extension-api-creation.CheckoutAPI`, async (e) => {
-
-					//const files = await vscode.workspace.findFiles('**/*.*', '**/node_modules/**');
-					//console.log(files);
-
-					if(vscode.workspace.workspaceFolders===undefined){
+            if (os.platform() === 'win32') {
             
-						vscode.window.showInformationMessage(`Please Open an API folder to checkout commits`,'Open').then(
-						  async (selection) => {
-							if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
-						  }
-						);
-						
-						return
-					  }
-
-
-
-					  if (API_FOLDER_ACTIVE===''){
-						vscode.window.showInformationMessage(`You cant checkout a commit outside his folder`,'Open').then(
-							async (selection) => {
-							  if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
-							}
-						  );
-						  
-						  return
-	
-					}
-
-
-
-					vscode.window.showInformationMessage(`Checking Out Repository`);
-
-
-
-				});
-
-				vscode.commands.registerCommand(`101obex-api-extension-api-creation.CloneAPI`, async (e) => {
-
-					if(vscode.workspace.workspaceFolders===undefined){
+                API_Name = workspacePath.split('\\').slice(-1);
             
-						vscode.window.showInformationMessage(`Please Open a Folder to Clone an API`,'Open').then(
-						  async (selection) => {
-							if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
-						  }
-						);
-						
-						return
-					  }
+            }
+            let commit_id = pageType.split(' ')[2];
+            //////////
 
-					let APIClone = e.label;
-					axios.get(/*url3*/`${cloud}/api_catalog/clone?developer_token=` + dataObj.id_token+`&obex_project_id=${SelectedProject}&api=${APIClone}`, axiosConfig)
-					.then((response) => {
-			
-						//console.log(response);
-						//console.log(response.data.data.code);
-						let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
-						responseFinal = response.data.data.code.replace(/\\/g,'');
-						let respondeJson = JSON.parse(responseFinal);
-						//console.log(respondeJson);
+            vscode.window.showInformationMessage(`Checking Out ${commit_id} Commit.`);
 
-						let workspacePath = '';
-						if (vscode.workspace.workspaceFolders?.length) {
-							workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-							workspacePath = path.normalize(workspacePath);
-						}
+            axios.get(`${cloud}/api_catalog/checkout?developer_token=` + AccesToken+`&obex_project_id=${SelectedProject}&api=${API_Name}&commit_id=${commit_id}`, axiosConfig)
+            .then(async (response) => {
+            
+    
+            if (response.data.data.code!=null) {
+            let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
+            responseFinal = response.data.data.code.replace(/\\/g,'');
+            let respondeJson = JSON.parse(responseFinal);
+    
+            const files = await vscode.workspace.findFiles('**/*.avap');
+            files.forEach((file)=>{ 
+                fs.unlink(file.path, (err) => {
+                    if (err) throw err;
+                  });
+            });
+    
+            let contador = 0;
+            respondeJson.forEach((fichero: { file: any; code: any; })=>{
+    
+                let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
+                CodigoReal = CodigoReal.replace(/\\n/g,'\n');
+                fs.writeFile(workspacePath+`/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
+                    if (err){
+                        console.log(err);
+                    } else {
+    
+                        contador++;
+                        if (contador===respondeJson.length){
+                            //console.log(contador);
+                            vscode.window.showInformationMessage(`API ${API_Name} Checked on commit ${commit_id} Successfully`);
+    
+                        }
+                        }
+                    });
+    
+    
+            })
+            
+            } else {
+                const files = await vscode.workspace.findFiles('**/*.avap');
+                files.forEach((file)=>{ 
+                    fs.unlink(file.path, (err) => {
+                        if (err) throw err;
+                      });
+                });
+    
+                vscode.window.showInformationMessage(`API ${API_Name} Checked on commit ${pageType} Successfully`);
+            }
+            vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
+        }
+            );
+
+    } else {
+        vscode.window.showErrorMessage("Checkout Aborted");
+        checkaborted = true;
+    }
+
+            //////////
+
+        });
+
+                if (!checkaborted) vscode.window.showInformationMessage(`Checking Out Repository`);
+    
+             } ) );
+
+    } catch {}
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('101obex-api-extension-api-specs.viewPath', async (e) => {
+          // Create and show panel
+          let apiSele = e.label
+          let hh = PATHS_SPECS[apiSele];
+        
+          console.log(JSON.stringify(hh));
+           
+          const panel = vscode.window.createWebviewPanel(
+            '101obex-api-extension-api-specs',
+            'View Path',
+            vscode.ViewColumn.One,
+            { enableScripts: true }
+            
+          );
+    
+        //const cloud_params = `${cloud}/publishing/get_api_paremeters?obex_project_id=${SelectedProject}&ambient=${ambient}&endpoint=${apiSele}`
+        
+        panel.webview.html = getWebviewContentSwagg(hh,apiSele, 'AccesToken','','','','');
 
 
-							const wsedit = new vscode.WorkspaceEdit();
-							const wsPath = workspacePath;
+        panel.webview.onDidReceiveMessage(async (message) => {
+            if (message.command === 'testCall') {
+                // Simular resultado para esta implementación
+                const { params, token_str, path_str } = message;
+                try {
+                const response = await makeApiCall(params, token_str, path_str);
+                const mockResult = {
+                    success: true,
+                    message: "Test call executed successfully!",
+                    params: message.params
+                };
 
-							const filePath2 = vscode.Uri.file(wsPath + `/${APIClone}`);
-
-											
-
-						const folderPath = workspacePath;
-
-						const folderPathParsed = folderPath.split(`\\`).join(`/`);
-						const folderUri = vscode.Uri.parse(folderPathParsed);
-						const folderUri2 = vscode.Uri.parse(folderPathParsed);
-
-
-						// const appModel = new AppModel();
-						try{
-						fs.mkdirSync(filePath2.fsPath)
-
-						
-
-						///
-						let contador = 0;
-						respondeJson.forEach((fichero: { file: any; code: any; })=>{
-
-							let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
-							CodigoReal = CodigoReal.replace(/\\n/g,'\n');
-							fs.writeFile(workspacePath+`/${APIClone}/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
-								if (err){
-									console.log(err);
-								} else {
-									//refresh101ObeXExtensions();
-									contador++;
-									if (contador===respondeJson.length){
-										//console.log(contador);
-										vscode.window.showInformationMessage(`API ${APIClone} Cloned Successfully`);
+                panel.webview.postMessage({ command: 'testResult', result: response.data });
+            }catch (error:any) {
+                panel.webview.postMessage({
+                    command: 'testResult',
+                    result: error.message || 'Error during API call'
+                });
+            }
+            }
+        });
 
 
-										const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
+        async function makeApiCall(params:any , token:any, path: any ) {
+            const url = 'http://144.202.127.7:82';
+            const queryParams = new URLSearchParams(params).toString();
+            const fullUrl = `${url}${path}?${queryParams}`;
+        
+            return axios.get(fullUrl, {
+                headers: {
+                    '101obextoken': (SelectedProjectToken != undefined || SelectedProjectToken!='') ? SelectedProjectToken : OverToken
+                }
+            });
+        }
+        
+        /*
+        axios.get( cloud_params)
+                
+        .then(async (response) => { 
+          // And set its HTML content
 
 
-										vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
-									}
-									}
-								});
+            axios.get(`${cloud}/unittest/config?endpoint=${apiSele}&obex_project_id=${SelectedProject}`).then(async (response2)=>{
+                console.log(response2.data.data.config);
+                let con = []
+                if (response2.data.data.config.length>0){
+                     con = response2.data.data.config[0].response_validation;
+                } else {con = [];}
+                let parameters=response.data.data.parameters;
+                let results=response.data.data.response;
+                
+                if (typeof con !== 'object'){
+                    let cc = JSON.parse(con);
+                    con = cc;
+                }
+                panel.webview.html = getWebviewContent(parameters,results, AccesToken, apiSele, SelectedProject, con, cloud);
+            })
+        });*/
 
 
-						})
-					} catch {
-						vscode.window.showErrorMessage(
-							`API ${APIClone} Already Cloned.`
-						);
-					}
 
-					});
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('101obex-api-extension-api-specs.eraseAPI', async (e)=>{
+                    
+            const pageType = await vscode.window.showQuickPick(
+                ['YES', 'NO'],
+                { placeHolder: 'Are You Sure?' }).then(async (pageType)=>{
+                    //console.log(pageType);
+    
+                    if (pageType == 'YES') {
+                        
+                        // 216.238.84.25
+                        axios.post(/*url3*/`${cloud}/api_catalog/erase_repository?developer_token=` + AccesToken+`&obex_project_id=${SelectedProject}&api=${e.label}`, axiosConfig)
+                        .then((response) => {
+
+                            vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
+                            vscode.commands.executeCommand('101obex-api-extension-api-specs.refreshEntry-api-creator')
+
+                        })
+                        .catch((error) => { 
+                            console.log(error)
+                        }); 
+                    }
+                    
+    
+                });
+
+        })
+    )
+
+    try{
+        context.subscriptions.push(
+            vscode.commands.registerCommand('101obex-api-extension-api-specs.commitPush-api-creator', async () =>
+            {
 
 
-	/*				
-					var arr:any;
-					
-					con1.low_code[0].apis.forEach((pooo:any)=>{
+                if(vscode.workspace.workspaceFolders===undefined){
+            
+                    vscode.window.showInformationMessage(`Please Open a Folder to create APIs`,'Open').then(
+                      async (selection) => {
+                        if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
+                      }
+                    );
+                    
+                    return
+                  }
 
-						if (pooo.name == e.tooltip.toString().split('|')[1]){
-							arr = con1.low_code[0].apis.filter(function(item) {
-								return item !== pooo
-							})
-						}
-					})
-					
-					con1.low_code[0].apis = arr;
-					UPDATE_APIS=true;
-					
 
-					Connectors(context, response, thisProvider);
+                let workspacePath = '';
+                    if (vscode.workspace.workspaceFolders?.length) {
+                        workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                        workspacePath = path.normalize(workspacePath);
+                    }
+
+                let APIsAvailables = []
+                try{
+                APIsAvailables = con2[0]["APIs"];
+                } catch{
+                    APIsAvailables =[];
+                }
+                let valid = false;
+                let API_Name = workspacePath.split('/').slice(-1);
+                const os = require('os');
+
+                if (os.platform() === 'win32') {
+                
+                    API_Name = workspacePath.split('\\').slice(-1);
+                
+                }
+                let entry_point = "";
+                APIsAvailables.forEach((API__Name: { [x: string]: { toString: () => string; }; })=>{
+                    // console.log(`${API__Name["api_name"].toString()} - ${API_Name[0]}`);
+                    if (API__Name["api_name"].toString() === API_Name[0]){
+                        valid = true;
+                        entry_point = API__Name["entrypoint"].toString();
+                    }
+                })
+
+
+                if (valid){
+    
+                let error = false;
+                let commitDescription = await vscode.window.showInputBox({
+                    placeHolder: "Describe the commit",
+                    validateInput: text => {
+                    return text === text ? null : 'Not 123!';
+                    
+                }});
+    
+                if (commitDescription!=undefined && commitDescription!=""){
+
+                } else error = true;
+
+                if (error){
+                    vscode.window.showErrorMessage(
+                        'API Push aborted'
+                    );
+                } else {
+                    vscode.window.showInformationMessage(`Pushing commit`);
+
+                    const files = await vscode.workspace.findFiles('**/*.avap');
+                    //console.log(files);
+            
+                    let codeFiles: { file: string; code: string; }[] = []
+                    let coont = 0;
+                    let hasEntrypoint = false;
+                    files.forEach((file)=>{
+                        fs.readFile(file.fsPath, 'utf8', (err, data) => {
+                            let fileAPI = file.path.split('/').slice(-1)[0];
+                            if (fileAPI == entry_point) hasEntrypoint = true;
+                            //console.log(fileAPI);
+                            codeFiles.push({file: fileAPI, code: Buffer.from(data).toString('base64')})
+                            //console.log(Buffer.from(data).toString('base64'));
+                            coont++;
+                            if (coont == files.length) {
+                                
+                                //console.log(codeFiles);
+
+                                let workspacePath = '';
+                                if (vscode.workspace.workspaceFolders?.length) {
+                                    workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                                    workspacePath = path.normalize(workspacePath);
+                                }
+
+                                
+                                let APIPUSH = workspacePath.split('/').slice(-1)[0]
+
+                                const os = require('os');
+
+                                if (os.platform() === 'win32') {
+                                
+                                    APIPUSH = workspacePath.split('\\').slice(-1)[0];
+                                
+                                }
+
+                                commitDescription = commitDescription?.replace(/ /g, '%20')
+                                if (hasEntrypoint == true){
+                                axios.post(`${cloud}/api_catalog/push_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${APIPUSH}&message=${commitDescription}`, {
+                                // axios.post(`http://0.0.0.0:3000/api_catalog/push_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${APIPUSH}&message=${commitDescription}`, {
+
+                                    code: codeFiles
+                                })
+                                .then((response) => {
+                                    //console.log(response);
+                                    
+                                    vscode.window.showInformationMessage(`Commit Pushed to ${APIPUSH} Repository`);
+                                    vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
+                                    axios.get(url3 + AccesToken+`&obex_project_id=${SelectedProject}`, axiosConfig)
+                                    .then((response) => {
+                                        TokenData = response;
+                                        Services = response.data.data[0].services
+                                        var resultss = response.data.data[0].results;
+                                        con2 = response.data.data;
+                                        Connectors(context, response, thisProvider);
+                                    });
+                                
+                                
+                                
+                                });
+                            } else {
+
+                                               //// Mostrar error de sin entrypoint
+                                               vscode.window.showErrorMessage('Entrypoint not present.');
+
+
+                            }
+                            }
+                        
+                        })
+                    
+                    })
+                    /// Refrescar Publisher
+                    vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
+
+                }
+
+            } else {
+
+                vscode.window.showErrorMessage(
+                    'You are not in an API Repository'
+                );
+                // ERROR
+            }
+
+
+
+
+             } ) );
+
+    } catch {}
+
+    try{
+        context.subscriptions.push(
+            vscode.commands.registerCommand('101obex-api-extension-api-specs.addAPI-api-creator', async () =>
+            {
+
+                if(vscode.workspace.workspaceFolders===undefined){
+            
+                    vscode.window.showInformationMessage(`Please Open a Folder to create APIs`,'Open').then(
+                      async (selection) => {
+                        if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
+                      }
+                    );
+                    
+                    return
+                  }
+
+
+                let paso = 0;
+                let error = false;
+                let endPoint = undefined;
+                let ApiName = await vscode.window.showInputBox({
+                    placeHolder: "Name of your API",
+                    validateInput: text => {
+                    return text === text ? null : 'Not 123!';
+                    
+                }});
+                paso = 1;
+                if (ApiName!=undefined && ApiName!="" && !API_NAMES_LIST.includes(ApiName)){
+                    endPoint = await vscode.window.showInputBox({
+                        placeHolder: "Name endpoint API",
+                        validateInput: text => {
+                        return text === text ? null : 'Not 123!';
+                        
+                    }});
+                
+                    if (endPoint!=undefined && endPoint!="" && !API_ENDPOINT_LIST.includes(endPoint) && !API_ENDPOINT_LIST.includes('/'+endPoint)){
+                    let entryPoint = await vscode.window.showInputBox({
+                        placeHolder: "Name of the entrypoint file",
+                        validateInput: text => {
+                        return text === text ? null : 'Not 123!';
+                        
+                    }});
+
+                    if (entryPoint!=undefined && entryPoint!=""){
+
+                        if (entryPoint.split('.')[1] != '.avap'){
+                            entryPoint = entryPoint.split('.')[0] + '.avap'
+                        }
+
+
+                        vscode.window.showInformationMessage(`Creating ${ApiName} Repository`);
+
+
+                        // const folderPath = `/`;
+
+                        let workspacePath = '';
+                        if (vscode.workspace.workspaceFolders?.length) {
+                            workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                            workspacePath = path.normalize(workspacePath);
+                        }
+
+                        
+                            const wsedit = new vscode.WorkspaceEdit();
+                            const wsPath = workspacePath;
+
+                            const filePath2 = vscode.Uri.file(wsPath + `/${ApiName}`);
+                            const filePath = vscode.Uri.file(wsPath + `/`);
+                            /*
+                            vscode.window.showInformationMessage(filePath.toString());
+                            wsedit.createFile(filePath, { ignoreIfExists: true });
+                            vscode.workspace.applyEdit(wsedit);
+                        */
+
+                        
+                    
+
+                        const folderPath = workspacePath;
+
+                        const folderPathParsed = folderPath.split(`\\`).join(`/`);
+                        const folderUri = vscode.Uri.parse(folderPathParsed);
+                        const folderUri2 = vscode.Uri.parse(folderPathParsed);
+
+
+                        // const appModel = new AppModel();
+
+                        fs.mkdirSync(filePath2.fsPath);
+                        //appModel.createFileOrFolder('folder', appModel.findDir(filePath2.fsPath));
+
+                        //vscode.workspace.updateWorkspaceFolders(0,undefined,{uri: filePath2 ,name: ApiName });
+                        // vscode.commands.executeCommand(`vscode.createFolder`, filePath);
+
+                        UPDATE_API_OBJ = {
+                            endpoint: endPoint,
+                            entrypoint: entryPoint,
+                            apiname: ApiName,
+                            pathfolder: filePath2
+                        }
+
+                        UPDATE_APIS = true;
+                        Connectors(context, TokenData, thisProvider);
+                    
+                        // vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
+
+
+
+                    } else error = true;
+                } else error = true;
+            } else error = true;
+                
+            if (error){
+                let message= '';
+                if (ApiName!=undefined){
+                    if (API_NAMES_LIST.includes(ApiName)) message = `API ${ApiName} already exists.`
+                }
+                if (endPoint!=undefined && (API_ENDPOINT_LIST.includes(endPoint) || API_ENDPOINT_LIST.includes('/'+endPoint))) message = `Endpoint ${endPoint} already used.`
+                vscode.window.showErrorMessage(
+                    `API Creation aborted ${message}`
+                );
+            }
+            }
+            )
+                );
+        } catch { }
+
+
+    ExtContext = context;
+
+    if (ACCESS) {
+
+    fs.readFile(contextFile, 'utf8', (err, data) => {
+        CONTEXT = data.toString();
+    });
+
+    fs.readFile(configFile, 'utf8', (err, data) => {
+        if (err && TEST == 0) { 
+            vscode.window.showErrorMessage(
+                '101OBeX Developer Token was not found. '+
+                'Please use 101obexcli to get your 101OBeX Developer Token'
+                );
+            nullRegistration(context,'101obex-api-extension-api-specs.refreshEntry-api-creator');
+            throw err; 
+        } 
+
+        if (TEST == 0) var dataObj = JSON.parse( data.replace(/\'/g,"\"") ); else var dataObj: any = {}
+
+        if (TEST == 1) dataObj.id_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1MmRlMjdmNTE1NzM3NTM5NjAwZDg5YjllZTJlNGVkNTM1ZmI1MTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1NzgxMTQ1ODEyMzEtamFhNm5jc3A3YnYwNmRyYTdnNTl2cGZ2YjY3MzZzZWEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTgwNzE4ODU4MTA0MzU5OTg4ODIiLCJoZCI6IndheW5ub3ZhdGUuY29tIiwiZW1haWwiOiJyYWZhLnJ1aXpAd2F5bm5vdmF0ZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Il9GTk5wSlRvNEd5X2NaYS10d0hUVVEiLCJuYW1lIjoiUmFmYWVsIFJ1aXoiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUVkRlRwNG4xaF9RbUoxelhUd3NUdDNBRTdkVVVRUGhkTlFaN0hRek5zQVdrZz1zOTYtYyIsImdpdmVuX25hbWUiOiJSYWZhZWwiLCJmYW1pbHlfbmFtZSI6IlJ1aXoiLCJsb2NhbGUiOiJlcyIsImlhdCI6MTY3MDk1Mjc2NCwiZXhwIjoxNjcwOTU2MzY0fQ.uFMoDEhjZW-FKxnBg9BVxp_sSrjcrvw5_sxMOQZrREvJjv11W2GxLuQfMjMTtTPXhDCa8GeQOlzCllWxQRlOr3irEdu19y4qJQT1ut0RSi7pEIb6E6KcsdiAZtRSlA-6feIuj2u9gC2HXnGvBHtlO3FhWw4Et1zl_menGTCLOMqeq6v2QiMOfFlFzzE2t1TSo5_Be9AZQNfB7E1SLGHnbKXdR9ij9yqwMD2spjpxvnw4l4k5q23eS5Zz0Qz_WNm5PBgqF5NJwTeky-7-Aeq-ulUSnQ3qY-SsmQJunyt_miiwDyVOQkEWNDMRF4FJPuXDGJatWEeCsKXWe877pL4nVA';
+        
+        AccesToken = dataObj.id_token;
+
+        let porSel = getCurrentProject();
+        SelectedProject = porSel.obex_project_id;
+        SelectedProjectToken = porSel.selected_project;
+
+        let clo = getCurrentCloud()
+
+        selectedCloud = clo.selected_cloud;
+        cloud = selectedCloud;
+
+        url = `${selectedCloud}/info_extension?developer_token=`;
+        url2 = `${selectedCloud}/api_catalog/history?developer_token=`;
+        url3 = `${selectedCloud}/api_catalog/history?developer_token=`;
+
+        axios.get(url2 + dataObj.id_token+`&obex_project_id=${SelectedProject}`, axiosConfig)
+            .then((response) => {
+                TokenData = response;
+
+                Services = response.data.data[0].services
+                var resultss = response.data.data[0].results;
+                con2 = response.data.data;
+
+                //createStatusBarItem(context) ;
+                
+                let urlConsulta = `${cloud}/get_specs/${SelectedProject}`;
+
+                const config = vscode.workspace.getConfiguration('avap.Specs');
+                console.log(config);
+                let urlOverCloud: string;
+                urlOverCloud = config.get('url') || `${cloud}/get_specs/${SelectedProject}`;
+                let OverCloud = config.get('mandatory')
+                OverToken = config.get('authtoken')
+                if (OverCloud){
+                    urlOverCloud = `${urlOverCloud.replace('/api_prj_',':3000/get_specs/')}`;
+                    urlConsulta = urlOverCloud.toString();
+                }
+
+                axios.get(`${urlConsulta}`, axiosConfig).then((response) => {
+                    Connectors(context, response, thisProvider);
+                }
+                )
+
+               
+//              thisProvider.sayHi('');
+                context.subscriptions.push(vscode.commands.registerCommand('react-webview-creation.start-low_code', () => {
+                    ReactPanel.createOrShow(context.extensionPath, 'API');
+                }));
+
+                vscode.commands.registerCommand(`101obex-api-extension-api-specs.CheckoutAPI`, async (e) => {
+
+                    //const files = await vscode.workspace.findFiles('**/*.*', '**/node_modules/**');
+                    //console.log(files);
+
+                    if(vscode.workspace.workspaceFolders===undefined){
+            
+                        vscode.window.showInformationMessage(`Please Open an API folder to checkout commits`,'Open').then(
+                          async (selection) => {
+                            if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
+                          }
+                        );
+                        
+                        return
+                      }
+
+
+
+                      if (API_FOLDER_ACTIVE===''){
+                        vscode.window.showInformationMessage(`You cant checkout a commit outside his folder`,'Open').then(
+                            async (selection) => {
+                              if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
+                            }
+                          );
+                          
+                          return
+    
+                    }
+
+
+
+                    vscode.window.showInformationMessage(`Checking Out Repository`);
+
+
+
+                });
+
+                vscode.commands.registerCommand(`101obex-api-extension-api-specs.CloneAPI`, async (e) => {
+
+                    if(vscode.workspace.workspaceFolders===undefined){
+            
+                        vscode.window.showInformationMessage(`Please Open a Folder to Clone an API`,'Open').then(
+                          async (selection) => {
+                            if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
+                          }
+                        );
+                        
+                        return
+                      }
+
+                    let APIClone = e.label;
+                    axios.get(/*url3*/`${cloud}/api_catalog/clone?developer_token=` + dataObj.id_token+`&obex_project_id=${SelectedProject}&api=${APIClone}`, axiosConfig)
+                    .then((response) => {
+            
+                        //console.log(response);
+                        //console.log(response.data.data.code);
+                        let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
+                        responseFinal = response.data.data.code.replace(/\\/g,'');
+                        let respondeJson = JSON.parse(responseFinal);
+                        //console.log(respondeJson);
+
+                        let workspacePath = '';
+                        if (vscode.workspace.workspaceFolders?.length) {
+                            workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                            workspacePath = path.normalize(workspacePath);
+                        }
+
+
+                            const wsedit = new vscode.WorkspaceEdit();
+                            const wsPath = workspacePath;
+
+                            const filePath2 = vscode.Uri.file(wsPath + `/${APIClone}`);
+
+                                            
+
+                        const folderPath = workspacePath;
+
+                        const folderPathParsed = folderPath.split(`\\`).join(`/`);
+                        const folderUri = vscode.Uri.parse(folderPathParsed);
+                        const folderUri2 = vscode.Uri.parse(folderPathParsed);
+
+
+                        // const appModel = new AppModel();
+                        try{
+                        fs.mkdirSync(filePath2.fsPath)
+
+                        
+
+                        ///
+                        let contador = 0;
+                        respondeJson.forEach((fichero: { file: any; code: any; })=>{
+
+                            let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
+                            CodigoReal = CodigoReal.replace(/\\n/g,'\n');
+                            fs.writeFile(workspacePath+`/${APIClone}/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
+                                if (err){
+                                    console.log(err);
+                                } else {
+                                    //refresh101ObeXExtensions();
+                                    contador++;
+                                    if (contador===respondeJson.length){
+                                        //console.log(contador);
+                                        vscode.window.showInformationMessage(`API ${APIClone} Cloned Successfully`);
+
+
+                                        const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
+
+
+                                        vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
+                                    }
+                                    }
+                                });
+
+
+                        })
+                    } catch {
+                        vscode.window.showErrorMessage(
+                            `API ${APIClone} Already Cloned.`
+                        );
+                    }
+
+                    });
+
+
+    /*              
+                    var arr:any;
+                    
+                    con1.low_code[0].apis.forEach((pooo:any)=>{
+
+                        if (pooo.name == e.tooltip.toString().split('|')[1]){
+                            arr = con1.low_code[0].apis.filter(function(item) {
+                                return item !== pooo
+                            })
+                        }
+                    })
+                    
+                    con1.low_code[0].apis = arr;
+                    UPDATE_APIS=true;
+                    
+
+                    Connectors(context, response, thisProvider);
 */
-					
-//					thisProvider.sayHi('');
-				});
-				
-				
-				})
-			.catch((error) => {
+                    
+//                  thisProvider.sayHi('');
+                });
+                
+                
+                })
+            .catch((error) => {
 
-				/*
-				if ('success' in error.response.data) {
-				vscode.window.showErrorMessage(
-							'Your Token is not a valid Token.'
-						);
-					} 
-				else{
-					vscode.window.showErrorMessage(
-							'101OBeX Server is not responding.'
-						);
-					} 
-				nullRegistration(context,'101obex-api-extension-api-creation.refreshEntry-api-creator');
+                /*
+                if ('success' in error.response.data) {
+                vscode.window.showErrorMessage(
+                            'Your Token is not a valid Token.'
+                        );
+                    } 
+                else{
+                    vscode.window.showErrorMessage(
+                            '101OBeX Server is not responding.'
+                        );
+                    } 
+                nullRegistration(context,'101obex-api-extension-api-specs.refreshEntry-api-creator');
 */
 
 axios.get(url3 + dataObj.id_token+`&obex_project_id=${SelectedProject}`, axiosConfig)
 .then((response) => {
-	TokenData = response;
+    TokenData = response;
 
-	Services = response.data.data[0].services
-	var resultss = response.data.data[0].results;
-	con2 = response.data.data;
-	createStatusBarItem(context) ;
-	Connectors(context, response, thisProvider);
-//				thisProvider.sayHi('');
-	context.subscriptions.push(vscode.commands.registerCommand('react-webview-creation.start-low_code', () => {
-		ReactPanel.createOrShow(context.extensionPath, 'API');
-	}));
+    Services = response.data.data[0].services
+    var resultss = response.data.data[0].results;
+    con2 = response.data.data;
+    createStatusBarItem(context) ;
+    Connectors(context, response, thisProvider);
+//              thisProvider.sayHi('');
+    context.subscriptions.push(vscode.commands.registerCommand('react-webview-creation.start-low_code', () => {
+        ReactPanel.createOrShow(context.extensionPath, 'API');
+    }));
 
 
-	vscode.commands.registerCommand(`101obex-api-extension-api-creation.CheckoutAPI`, async (e) => {
+    vscode.commands.registerCommand(`101obex-api-extension-api-specs.CheckoutAPI`, async (e) => {
 
-		//console.log(e);
+        //console.log(e);
 
-		if(vscode.workspace.workspaceFolders===undefined){
+        if(vscode.workspace.workspaceFolders===undefined){
             
             vscode.window.showInformationMessage(`Please Open an API folder to checkout commits`,'Open').then(
               async (selection) => {
@@ -1061,126 +1202,134 @@ axios.get(url3 + dataObj.id_token+`&obex_project_id=${SelectedProject}`, axiosCo
           }
 
 
-		  if (API_FOLDER_ACTIVE===''){
-			vscode.window.showInformationMessage(`You cant checkout a commit outside his folder`,'Open').then(
-				async (selection) => {
-				  if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
-				}
-			  );
-			  
-			  return
+          if (API_FOLDER_ACTIVE===''){
+            vscode.window.showInformationMessage(`You cant checkout a commit outside his folder`,'Open').then(
+                async (selection) => {
+                  if (selection=='Open') await vscode.commands.executeCommand('vscode.openFolder');
+                }
+              );
+              
+              return
 
-		}
-
-
-
-		let API_Selected = e.tooltip.toString().split(' ')[0]
-
-		//console.log(API_Selected);
-
-		let workspacePath = '';
-		if (vscode.workspace.workspaceFolders?.length) {
-			workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-			workspacePath = path.normalize(workspacePath);
-		}
-
-		let APIsAvailables = []
-		try{
-		APIsAvailables = con2[0]["APIs"];
-		} catch{
-			APIsAvailables =[];
-		}
-		let valid = false;
-		let API_Name = workspacePath.split('/').slice(-1);
-		
-		APIsAvailables.forEach((API__Name: { [x: string]: { toString: () => string; }; })=>{
-			// console.log(`${API__Name["api_name"].toString()} - ${API_Name[0]}`);
-			if (API__Name["api_name"].toString() === API_Name[0]){
-				valid = API_Selected === API_Name[0];
-			}
-		})
-
-		if (!valid){
-			vscode.window.showErrorMessage(
-				`You are not in API ${API_Selected}, cant checkout`
-			);
-		} else {
-
-		vscode.window.showInformationMessage(`Checking Out ${e.tooltip.split('-')[1].substring(1,e.tooltip.length-1)} Commit.`);
-
-		axios.get(`${cloud}/api_catalog/checkout?developer_token=` + dataObj.id_token+`&obex_project_id=${SelectedProject}&api=${API_Selected}&commit_id=${e.tooltip.split('-')[1].substring(1,e.tooltip.length-1)}`, axiosConfig)
-		.then(async (response) => {
-		
-
-		if (response.data.data.code!=null) {
-		let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
-		responseFinal = response.data.data.code.replace(/\\/g,'');
-		let respondeJson = JSON.parse(responseFinal);
-
-		const files = await vscode.workspace.findFiles('**/*.avap');
-		files.forEach((file)=>{ 
-			fs.unlink(file.path, (err) => {
-				if (err) throw err;
-			  });
-		});
-
-		let contador = 0;
-		respondeJson.forEach((fichero: { file: any; code: any; })=>{
-
-			let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
-			CodigoReal = CodigoReal.replace(/\\n/g,'\n');
-			fs.writeFile(workspacePath+`/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
-				if (err){
-					console.log(err);
-				} else {
-
-					contador++;
-					if (contador===respondeJson.length){
-						//console.log(contador);
-						vscode.window.showInformationMessage(`API ${API_Selected} Checked on commit ${e.label} Successfully`);
+        }
 
 
-						//const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
+
+        let API_Selected = e.tooltip.toString().split(' ')[0]
+
+        //console.log(API_Selected);
+
+        let workspacePath = '';
+        if (vscode.workspace.workspaceFolders?.length) {
+            workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+            workspacePath = path.normalize(workspacePath);
+        }
+
+        let APIsAvailables = []
+        try{
+        APIsAvailables = con2[0]["APIs"];
+        } catch{
+            APIsAvailables =[];
+        }
+        let valid = false;
+        let API_Name = workspacePath.split('/').slice(-1);
+
+        const os = require('os');
+
+        if (os.platform() === 'win32') {
+        
+            API_Name = workspacePath.split('\\').slice(-1);
+        
+        }
+        
+        APIsAvailables.forEach((API__Name: { [x: string]: { toString: () => string; }; })=>{
+            // console.log(`${API__Name["api_name"].toString()} - ${API_Name[0]}`);
+            if (API__Name["api_name"].toString() === API_Name[0]){
+                valid = API_Selected === API_Name[0];
+            }
+        })
+
+        if (!valid){
+            vscode.window.showErrorMessage(
+                `You are not in API ${API_Selected}, cant checkout`
+            );
+        } else {
+
+        vscode.window.showInformationMessage(`Checking Out ${e.tooltip.split('-')[1].substring(1,e.tooltip.length-1)} Commit.`);
+
+        axios.get(`${cloud}/api_catalog/checkout?developer_token=` + dataObj.id_token+`&obex_project_id=${SelectedProject}&api=${API_Selected}&commit_id=${e.tooltip.split('-')[1].substring(1,e.tooltip.length-1)}`, axiosConfig)
+        .then(async (response) => {
+        
+
+        if (response.data.data.code!=null) {
+        let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
+        responseFinal = response.data.data.code.replace(/\\/g,'');
+        let respondeJson = JSON.parse(responseFinal);
+
+        const files = await vscode.workspace.findFiles('**/*.avap');
+        files.forEach((file)=>{ 
+            fs.unlink(file.path, (err) => {
+                if (err) throw err;
+              });
+        });
+
+        let contador = 0;
+        respondeJson.forEach((fichero: { file: any; code: any; })=>{
+
+            let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
+            CodigoReal = CodigoReal.replace(/\\n/g,'\n');
+            fs.writeFile(workspacePath+`/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
+                if (err){
+                    console.log(err);
+                } else {
+
+                    contador++;
+                    if (contador===respondeJson.length){
+                        //console.log(contador);
+                        vscode.window.showInformationMessage(`API ${API_Selected} Checked on commit ${e.label} Successfully`);
 
 
-						//vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
-					}
-					}
-				});
+                        //const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
 
 
-		})
-		
-		} else {
-			const files = await vscode.workspace.findFiles('**/*.avap');
-			files.forEach((file)=>{ 
-				fs.unlink(file.path, (err) => {
-					if (err) throw err;
-				  });
-			});
-
-			vscode.window.showInformationMessage(`API ${API_Selected} Checked on commit ${e.label} Successfully`);
-		}
-		vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
-
-	}
-		);
+                        //vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
+                    }
+                    }
+                });
 
 
-		}
+        })
+        
+        } else {
+            const files = await vscode.workspace.findFiles('**/*.avap');
+            files.forEach((file)=>{ 
+                fs.unlink(file.path, (err) => {
+                    if (err) throw err;
+                  });
+            });
 
-	});
+            vscode.window.showInformationMessage(`API ${API_Selected} Checked on commit ${e.label} Successfully`);
+        }
+        vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
+
+    }
+        );
+
+
+        }
+
+    });
 
 /*
-	vscode.commands.registerCommand(`101obex-api-extension-api-creation.commitPush-api-creator`, async (e) => {
+    vscode.commands.registerCommand(`101obex-api-extension-api-specs.commitPush-api-creator`, async (e) => {
 
 
-		
-	});
+        
+    });
 */
-	vscode.commands.registerCommand(`101obex-api-extension-api-creation.CloneAPI`, (e) => {
+    vscode.commands.registerCommand(`101obex-api-extension-api-specs.CloneAPI`, (e) => {
 
-		if(vscode.workspace.workspaceFolders===undefined){
+        if(vscode.workspace.workspaceFolders===undefined){
             
             vscode.window.showInformationMessage(`Please Open a Folder to clone an API`,'Open').then(
               async (selection) => {
@@ -1192,150 +1341,150 @@ axios.get(url3 + dataObj.id_token+`&obex_project_id=${SelectedProject}`, axiosCo
           }
 
 
-		let APIClone = e.label;
-		axios.get(/*url3*/`${cloud}/api_catalog/clone?developer_token=` + dataObj.id_token+`&obex_project_id=${SelectedProject}&api=${APIClone}`, axiosConfig)
-		.then((response) => {
+        let APIClone = e.label;
+        axios.get(/*url3*/`${cloud}/api_catalog/clone?developer_token=` + dataObj.id_token+`&obex_project_id=${SelectedProject}&api=${APIClone}`, axiosConfig)
+        .then((response) => {
 
-			//console.log(response);
-			//console.log(response.data.data.code);
+            //console.log(response);
+            //console.log(response.data.data.code);
 
-			if (response.data.data.code == undefined) { 
+            if (response.data.data.code == undefined) { 
 
-				let workspacePath = '';
-				if (vscode.workspace.workspaceFolders?.length) {
-					workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-					workspacePath = path.normalize(workspacePath);
-				}
-	
-	
-					const wsedit = new vscode.WorkspaceEdit();
+                let workspacePath = '';
+                if (vscode.workspace.workspaceFolders?.length) {
+                    workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                    workspacePath = path.normalize(workspacePath);
+                }
+    
+    
+                    const wsedit = new vscode.WorkspaceEdit();
 
-	
-									
-	
-				const folderPath = workspacePath;
-	
-				const folderPathParsed = folderPath.split(`\\`).join(`/`);
-				const folderUri = vscode.Uri.parse(folderPathParsed);
-				const folderUri2 = vscode.Uri.parse(folderPathParsed);
-	
-	
-				// const appModel = new AppModel();
-				try{
+    
+                                    
+    
+                const folderPath = workspacePath;
+    
+                const folderPathParsed = folderPath.split(`\\`).join(`/`);
+                const folderUri = vscode.Uri.parse(folderPathParsed);
+                const folderUri2 = vscode.Uri.parse(folderPathParsed);
+    
+    
+                // const appModel = new AppModel();
+                try{
 
-					const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
-					
-				fs.mkdirSync(filePath2.fsPath)
+                    const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
+                    
+                fs.mkdirSync(filePath2.fsPath)
 
-				
-
-
-				vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
-				
-	
-				} catch {
-					vscode.window.showErrorMessage(
-						`API ${APIClone} Already Cloned.`
-					);
-				}	
-
-			} else {
-			
-			let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
-			responseFinal = response.data.data.code.replace(/\\/g,'');
-			let respondeJson = JSON.parse(responseFinal);
-			//console.log(respondeJson);
-
-			let workspacePath = '';
-			if (vscode.workspace.workspaceFolders?.length) {
-				workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-				workspacePath = path.normalize(workspacePath);
-			}
+                
 
 
-				const wsedit = new vscode.WorkspaceEdit();
-				const wsPath = workspacePath;
+                vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
+                
+    
+                } catch {
+                    vscode.window.showErrorMessage(
+                        `API ${APIClone} Already Cloned.`
+                    );
+                }   
 
-				const filePath2 = vscode.Uri.file(wsPath + `/${APIClone}`);
+            } else {
+            
+            let responseFinal = response.data.data.code.substring(1,response.data.data.code.length-1)
+            responseFinal = response.data.data.code.replace(/\\/g,'');
+            let respondeJson = JSON.parse(responseFinal);
+            //console.log(respondeJson);
 
-								
-
-			const folderPath = workspacePath;
-
-			const folderPathParsed = folderPath.split(`\\`).join(`/`);
-			const folderUri = vscode.Uri.parse(folderPathParsed);
-			const folderUri2 = vscode.Uri.parse(folderPathParsed);
-
-
-			// const appModel = new AppModel();
-			try{
-			fs.mkdirSync(filePath2.fsPath)
-
-			
-
-			///
-			let contador = 0;
-			respondeJson.forEach((fichero: { file: any; code: any; })=>{
-
-				let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
-				CodigoReal = CodigoReal.replace(/\\n/g,'\n');
-				fs.writeFile(workspacePath+`/${APIClone}/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
-					if (err){
-						console.log(err);
-					} else {
-						//refresh101ObeXExtensions();
-						contador++;
-						if (contador===respondeJson.length){
-							//console.log(contador);
-							vscode.window.showInformationMessage(`API ${APIClone} Cloned Successfully`);
+            let workspacePath = '';
+            if (vscode.workspace.workspaceFolders?.length) {
+                workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                workspacePath = path.normalize(workspacePath);
+            }
 
 
-							const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
+                const wsedit = new vscode.WorkspaceEdit();
+                const wsPath = workspacePath;
+
+                const filePath2 = vscode.Uri.file(wsPath + `/${APIClone}`);
+
+                                
+
+            const folderPath = workspacePath;
+
+            const folderPathParsed = folderPath.split(`\\`).join(`/`);
+            const folderUri = vscode.Uri.parse(folderPathParsed);
+            const folderUri2 = vscode.Uri.parse(folderPathParsed);
 
 
-							vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
-						}
-						}
-					});
+            // const appModel = new AppModel();
+            try{
+            fs.mkdirSync(filePath2.fsPath)
+
+            
+
+            ///
+            let contador = 0;
+            respondeJson.forEach((fichero: { file: any; code: any; })=>{
+
+                let CodigoReal = JSON.stringify(Buffer.from(fichero.code,'base64').toString('ascii'));
+                CodigoReal = CodigoReal.replace(/\\n/g,'\n');
+                fs.writeFile(workspacePath+`/${APIClone}/${fichero.file}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
+                    if (err){
+                        console.log(err);
+                    } else {
+                        //refresh101ObeXExtensions();
+                        contador++;
+                        if (contador===respondeJson.length){
+                            //console.log(contador);
+                            vscode.window.showInformationMessage(`API ${APIClone} Cloned Successfully`);
 
 
-			})
-		} catch {
-			vscode.window.showErrorMessage(
-				`API ${APIClone} Already Cloned.`
-			);
-		}
-	}
-		});
-	});
-	
-	
-	})
+                            const filePath2 = vscode.Uri.file(workspacePath + `/${APIClone}`);
+
+
+                            vscode.commands.executeCommand(`vscode.openFolder`, filePath2);
+                        }
+                        }
+                    });
+
+
+            })
+        } catch {
+            vscode.window.showErrorMessage(
+                `API ${APIClone} Already Cloned.`
+            );
+        }
+    }
+        });
+    });
+    
+    
+    })
 .catch((error) => {
-	if ('success' in error.response.data) {
-	vscode.window.showErrorMessage(
-				'Your Token is not a valid Token.'
-			);
-		} 
-	else{
-		vscode.window.showErrorMessage(
-				'101OBeX Server is not responding.'
-			);
-		} 
-	nullRegistration(context,'101obex-api-extension-api-creation.refreshEntry-api-creator');
+    if ('success' in error.response.data) {
+    vscode.window.showErrorMessage(
+                'Your Token is not a valid Token.'
+            );
+        } 
+    else{
+        vscode.window.showErrorMessage(
+                '101OBeX Server is not responding.'
+            );
+        } 
+    nullRegistration(context,'101obex-api-extension-api-specs.refreshEntry-api-creator');
 
-	});	
+    }); 
 
 
-				});	
-		}
-	
-	);
-	sayHi("", true);
-	vscode.window.showInformationMessage('AVAP API Code activated');
-	} else {
-		vscode.window.showErrorMessage("You must have 101OBeX API Extension Base installed");
-	}
+                }); 
+        }
+    
+    );
+    sayHi("", true);
+    vscode.window.showInformationMessage('AVAP API Code activated');
+    } else {
+        vscode.window.showErrorMessage("You must have 101OBeX API Extension Base installed");
+    }
 }
 
 export function deactivate() {}
@@ -1344,207 +1493,232 @@ export function deactivate() {}
 
 class TreeDataProviderAPICreator implements vscode.TreeDataProvider<TreeItem> {
 
-	data!: TreeItem[];
-	
-	constructor(response: AxiosResponse<any, any>) {
-		let ActualAmbient = 'local';
-		var res_data_array = con1
-		var res_data = { data: [
-			res_data_array
-		]}
-		var res = { data : res_data}
+    data!: TreeItem[];
+    
+    constructor(response: AxiosResponse<any, any>) {
+        let ActualAmbient = 'local';
+        var res_data_array = con1
+        var res_data = { data: [
+            res_data_array
+        ]}
+        var res = { data : res_data}
 
-		var category: TreeItem[] = [];
+        var category: TreeItem[] = [];
 
-		API_NAMES_LIST = [];
-		API_ENDPOINT_LIST = [];
-		let resss = []
-		if (response !== undefined) resss= response.data.data;
-		resss.forEach((element: any) => {
-			ActualAmbient = element.name;
-			//console.log(element);
-			var subresponses8: TreeItem[] = [];
-			element.APIs.forEach((subelement: any) => {
-				var tttt: TreeItem[] = [];
-				
-				
-				subelement.history.forEach((subsubelement:any) =>{
-					var ttt: TreeItem[] = [];
-					subsubelement.commits.forEach((subsubsubelement:any)=>{
-					var tttfilesystem: TreeItem[] = [];
-					if (subsubsubelement.code!=undefined) {
-						let code_parsed = subsubsubelement.code.replace(/\\"/g,'\"');
-						
-						code_parsed = JSON.parse(code_parsed);
-						code_parsed.forEach((subfile:any)=>{
+        API_NAMES_LIST = [];
+        API_ENDPOINT_LIST = [];
+        let resss: { swagger: any; tags: any[]; paths: never[]; };
+        
+        if (response !== undefined) resss= response.data;
+        else {
+            resss = {swagger:[], tags:[], paths:[]}
+        }
+        category.push(new TreeItem(`OAS ${resss.swagger}`,undefined,`info`,'info'))
+        resss.tags.forEach((element: any) => {
+            var paths: TreeItem[] = [];
+            PATHS_SPECS = resss.paths;
+            Object.keys(resss.paths).forEach((path_str:any)=>{
+                let pr = resss.paths[path_str]["get"]["tags"][0];
+                let sc = element.name;
+                if (resss.paths[path_str]["get"]["tags"][0] == element.name){
 
-							tttfilesystem.push(new TreeItem(`${subfile.file}`,undefined,`file|${subelement.entrypoint}`,''));
-						})
-					}
+                    var details: TreeItem[] = [];
 
-						ttt.push(new TreeItem(`${subsubsubelement.commit.substring(0,8)} ${subsubsubelement.comment}`, tttfilesystem,'commit',`${subelement.api_name} - ${subsubsubelement.commit}`));
-					})
+                    details.push(new TreeItem(`Summary`,undefined,`${resss.paths[path_str]["get"]["summary"]}`,'INFO'));
+                    details.push(new TreeItem(`Description`,undefined,`${resss.paths[path_str]["get"]["description"]}`,'INFO'));
+                    //details.push(new TreeItem(`Responses`,undefined,`${resss.paths[path_str]["get"]["responses"]}`,''));
+                    paths.push(new TreeItem(`${path_str}`,details,`PATH`,'PATH'))
+                }
+            })
+           
+            category.push(new TreeItem(`${element.name}`,paths,``,''))
 
-					let version_modified = subsubelement.version.charAt(0).toUpperCase() + subsubelement.version.slice(1);
+            /*
+            ActualAmbient = element.name;
+            //console.log(element);
+            var subresponses8: TreeItem[] = [];
+            element.APIs.forEach((subelement: any) => {
+                var tttt: TreeItem[] = [];
+                
+                
+                subelement.history.forEach((subsubelement:any) =>{
+                    var ttt: TreeItem[] = [];
+                    subsubelement.commits.forEach((subsubsubelement:any)=>{
+                    var tttfilesystem: TreeItem[] = [];
+                    if (subsubsubelement.code!=undefined) {
+                        let code_parsed = subsubsubelement.code.replace(/\\"/g,'\"');
+                        
+                        code_parsed = JSON.parse(code_parsed);
+                        code_parsed.forEach((subfile:any)=>{
+
+                            tttfilesystem.push(new TreeItem(`${subfile.file}`,undefined,`file|${subelement.entrypoint}`,''));
+                        })
+                    }
+
+                        ttt.push(new TreeItem(`${subsubsubelement.commit.substring(0,8)} ${subsubsubelement.comment}`, tttfilesystem,'commit',`${subelement.api_name} - ${subsubsubelement.commit}`));
+                    })
+
+                    let version_modified = subsubelement.version.charAt(0).toUpperCase() + subsubelement.version.slice(1);
                     if (version_modified != 'Unpublished') {
-						var vv = Math.round(parseFloat(version_modified)*100)/100;
-						//console.log(vv);
+                        var vv = Math.round(parseFloat(version_modified)*100)/100;
+                        //console.log(vv);
   
-						  version_modified = `v${vv}`;
-						  
-					  }
-					tttt.push(new TreeItem(`${version_modified}`, ttt.reverse(),`version ${subelement.v_commit}`,`${subsubelement.v_commit}`));
-				} )
+                          version_modified = `v${vv}`;
+                          
+                      }
+                    tttt.push(new TreeItem(`${version_modified}`, ttt.reverse(),`version ${subelement.v_commit}`,`${subsubelement.v_commit}`));
+                } )
 
-				API_NAMES_LIST.push(subelement.api_name)
-	 			API_ENDPOINT_LIST.push(subelement.endpoint)
-				subresponses8.push(
-					new TreeItem(
-						`${subelement.api_name}`,
-						tttt,
-						`API ${subelement.endpoint}`,
-						`API|${ActualAmbient}`)
-						);
-			});
+                API_NAMES_LIST.push(subelement.api_name)
+                API_ENDPOINT_LIST.push(subelement.endpoint)
+                subresponses8.push(
+                    new TreeItem(
+                        `${subelement.api_name}`,
+                        tttt,
+                        `API ${subelement.endpoint}`,
+                        `API|${ActualAmbient}`)
+                        );
+            });
 
-			/*
-			if (element.model === 'API' || true){
-				subresponses8.push(
-					new TreeItem(
-						`+`,
-						undefined,
-						'add api',
-						element.api_name)
-						);
-					}
+            /*
+            if (element.model === 'API' || true){
+                subresponses8.push(
+                    new TreeItem(
+                        `+`,
+                        undefined,
+                        'add api',
+                        element.api_name)
+                        );
+                    }
 */
-			let name_efective = element.name.charAt(0).toUpperCase() + element.name.slice(1);
-			name_efective = name_efective.replace("Staging","Test")
-			category.push(new TreeItem(name_efective, subresponses8,'ambient','API_VIRTUAL'));
-			
-		});
-		//category.push(new TreeItem('Add API', undefined,'','ADD_API_VIRTUAL'));
-		this.data = category;
-	}
+/*
+            let name_efective = element.name.charAt(0).toUpperCase() + element.name.slice(1);
+            name_efective = name_efective.replace("Staging","Test")
+            category.push(new TreeItem(name_efective, subresponses8,'ambient','API_VIRTUAL'));
+            */
+        });
+        //category.push(new TreeItem('Add API', undefined,'','ADD_API_VIRTUAL'));
+        this.data = category;
+    }
   
-	private _onDidChangeTreeData: vscode.EventEmitter<undefined | null | void> = 
-		new vscode.EventEmitter<undefined | null | void>();
+    private _onDidChangeTreeData: vscode.EventEmitter<undefined | null | void> = 
+        new vscode.EventEmitter<undefined | null | void>();
 
-	readonly onDidChangeTreeData: vscode.Event<undefined | null | void> = 
-		this._onDidChangeTreeData.event;
+    readonly onDidChangeTreeData: vscode.Event<undefined | null | void> = 
+        this._onDidChangeTreeData.event;
   
-	refresh(): void {
-		REFRESHING = true;
-	  this._onDidChangeTreeData.fire();
-	  Connectors(ExtContext, TokenData, thisProviderGlobal)
-	  
-	}
+    refresh(): void {
+        REFRESHING = true;
+      this._onDidChangeTreeData.fire();
+      Connectors(ExtContext, TokenData, thisProviderGlobal)
+      
+    }
 
-	getTreeItem(element: TreeItem): vscode.TreeItem|Thenable<vscode.TreeItem> {
-	  return element;
-	}
+    getTreeItem(element: TreeItem): vscode.TreeItem|Thenable<vscode.TreeItem> {
+      return element;
+    }
   
-	getChildren(element?: TreeItem|undefined): vscode.ProviderResult<TreeItem[]> {
-	  if (element === undefined) {
-		return this.data;
-	  }
-	  return element.children;
-	}		
+    getChildren(element?: TreeItem|undefined): vscode.ProviderResult<TreeItem[]> {
+      if (element === undefined) {
+        return this.data;
+      }
+      return element.children;
+    }       
   }
 
 class TreeItem extends vscode.TreeItem {
-	children: TreeItem[]|undefined;
-	
-	constructor(label: string, children?: TreeItem[], document?:string, api_category?:string, api_conection?:string) {
-		
-	  super(
-		  label,
-		  children === undefined ? vscode.TreeItemCollapsibleState.None :
-								   vscode.TreeItemCollapsibleState.Collapsed
-								   )
+    children: TreeItem[]|undefined;
+    
+    constructor(label: string, children?: TreeItem[], document?:string, api_category?:string, api_conection?:string) {
+        
+      super(
+          label,
+          children === undefined ? vscode.TreeItemCollapsibleState.None :
+                                   vscode.TreeItemCollapsibleState.Collapsed
+                                   )
 
-	  this.children = children;
-	  this.description = document;
-	  this.tooltip = api_category;
-	  this.iconPath = this.children === undefined ? vscode.ThemeIcon.File: vscode.ThemeIcon.Folder;
+      this.children = children;
+      this.description = document;
+      this.tooltip = api_category;
+      this.iconPath = this.children === undefined ? vscode.ThemeIcon.File: vscode.ThemeIcon.Folder;
 
-	  this.iconPath = this.description === 'TEAMS' ? path.join(__filename, '..', '..', 'images', 'organization.svg') :  this.iconPath
-	  this.description = this.description === 'TEAMS' ? "" : this.description
+      this.iconPath = this.description === 'TEAMS' ? path.join(__filename, '..', '..', 'images', 'organization.svg') :  this.iconPath
+      this.description = this.description === 'TEAMS' ? "" : this.description
 
-	  this.iconPath = this.description === 'DEVELOPERS' ? path.join(__filename, '..', '..', 'images', 'person.svg') :  this.iconPath
-	  this.description = this.description === 'DEVELOPERS' ? "" : this.description
+      this.iconPath = this.description === 'DEVELOPERS' ? path.join(__filename, '..', '..', 'images', 'person.svg') :  this.iconPath
+      this.description = this.description === 'DEVELOPERS' ? "" : this.description
 
-	  this.iconPath = this.tooltip !== undefined ? /*path.join(__filename, '..', '..', 'images', 'settings.svg')*/ new vscode.ThemeIcon('extensions-view-icon') :  this.iconPath
-	  
+      this.iconPath = this.tooltip !== undefined ? /*path.join(__filename, '..', '..', 'images', 'settings.svg')*/ new vscode.ThemeIcon('extensions-view-icon') :  this.iconPath
+      
 if (this.tooltip == "ADD_API_VIRTUAL") {this.iconPath = path.join(__filename, '..', '..', 'images', 'plus.png');}
 
 
-		if (this.tooltip == 'CONNECTOR'){
-			this.iconPath = path.join(__filename, '..', '..', 'images', 'plug.png');
-		}
+        if (this.tooltip == 'CONNECTOR'){
+            this.iconPath = path.join(__filename, '..', '..', 'images', 'plug.png');
+        }
 
-		if (this.tooltip == 'API_CONNECTOR'){
-			this.iconPath = path.join(__filename, '..', '..', 'images', 'api_icon.png');
-		}
+        if (this.tooltip == 'API_CONNECTOR'){
+            this.iconPath = path.join(__filename, '..', '..', 'images', 'api_icon.png');
+        }
 
-		if (this.description == 'config'){
-			this.iconPath = path.join(__filename, '..', '..', 'images', 'service-icon.png');
-		}
-		if (this.description == 'add service'){
-			this.iconPath = ''; 
-		}
-		if (this.description == 'add api'){
-			this.iconPath = ''; 
-		}
-		let addsd1= this.description?.split('|')[0];
-		let addsd2= this.description?.split('|')[1];
+        if (this.description == 'config'){
+            this.iconPath = path.join(__filename, '..', '..', 'images', 'service-icon.png');
+        }
+        if (this.description == 'add service'){
+            this.iconPath = ''; 
+        }
+        if (this.description == 'add api'){
+            this.iconPath = ''; 
+        }
+        let addsd1= this.description?.split('|')[0];
+        let addsd2= this.description?.split('|')[1];
 
-		let addsd= this.description?.split(' ')[0];
-		if (addsd == 'commit'){
-			this.contextValue = 'COMMITCONF'
-			this.description = '';
-			this.iconPath = path.join(__filename, '..', '..', 'images', 'git-commit-line.svg');
-		}
+        let addsd= this.description?.split(' ')[0];
+        if (addsd == 'commit'){
+            this.contextValue = 'COMMITCONF'
+            this.description = '';
+            this.iconPath = path.join(__filename, '..', '..', 'images', 'git-commit-line.svg');
+        }
 
-		if (addsd1 == 'file'){
-			//this.contextValue = 'COMMITCONF'
-			
-			if (this.label?.toString() == addsd2) {
-				this.description = '(Entrypoint)';
-				this.iconPath = path.join(__filename, '..', '..', 'images', 'code_color.svg');
-			}
-			else {
-				this.iconPath = path.join(__filename, '..', '..', 'images', 'code.svg');
-				this.description = '';
-			}
-		}
+        if (addsd1 == 'file'){
+            //this.contextValue = 'COMMITCONF'
+            
+            if (this.label?.toString() == addsd2) {
+                this.description = '(Entrypoint)';
+                this.iconPath = path.join(__filename, '..', '..', 'images', 'code_color.svg');
+            }
+            else {
+                this.iconPath = path.join(__filename, '..', '..', 'images', 'code.svg');
+                this.description = '';
+            }
+        }
 
-		if (addsd == 'version'){
-			//this.contextValue = 'COMMITCONF'
-			this.description = '';
-			this.iconPath = path.join(__filename, '..', '..', 'images', 'version.svg');
-		}
+        if (addsd == 'version'){
+            //this.contextValue = 'COMMITCONF'
+            this.description = '';
+            this.iconPath = path.join(__filename, '..', '..', 'images', 'version.svg');
+        }
 
         if (addsd == 'API') {
             //this.contextValue = 'COMMITCONF'
             this.description = this.description?.split(' ')[1];
             if (this.label === API_FOLDER_ACTIVE) {
-				this.iconPath = path.join(__filename, '..', '..', 'images', 'cubos.svg')
+                this.iconPath = path.join(__filename, '..', '..', 'images', 'cubos.svg')
             }
-		}
+        }
 
-		if (this.description == 'ambient'){
-			//this.contextValue = 'COMMITCONF'
-			this.description = '';
-			this.iconPath = undefined//; path.join(__filename, '..', '..', 'images', 'ambients.svg');
-		}
+        if (this.description == 'ambient'){
+            //this.contextValue = 'COMMITCONF'
+            this.description = '';
+            this.iconPath = undefined//; path.join(__filename, '..', '..', 'images', 'ambients.svg');
+        }
 
-		if (this.tooltip?.toString().split('|')[1]=='connection'){
-			this.contextValue = 'CONECT'
-		} else if (this.tooltip?.toString().split('|')[0].toString()=='IBM3270'){
-			this.contextValue = 'SERV'
-		}
-		else if (this.tooltip?.toString().split('|')[0].toString()=='API'){
+        if (this.tooltip?.toString().split('|')[1]=='connection'){
+            this.contextValue = 'CONECT'
+        } else if (this.tooltip?.toString().split('|')[0].toString()=='IBM3270'){
+            this.contextValue = 'SERV'
+        }
+        else if (this.tooltip?.toString().split('|')[0].toString()=='API'){
             this.contextValue = 'APICONF';
             if (this.children?.length === 1 &&
                 this.children[0].label === 'Unpublished'){
@@ -1552,524 +1726,538 @@ if (this.tooltip == "ADD_API_VIRTUAL") {this.iconPath = path.join(__filename, '.
                   if (this.tooltip?.toString().split('|')[1].toString() == 'local') this.contextValue = 'UNPUBLISHED';
                 }
                 }
-		}
+        }
 
-		if (this.tooltip?.toString().indexOf('edit_config')!=-1 && this.label?.toString().indexOf('id')==-1 && this.tooltip!=undefined){
-			this.contextValue = 'EDCONF'
-		}
+        if (this.tooltip?.toString().indexOf('edit_config')!=-1 && this.label?.toString().indexOf('id')==-1 && this.tooltip!=undefined){
+            this.contextValue = 'EDCONF'
+        }
 
-		//if (this.tooltip?.toString().includes('Initialization')) this.contextValue = "UNPUBLISHED"
-	}
+
+        
+
+        if(this.tooltip=="PATH") {
+            this.contextValue = "PATH";
+           // this.iconPath = new vscode.ThemeIcon('code');
+        }
+         else this.iconPath = undefined;
+
+        if (this.tooltip=="info"){
+            this.iconPath = new vscode.ThemeIcon('info');
+        }
+
+        if (api_category == 'INFO') this.iconPath = new vscode.ThemeIcon('info');
+        //if (this.tooltip?.toString().includes('Initialization')) this.contextValue = "UNPUBLISHED"
+    }
   }
 
   function Connectors(
-		context: { subscriptions: vscode.Disposable[]; }, 
-		response: AxiosResponse<any, any>, thisProvider: any)
-		{
-			let porSel = getCurrentProject();
-			SelectedProject = porSel.obex_project_id;
-			SelectedProjectToken = porSel.selected_project;
-			try{
-			con1 = response.data.data; //con2[SelectedProject];
-			} catch {
-				con1  = {
-					apis : [
-						{
-							model:	'IBM3270',
-							connections: [
-								{
-									'name':'conexion_prueba', 
-									'description':'localhost',
-									'ip':'127.0.0.1',
-									'id': '00000000000',
-									'username':'admin',
-									'password':'*****',
-									'services': [
-										{
-										'name':'test',
-										 'connection':'/ws/util.py/paises'
-									}
-									]
-								}
-							]
-						},
-						{					
-							model:	'IBM3090',
-							connections: []
-						},
-						{					
-							model:	'MQS',
-							connections: []
-						},
-					],
-					erp : [
-						{
-							model:	'SAP',
-							connections: []
-						},
-						{					
-							model:	'ORACLE ',
-							connections: []
-						}
-					],
-					databases : [
-						{
-							model:	'DB2',
-							connections: []
-						},
-						{					
-							model:	'SQL',
-							connections: []
-						},
-						{					
-							model:	'ORACLE',
-							connections: []
-						},
-					],
-					low_code: [
-						{
-							model: 'API',
-							apis: [
-								{
-									name: 'countries'
-								}
-							]
-						}
-					],
-					finnancials : 
-						{
-						core_banking:
-							[
-								{
-									model:	'ANTA',
-									connections: []
-								},
-								{
-									model:	'INFICAJA',
-									connections: []
-								},
-				
-							],
-						
-						open_banking:
-							[
-								{
-									model:	'BELVO',
-									connections: []
-								}
-							],
-						
-						baas:
-							[
-								{
-									model:	'BAAS01',
-									connections: []
-								}
-							],
-						
-						payment_methods:
-							[
-								{
-									model:	'STRIPE',
-									connections: []
-								},
-								{
-									model:	'PAYPAL',
-									connections: []
-								}
-							]
-					},
-				
-						
-				}
-			}
-			let clo = getCurrentCloud()
+        context: { subscriptions: vscode.Disposable[]; }, 
+        response: AxiosResponse<any, any>, thisProvider: any)
+        {
+            let porSel = getCurrentProject();
+            SelectedProject = porSel.obex_project_id;
+            SelectedProjectToken = porSel.selected_project;
+            try{
+            con1 = response.data.data; //con2[SelectedProject];
+            } catch {
+                con1  = {
+                    apis : [
+                        {
+                            model:  'IBM3270',
+                            connections: [
+                                {
+                                    'name':'conexion_prueba', 
+                                    'description':'localhost',
+                                    'ip':'127.0.0.1',
+                                    'id': '00000000000',
+                                    'username':'admin',
+                                    'password':'*****',
+                                    'services': [
+                                        {
+                                        'name':'test',
+                                         'connection':'/ws/util.py/paises'
+                                    }
+                                    ]
+                                }
+                            ]
+                        },
+                        {                   
+                            model:  'IBM3090',
+                            connections: []
+                        },
+                        {                   
+                            model:  'MQS',
+                            connections: []
+                        },
+                    ],
+                    erp : [
+                        {
+                            model:  'SAP',
+                            connections: []
+                        },
+                        {                   
+                            model:  'ORACLE ',
+                            connections: []
+                        }
+                    ],
+                    databases : [
+                        {
+                            model:  'DB2',
+                            connections: []
+                        },
+                        {                   
+                            model:  'SQL',
+                            connections: []
+                        },
+                        {                   
+                            model:  'ORACLE',
+                            connections: []
+                        },
+                    ],
+                    low_code: [
+                        {
+                            model: 'API',
+                            apis: [
+                                {
+                                    name: 'countries'
+                                }
+                            ]
+                        }
+                    ],
+                    finnancials : 
+                        {
+                        core_banking:
+                            [
+                                {
+                                    model:  'ANTA',
+                                    connections: []
+                                },
+                                {
+                                    model:  'INFICAJA',
+                                    connections: []
+                                },
+                
+                            ],
+                        
+                        open_banking:
+                            [
+                                {
+                                    model:  'BELVO',
+                                    connections: []
+                                }
+                            ],
+                        
+                        baas:
+                            [
+                                {
+                                    model:  'BAAS01',
+                                    connections: []
+                                }
+                            ],
+                        
+                        payment_methods:
+                            [
+                                {
+                                    model:  'STRIPE',
+                                    connections: []
+                                },
+                                {
+                                    model:  'PAYPAL',
+                                    connections: []
+                                }
+                            ]
+                    },
+                
+                        
+                }
+            }
+            let clo = getCurrentCloud()
 
-			selectedCloud = clo.selected_cloud;
-	
-			cloud = selectedCloud;
-			url = `${selectedCloud}/info_extension?developer_token=`;
-			url2 = `${selectedCloud}/api_catalog/history?developer_token=`;
-			url3 = `${selectedCloud}/api_catalog/history?developer_token=`;
+            selectedCloud = clo.selected_cloud;
+    
+            cloud = selectedCloud;
+            url = `${selectedCloud}/info_extension?developer_token=`;
+            url2 = `${selectedCloud}/api_catalog/history?developer_token=`;
+            url3 = `${selectedCloud}/api_catalog/history?developer_token=`;
 
-			if (UPDATE_APIS){
-				
-				// /api_catalog/init_repo
+            if (UPDATE_APIS){
+                
+                // /api_catalog/init_repo
 
-				axios.post(`${cloud}/api_catalog/init_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${UPDATE_API_OBJ.apiname}&entrypoint=${UPDATE_API_OBJ.entrypoint}&endpoint=${UPDATE_API_OBJ.endpoint}`, {
-					// obex_project_id: SelectedProject,
-					// value_json: JSON.stringify(con1),
-					// developer_token: AccesToken
-				})
-				.then((response) => {
-					//console.log(response);
-					
-					axios.get(url3 + AccesToken+`&obex_project_id=${SelectedProject}`, axiosConfig)
-				
-					.then((response) => {
-						TokenData = response;
-					
-						Services = response.data.data[0].services
-						var resultss = response.data.data[0].results;
-						con2 = response.data.data;
-					
-
-
-						Connectors(context, response, thisProvider);
-
-						let workspacePath = '';
-						if (vscode.workspace.workspaceFolders?.length) {
-							workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-							workspacePath = path.normalize(workspacePath);
-						}
-						let filetemplate = 'Ly8gQVZBUCBBUEkgVGVtcGxhdGUKCi8vIENyZWF0aW9uIG9mIGdsb2JhbCB2YXJpYWJsZXMKCmFkZFZhcihtZXNzYWdlLCdIZWxsbyBXb3JsZCEnKQoKLy8gQ2FwdHVyaW5nIGFwaSByZXF1ZXN0IHBhcmFtZXRlcnMKCi8vIFJlYWQgLyBXcml0ZSBmcm9tIGRhdGFiYXNlIGludG8gdmFyaWFibGVzCgovLyBBZGQgdmFyaWFibGVzIHRvIHJlc3VsdAoKYWRkUmVzdWx0KG1lc3NhZ2Up'
-						let CodigoReal = JSON.stringify(Buffer.from(filetemplate,'base64').toString('ascii'));
-						CodigoReal = CodigoReal.replace(/\\n/g,'\n');
-						fs.writeFile(workspacePath+`/${UPDATE_API_OBJ.apiname}/${UPDATE_API_OBJ.entrypoint}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
-							if (err){
-								console.log(err);
-							} else {
-								if (UPDATE_API_OBJ.pathfolder != undefined) {
-									setTimeout(() => {vscode.workspace.openTextDocument(UPDATE_API_OBJ.pathfolder+`/${UPDATE_API_OBJ.entrypoint}`);}, 3000);
-									vscode.commands.executeCommand(`vscode.openFolder`, UPDATE_API_OBJ.pathfolder).then(()=>{
-									vscode.workspace.openTextDocument(UPDATE_API_OBJ.pathfolder+`/${UPDATE_API_OBJ.entrypoint}`);
-									});
-								}
+                axios.post(`${cloud}/api_catalog/init_repo?developer_token=${AccesToken}&obex_project_id=${SelectedProject}&api=${UPDATE_API_OBJ.apiname}&entrypoint=${UPDATE_API_OBJ.entrypoint}&endpoint=${UPDATE_API_OBJ.endpoint}`, {
+                    // obex_project_id: SelectedProject,
+                    // value_json: JSON.stringify(con1),
+                    // developer_token: AccesToken
+                })
+                .then((response) => {
+                    //console.log(response);
+                    
+                    axios.get(url3 + AccesToken+`&obex_project_id=${SelectedProject}`, axiosConfig)
+                
+                    .then((response) => {
+                        TokenData = response;
+                    
+                        Services = response.data.data[0].services
+                        var resultss = response.data.data[0].results;
+                        con2 = response.data.data;
+                    
 
 
-								}
-							});
-						
+                        Connectors(context, response, thisProvider);
 
-						
-
-
-			
-						})
-					.catch((error) => {
-						if ('success' in error.response.data) {
-						vscode.window.showErrorMessage(
-									'Your Token is not a valid Token.'
-								);
-							} 
-						else{
-							vscode.window.showErrorMessage(
-									'101OBeX Server is not responding.'
-								);
-							} 
-						nullRegistration(context,'101obex-api-extension-api-creation.refreshEntry-api-creator');
-					
-						});	
+                        let workspacePath = '';
+                        if (vscode.workspace.workspaceFolders?.length) {
+                            workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                            workspacePath = path.normalize(workspacePath);
+                        }
+                        let filetemplate = 'Ly8gQVZBUCBBUEkgVGVtcGxhdGUKCi8vIENyZWF0aW9uIG9mIGdsb2JhbCB2YXJpYWJsZXMKCmFkZFZhcihtZXNzYWdlLCdIZWxsbyBXb3JsZCEnKQoKLy8gQ2FwdHVyaW5nIGFwaSByZXF1ZXN0IHBhcmFtZXRlcnMKCi8vIFJlYWQgLyBXcml0ZSBmcm9tIGRhdGFiYXNlIGludG8gdmFyaWFibGVzCgovLyBBZGQgdmFyaWFibGVzIHRvIHJlc3VsdAoKYWRkUmVzdWx0KG1lc3NhZ2Up'
+                        let CodigoReal = JSON.stringify(Buffer.from(filetemplate,'base64').toString('ascii'));
+                        CodigoReal = CodigoReal.replace(/\\n/g,'\n');
+                        fs.writeFile(workspacePath+`/${UPDATE_API_OBJ.apiname}/${UPDATE_API_OBJ.entrypoint}`, CodigoReal.substring(1,CodigoReal.length-1), (err) => {
+                            if (err){
+                                console.log(err);
+                            } else {
+                                if (UPDATE_API_OBJ.pathfolder != undefined) {
+                                    setTimeout(() => {vscode.workspace.openTextDocument(UPDATE_API_OBJ.pathfolder+`/${UPDATE_API_OBJ.entrypoint}`);}, 3000);
+                                    vscode.commands.executeCommand(`vscode.openFolder`, UPDATE_API_OBJ.pathfolder).then(()=>{
+                                    vscode.workspace.openTextDocument(UPDATE_API_OBJ.pathfolder+`/${UPDATE_API_OBJ.entrypoint}`);
+                                    });
+                                }
 
 
-						vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
+                                }
+                            });
+                        
 
-				}).catch((error) => { 
-					console.log(error);
-				});
+                        
 
 
+            
+                        })
+                    .catch((error) => {
+                        if ('success' in error.response.data) {
+                        vscode.window.showErrorMessage(
+                                    'Your Token is not a valid Token.'
+                                );
+                            } 
+                        else{
+                            vscode.window.showErrorMessage(
+                                    '101OBeX Server is not responding.'
+                                );
+                            } 
+                        nullRegistration(context,'101obex-api-extension-api-specs.refreshEntry-api-creator');
+                    
+                        }); 
+
+
+                        vscode.commands.executeCommand('101obex-api-extension-api-publisher.refreshEntry-api-publisher');
+
+                }).catch((error) => { 
+                    console.log(error);
+                });
 
 
 
 
-				/*
-				axios.post("https://hesperidium.101obex.mooo.com:3001/info_extension", {
-					obex_project_id: SelectedProject,
-					value_json: JSON.stringify(con1),
-					developer_token: AccesToken
-				})
-				.then((response) => {
-					console.log(response);
-				}).catch((error) => { 
-					console.log(error);
-				});
-
-				*/
-
-				UPDATE_APIS = false;
-			}
-
-			var apisTreeProvider = new TreeDataProviderAPICreator(response);
-			
-			var tree = vscode.window.createTreeView('101obex-api-code.package-creation', {
-				treeDataProvider: apisTreeProvider,
-			});
-
-			tree.onDidChangeSelection((selection) => {
-				if (!REFRESHING){
-					
-				selection.selection.map(async (e) => {
-					console.log(e);
-					if (e.description?.toString() == 'config'){
-
-						if (e.tooltip?.toString().split("|")[0] == 'API') {
-							idService = `${SelectedProject}|${e.label?.toString()}`;
-							vscode.commands.executeCommand('react-webview-creation.start-low_code');
-						} 
-					}
-
-					if (e.description?.toString() == 'add api'){
-
-						if (e.tooltip?.toString() == 'API') {
-
-							let toHost = await vscode.window.showInputBox({
-								placeHolder: "Name of the API",
-								validateInput: text => {
-								return text === text ? null : 'Not 123!';
-								
-							}});
-							const searchRegExp = /\s/g;
-							const replaceWith = '_';
-							let final = toHost?.replace(searchRegExp, replaceWith)
-
-							con1.low_code[0].apis.push(
-									{ 
-										name: final || 'new connection',
-									});
-
-							UPDATE_APIS = true;
-							Connectors(context, response, thisProvider);
-						}
-
-					}
-
-					if (e.description?.toString() == 'test'){
-						//thisProvider.
-						sayHi(e.tooltip?.toString().split('|')[1].toString());
-					}
-				}
-				);
-			} 
-			else {
-				REFRESHING = false;
-			}
-			});
-
-			try{
-				//console.log(context.subscriptions);
-				
-			if (registeredRefresh === false) context.subscriptions.push(
-				vscode.commands.registerCommand('101obex-api-extension-api-creation.refreshEntry-api-creator', () =>{
-				
-					// seleccionar proyecto y cloud
-					registeredRefresh = true;
-					let porSel = getCurrentProject();
-					SelectedProject = porSel.obex_project_id;
-					SelectedProjectToken = porSel.selected_project;
-					con1 = response.data.data; //con2[SelectedProject];
-		
-					let clo = getCurrentCloud()
-		
-					selectedCloud = clo.selected_cloud;
-			
-					cloud = selectedCloud;
-					url = `${selectedCloud}/info_extension?developer_token=`;
-					url2 = `${selectedCloud}/api_catalog/history?developer_token=`;
-					url3 = `${selectedCloud}/api_catalog/history?developer_token=`;
 
 
+                /*
+                axios.post("https://hesperidium.101obex.mooo.com:3001/info_extension", {
+                    obex_project_id: SelectedProject,
+                    value_json: JSON.stringify(con1),
+                    developer_token: AccesToken
+                })
+                .then((response) => {
+                    console.log(response);
+                }).catch((error) => { 
+                    console.log(error);
+                });
 
-					axios.get(url3 + AccesToken+`&obex_project_id=${SelectedProject}`, axiosConfig)
-					.then((response) => {
-						TokenData = response;
-						Services = response.data.data[0].services
-						var resultss = response.data.data[0].results;
-						con2 = response.data.data;
-						Connectors(context, response, thisProvider);
-						apisTreeProvider.refresh()
-					}).catch((error)=>
-						{
-							console.log(error)
-							
-							Connectors(context, hh, thisProvider);
-						});
-				
-				
-					
-				})
-					);
-			} catch { 
-				console.log("ERROR")
+                */
 
-			}
+                UPDATE_APIS = false;
+            }
 
-			
-			
+            var apisTreeProvider = new TreeDataProviderAPICreator(response);
+            
+            var tree = vscode.window.createTreeView('101obex-api-specs.api-specs', {
+                treeDataProvider: apisTreeProvider,
+            });
+
+            tree.onDidChangeSelection((selection) => {
+                if (!REFRESHING){
+                    
+                selection.selection.map(async (e) => {
+                    console.log(e);
+                    if (e.description?.toString() == 'config'){
+
+                        if (e.tooltip?.toString().split("|")[0] == 'API') {
+                            idService = `${SelectedProject}|${e.label?.toString()}`;
+                            vscode.commands.executeCommand('react-webview-creation.start-low_code');
+                        } 
+                    }
+
+                    if (e.description?.toString() == 'add api'){
+
+                        if (e.tooltip?.toString() == 'API') {
+
+                            let toHost = await vscode.window.showInputBox({
+                                placeHolder: "Name of the API",
+                                validateInput: text => {
+                                return text === text ? null : 'Not 123!';
+                                
+                            }});
+                            const searchRegExp = /\s/g;
+                            const replaceWith = '_';
+                            let final = toHost?.replace(searchRegExp, replaceWith)
+
+                            con1.low_code[0].apis.push(
+                                    { 
+                                        name: final || 'new connection',
+                                    });
+
+                            UPDATE_APIS = true;
+                            Connectors(context, response, thisProvider);
+                        }
+
+                    }
+
+                    if (e.description?.toString() == 'test'){
+                        //thisProvider.
+                        sayHi(e.tooltip?.toString().split('|')[1].toString());
+                    }
+                }
+                );
+            } 
+            else {
+                REFRESHING = false;
+            }
+            });
+
+            try{
+                //console.log(context.subscriptions);
+                
+            if (registeredRefresh === false) context.subscriptions.push(
+                vscode.commands.registerCommand('101obex-api-extension-api-specs.refreshEntry-api-creator', () =>{
+                
+                    // seleccionar proyecto y cloud
+                    registeredRefresh = true;
+                    let porSel = getCurrentProject();
+                    SelectedProject = porSel.obex_project_id;
+                    SelectedProjectToken = porSel.selected_project;
+                    con1 = response.data.data; //con2[SelectedProject];
+        
+                    let clo = getCurrentCloud()
+        
+                    selectedCloud = clo.selected_cloud;
+            
+                    cloud = selectedCloud;
+                    url = `${selectedCloud}/info_extension?developer_token=`;
+                    url2 = `${selectedCloud}/api_catalog/history?developer_token=`;
+                    url3 = `${selectedCloud}/api_catalog/history?developer_token=`;
+
+
+
+                    axios.get(url3 + AccesToken+`&obex_project_id=${SelectedProject}`, axiosConfig)
+                    .then((response) => {
+                        TokenData = response;
+                        Services = response.data.data[0].services
+                        var resultss = response.data.data[0].results;
+                        con2 = response.data.data;
+                        Connectors(context, response, thisProvider);
+                        apisTreeProvider.refresh()
+                    }).catch((error)=>
+                        {
+                            console.log(error)
+                            
+                            Connectors(context, hh, thisProvider);
+                        });
+                
+                
+                    
+                })
+                    );
+            } catch { 
+                console.log("ERROR")
+
+            }
+
+            
+            
   }
 
   function nullRegistration(context: { subscriptions: vscode.Disposable[]; }, target: string){
-	context.subscriptions.push(
-		vscode.commands.registerCommand(target, () =>
-			{
-				vscode.window.showErrorMessage(
-					'You has no 101OBeX Developer Account Active'
-				);
-			})
-		);
+    context.subscriptions.push(
+        vscode.commands.registerCommand(target, () =>
+            {
+                vscode.window.showErrorMessage(
+                    'You has no 101OBeX Developer Account Active'
+                );
+            })
+        );
   }
   
 
 class ReactPanel {
-	
-	public static currentPanel: ReactPanel | undefined;
+    
+    public static currentPanel: ReactPanel | undefined;
 
-	private static readonly viewType = 'react';
+    private static readonly viewType = 'react';
 
-	private readonly _panel: vscode.WebviewPanel;
-	private readonly _extensionPath: string;
-	private _disposables: vscode.Disposable[] = [];
+    private readonly _panel: vscode.WebviewPanel;
+    private readonly _extensionPath: string;
+    private _disposables: vscode.Disposable[] = [];
 
-	public static createOrShow(extensionPath: string, model: string) {
+    public static createOrShow(extensionPath: string, model: string) {
 
-		const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
+        const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
 
-		if (ReactPanel.currentPanel) {
-			ReactPanel.currentPanel = new ReactPanel(extensionPath, column || vscode.ViewColumn.One , model );
-		} else {
-			ReactPanel.currentPanel = new ReactPanel(extensionPath, column || vscode.ViewColumn.One , model );
-		}
-	}
+        if (ReactPanel.currentPanel) {
+            ReactPanel.currentPanel = new ReactPanel(extensionPath, column || vscode.ViewColumn.One , model );
+        } else {
+            ReactPanel.currentPanel = new ReactPanel(extensionPath, column || vscode.ViewColumn.One , model );
+        }
+    }
 
-	private constructor(extensionPath: string, column: vscode.ViewColumn, model: string) {
-		this._extensionPath = extensionPath;
+    private constructor(extensionPath: string, column: vscode.ViewColumn, model: string) {
+        this._extensionPath = extensionPath;
 
-		this._panel = vscode.window.createWebviewPanel(ReactPanel.viewType, "API Configuration", column, {
-			enableScripts: true,
-			localResourceRoots: [
-				vscode.Uri.file(path.join(this._extensionPath, 'build'))
-			]
-		});
-		
-		this._panel.webview.html = this._getHtmlForWebview(model);
-		this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
-		this._panel.webview.onDidReceiveMessage(message => {
-			switch (message.command) {
-				case 'alert':
-					vscode.window.showErrorMessage(message.text);
-					return;
-			}
-		}, null, this._disposables);
-	}
+        this._panel = vscode.window.createWebviewPanel(ReactPanel.viewType, "API Configuration", column, {
+            enableScripts: true,
+            localResourceRoots: [
+                vscode.Uri.file(path.join(this._extensionPath, 'build'))
+            ]
+        });
+        
+        this._panel.webview.html = this._getHtmlForWebview(model);
+        this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
+        this._panel.webview.onDidReceiveMessage(message => {
+            switch (message.command) {
+                case 'alert':
+                    vscode.window.showErrorMessage(message.text);
+                    return;
+            }
+        }, null, this._disposables);
+    }
 
-	public doRefactor() {
-		this._panel.webview.postMessage({ command: 'refactor' });
-	}
+    public doRefactor() {
+        this._panel.webview.postMessage({ command: 'refactor' });
+    }
 
-	public dispose() {
-		ReactPanel.currentPanel = undefined;
+    public dispose() {
+        ReactPanel.currentPanel = undefined;
 
-		this._panel.dispose();
+        this._panel.dispose();
 
-		while (this._disposables.length) {
-			const x = this._disposables.pop();
-			if (x) {
-				x.dispose();
-			}
-		}
-	}
+        while (this._disposables.length) {
+            const x = this._disposables.pop();
+            if (x) {
+                x.dispose();
+            }
+        }
+    }
 
-	private _getHtmlForWebview(interfase: string) {
-	
-		
-		const fullscreen_low_code = fs.readFileSync(path.resolve(__dirname, './assets/js/fullscreen2.js'), 'utf8');
-		const index = fs.readFileSync(path.resolve(__dirname, './assets/js/index.umd.js'), 'utf8');
-		const common = fs.readFileSync(path.resolve(__dirname, './assets/css/common.css'), 'utf8');
-		const designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer.css'), 'utf8');
-		const light_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-light.css'), 'utf8');
-		const dark_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-dark.css'), 'utf8');
-		const editor = fs.readFileSync(path.resolve(__dirname, './assets/css/editor.css'), 'utf8');
-		const id_service = idService.split('|')[1];
-		
-		const id_project = SelectedProject;
+    private _getHtmlForWebview(interfase: string) {
+    
+        
+        const fullscreen_low_code = fs.readFileSync(path.resolve(__dirname, './assets/js/fullscreen2.js'), 'utf8');
+        const index = fs.readFileSync(path.resolve(__dirname, './assets/js/index.umd.js'), 'utf8');
+        const common = fs.readFileSync(path.resolve(__dirname, './assets/css/common.css'), 'utf8');
+        const designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer.css'), 'utf8');
+        const light_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-light.css'), 'utf8');
+        const dark_designer = fs.readFileSync(path.resolve(__dirname, './assets/css/designer-dark.css'), 'utf8');
+        const editor = fs.readFileSync(path.resolve(__dirname, './assets/css/editor.css'), 'utf8');
+        const id_service = idService.split('|')[1];
+        
+        const id_project = SelectedProject;
 
 
-		//console.log(`id_service ${id_service} id_project ${id_project} AccessToken ${AccesToken}`)
+        //console.log(`id_service ${id_service} id_project ${id_project} AccessToken ${AccesToken}`)
 
-		const api_low_code = `
-								<!DOCTYPE html>
-									<html>
-										<head>
-											<meta charset="UTF-8">
-											<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-											<style>${common}</style>
-											<style>${editor}</style>
-										</head>
-										<body>
-										<div style="height: 0px;">
-											<input id="identier" class="id_service" value="${id_service}"/>
-											<input id="token" class="id_service" value="${AccesToken}"/>
-											<input id="id_project" class="id_service" value="${id_project}"/>
-											<input id="response" class="id_service" value=""/>
-										</div>
-											<div id="designer"></div>
-											<script>${index}</script>
-											<style>${designer}</style>
-											<style>${light_designer}</style>
-											<style>${dark_designer}</style>
-											<script>${fullscreen_low_code}</script>
-										</body>
-									</html>
-								`;
-		return api_low_code
+        const api_low_code = `
+                                <!DOCTYPE html>
+                                    <html>
+                                        <head>
+                                            <meta charset="UTF-8">
+                                            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+                                            <style>${common}</style>
+                                            <style>${editor}</style>
+                                        </head>
+                                        <body>
+                                        <div style="height: 0px;">
+                                            <input id="identier" class="id_service" value="${id_service}"/>
+                                            <input id="token" class="id_service" value="${AccesToken}"/>
+                                            <input id="id_project" class="id_service" value="${id_project}"/>
+                                            <input id="response" class="id_service" value=""/>
+                                        </div>
+                                            <div id="designer"></div>
+                                            <script>${index}</script>
+                                            <style>${designer}</style>
+                                            <style>${light_designer}</style>
+                                            <style>${dark_designer}</style>
+                                            <script>${fullscreen_low_code}</script>
+                                        </body>
+                                    </html>
+                                `;
+        return api_low_code
 
-	}
+    }
 }
 
 function getCurrentProject(){
-	try{
-	var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedproject.json');
-	var objectdata = JSON.parse(rawdata.toString());
-	} catch {
-		return 0;
-	}
-	return objectdata
+    try{
+    var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedproject.json');
+    var objectdata = JSON.parse(rawdata.toString());
+    } catch {
+        return 0;
+    }
+    return objectdata
 }
 
 function getCurrentCloud(){
 
-	var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedcloud.json');
-	var objectdata = JSON.parse(rawdata.toString());
-	//objectdata.selected_cloud = 'http://0.0.0.0:3000';
-	return objectdata
+    var rawdata = fs.readFileSync(os.homedir+'/.101obex/selectedcloud.json');
+    var objectdata = JSON.parse(rawdata.toString());
+    //objectdata.selected_cloud = 'http://0.0.0.0:3000';
+    return objectdata
 }
 
 
 async function setTestData(url: string, params: Object, init = false){
 
-	var TestData = {'url': `${url}`, 'params': `${params}`, 'values':''};
-	
-	if (init) TestData = {'url': ``, 'params': ``, 'values':''};
-	
-	if (url!='' || init) {
-		fs.writeFile(userHomeDir+'/.101obex/test.json', JSON.stringify(TestData), (err) => {
-		if (err){
-			console.log(err);
-		} else {
-			//refresh101ObeXExtensions();
-			}
-		});
+    var TestData = {'url': `${url}`, 'params': `${params}`, 'values':''};
+    
+    if (init) TestData = {'url': ``, 'params': ``, 'values':''};
+    
+    if (url!='' || init) {
+        fs.writeFile(userHomeDir+'/.101obex/test.json', JSON.stringify(TestData), (err) => {
+        if (err){
+            console.log(err);
+        } else {
+            //refresh101ObeXExtensions();
+            }
+        });
 
-		let comandos = await vscode.commands.getCommands();
-		if (comandos!= null){
-			try {
-			comandos.forEach((com)=>{
-				if (/*com.startsWith('101obex-') && */ com.includes('SayHi')) {
-					
-				try{
-					if (com == '101obex-api-extension-api-tester.SayHi'){
-						vscode.commands.executeCommand("101obex-api-extension-api-tester.SayHi");
-					}
-				}
-				catch{
-					
-				}
-				}
-			})
-		} catch {
-		}
-		}
-	}
+        let comandos = await vscode.commands.getCommands();
+        if (comandos!= null){
+            try {
+            comandos.forEach((com)=>{
+                if (/*com.startsWith('101obex-') && */ com.includes('SayHi')) {
+                    
+                try{
+                    if (com == '101obex-api-extension-api-tester.SayHi'){
+                        vscode.commands.executeCommand("101obex-api-extension-api-tester.SayHi");
+                    }
+                }
+                catch{
+                    
+                }
+                }
+            })
+        } catch {
+        }
+        }
+    }
   }
 
 
@@ -2095,72 +2283,286 @@ if (vscode.workspace.workspaceFolders?.length) {
 
     context.subscriptions.push(item);
 
-	// console.log(con2);
-	//console.log(con2[0]["APIs"]);
-	let APIsAvailables = []
-	try{
-	APIsAvailables = con2[0]["APIs"];
-	} catch{
-		APIsAvailables =[];
-	}
-	let valid = false;
-	let API_Name = workspacePath.split('/').slice(-1);
-	
-	APIsAvailables.forEach((API__Name: { [x: string]: { toString: () => string; }; })=>{
-		// console.log(`${API__Name["api_name"].toString()} - ${API_Name[0]}`);
-		if (API__Name["api_name"].toString() === API_Name[0]){
-			valid = true;
-			API_FOLDER_ACTIVE = API_Name[0];
-		}
-	})
-	
+    // console.log(con2);
+    //console.log(con2[0]["APIs"]);
+    let APIsAvailables = []
+    try{
+    APIsAvailables = con2[0]["APIs"];
+    } catch{
+        APIsAvailables =[];
+    }
+    let valid = false;
+    let API_Name = workspacePath.split('/').slice(-1);
+
+    const os = require('os');
+
+if (os.platform() === 'win32') {
+
+    API_Name = workspacePath.split('\\').slice(-1);
+
+}
+    
+    APIsAvailables.forEach((API__Name: { [x: string]: { toString: () => string; }; })=>{
+        // console.log(`${API__Name["api_name"].toString()} - ${API_Name[0]}`);
+        if (API__Name["api_name"].toString() === API_Name[0]){
+            valid = true;
+            API_FOLDER_ACTIVE = API_Name[0];
+        }
+    })
+    
     item.text = valid ? `$(git-branch) ${API_Name}`: 'No API';
     item.tooltip = `AVAP API Repository`;
 
-	const myCommandId = 'myExtension.statusBarClick';
+    const myCommandId = 'myExtension.statusBarClick';
     context.subscriptions.push(vscode.commands.registerCommand(myCommandId, async () => 
     {
         const pageType = await vscode.window.showQuickPick(
             valid ? ['Push Commit', 'Checkout'] : [],
             { placeHolder: 'Select action on repository' }).then(async (pageType)=>{
-				//console.log(pageType);
+                //console.log(pageType);
 
-				if (pageType == 'Push Commit') await vscode.commands.executeCommand('101obex-api-extension-api-creation.commitPush-api-creator');
-				if (pageType == 'Checkout') await vscode.commands.executeCommand('101obex-api-extension-api-creation.checkout-api-creator');
+                if (pageType == 'Push Commit') await vscode.commands.executeCommand('101obex-api-extension-api-specs.commitPush-api-creator');
+                if (pageType == 'Checkout') await vscode.commands.executeCommand('101obex-api-extension-api-specs.checkout-api-creator');
 
-			});
+            });
 
     }));
 
-	if (valid) item.command =  myCommandId;
+    if (valid) item.command =  myCommandId;
 
     item.show();
 }
 
 
 
-function sayHi(url: any, init = false) {  
-	//console.log(ventanaNueva);
-	let url_config = `${cloud}/info_api_parameters?developer_token=`
-	let pamameters_config = `&id_service=${url}&obex_project_id=${SelectedProject}`;
-	if ((url!=null && url!='') || init){
-	if (!init) {
-		try{
-			axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
-				.then((response) => {
-					let api_parameters = response.data.data || [];
-					//console.log(api_parameters);
-					if (!init) setTestData(`${cloud.replace(':3000','')}/ws/low_code.py/`+url,api_parameters); else
-					//ventanaNueva.webview.html = getWebviewContent(`${url}`,`${SelectedProjectToken}`,api_parameters);
-					setTestData("", [], init);
+function getWebviewContentSwagg(apiData: any, apisele: any, developer_token:any, endpoint: any, selected_project: any, configuration: any, cloud:any) {
+	let api_values_data: never[] = [];
+	let headers: never[] = [];
 
-				}
-				);
-			} catch {
-				sayHi(url, init);
-			}
+    let apiObject = {
+        "get": {
+            "tags": ["OtroProducto"],
+            "summary": "nuevoapilunes summary",
+            "description": "nuevoapilunes description",
+            "operationId": "nuevoapilunes",
+            "consumes": ["querystring", "application/json"],
+            "produces": ["application/json"],
+            "parameters": [],
+            "responses": {
+                "200": {
+                    "description": "{\n\t\"message\":\"string\"\n}"
+                },
+                "404": {
+                    "description": "{\n\t\"succes\": false,\n\t\"message\": \"error\"\n}"
+                }
+            }
+        }
+    };
+
+    apiObject = apiData;
+
+    //console.log(JSON.stringify(apiData));
+
+    const method = Object.keys(apiData)[0];
+    const details = apiData[method];
+    
+	return `
+        
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>API Path Detail</title>
+        <style>
+            body {
+                font-family: var(--vscode-font-family);
+                color: var(--vscode-foreground);
+                background-color: var(--vscode-editor-background);
+                margin: 0;
+                padding: 16px;
+                display: grid;
+                grid-gap: 16px;
+                grid-template-columns: 1fr 1fr;
+                max-width: 100vw;
+                margin: auto;
+            }
+            h1 {
+                font-size: 1.4em;
+                font-weight: bold;
+                color: var(--vscode-settings-headerForeground);
+                grid-column: 1 / -1;
+                margin-bottom: 16px;
+            }
+            .bento-box {
+                padding: 12px;
+                background-color: var(--vscode-editor-background);
+                border: 1px solid #808080;//var(--vscode-settings-dropdownBorder);
+                border-radius: 6px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .bento-box h2 {
+                font-size: 1em;
+                font-weight: bold;
+                color: var(--vscode-settings-headerForeground);
+                margin: 0;
+            }
+            .tag {
+                display: inline-block;
+                background-color: var(--vscode-badge-background);
+                color: var(--vscode-badge-foreground);
+                padding: 3px 8px;
+                border-radius: 3px;
+                font-size: 0.9em;
+                margin-right: 4px;
+            }
+            .list {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+            .list li {
+                margin-bottom: 4px;
+            }
+            .code {
+                font-family: var(--vscode-editor-font-family);
+                background-color: var(--vscode-editor-background);
+                color: var(--vscode-editor-foreground);
+                padding: 10px;
+                border: 1px solid var(--vscode-settings-textInputBorder);
+                border-radius: 4px;
+                white-space: pre-wrap;
+                font-size: 0.9em;
+            }
+            .full-width {
+                grid-column: 1 / -1;
+            }
+            .input-field {
+                width: 100%;
+                padding: 6px;
+                margin-bottom: 8px;
+                border: 1px solid var(--vscode-settings-textInputBorder);
+                border-radius: 4px;
+            }
+            .btn {
+                background-color: #1373d5; //var(--vscode-button-secondaryForeground);
+                color: var(--vscode-button-foreground);
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9em;
+            }
+            .btn:hover {
+                background-color: #2d8ef2; //var(--vscode-button-hoverBackground);
+            }
+        </style>
+    </head>
+    <body>
+        <h1>API Path Detail</h1>
+        <div class="bento-box">
+            <h2>Method</h2>
+            <p><strong>Type:</strong> ${method.toUpperCase()}</p>
+            <p><strong>Summary:</strong> ${details.summary}</p>
+            <p><strong>Description:</strong> ${details.description}</p>
+            <p><strong>Operation ID:</strong> ${details.operationId}</p>
+        </div>
+        
+        <div class="bento-box full-width">
+            <h2>API Product</h2>
+            ${details.tags.map((tag:any) => `<span class="tag">${tag}</span>`).join('')}
+        </div>
+
+        <div class="bento-box">
+            <h2>Consumes</h2>
+            <ul class="list">${details.consumes.map((type:any) => `<li>${type}</li>`).join('')}</ul>
+        </div>
+        
+        <div class="bento-box">
+            <h2>Produces</h2>
+            <ul class="list">${details.produces.map((type:any) => `<li>${type}</li>`).join('')}</ul>
+        </div>
+
+        <div class="bento-box full-width">
+            <h2>Parameters</h2>
+            ${details.parameters.length ? 
+                `<ul class="list">${details.parameters.map((param : any) => `<li><strong>${param.name}</strong> (${param.in}) - ${param.description}</li>`).join('')}</ul>`
+                : '<p>No parameters.</p>'}
+        </div>
+
+        <div class="bento-box full-width">
+            <h2>Responses</h2>
+            ${Object.entries(details.responses).map(([status, response]: any) => `
+                <h3>Status ${status}</h3>
+                <div class="code">${response.description}</div>
+            `).join('')}
+        </div>
+
+        <div class="bento-box full-width">
+            <h2>Test Parameters</h2>
+            ${details.parameters.map((param:any) => `
+                <label for="${param.name}">${param.name} (${param.in})</label>
+                <input type="text" id="${param.name}" class="input-field" placeholder="Enter ${param.name}">
+            `).join('')}
+            <button class="btn" onclick="sendTestCall()">Run Test Call</button>
+        </div>
+
+        <div class="bento-box full-width" id="testResultBox" style="display: none;">
+            <h2>Test Call Result</h2>
+            <pre id="testResult" class="code"></pre>
+        </div>
+
+        <script>
+            const vscode = acquireVsCodeApi();
+
+            function sendTestCall() {
+                const params = ${JSON.stringify(details.parameters)}.reduce((acc, param) => {
+                    acc[param.name] = document.getElementById(param.name).value;
+                    return acc;
+                }, {});
+                let token_str = 'retfgersdgfwesrdfgs';
+                let path_str = '${apisele}';
+                vscode.postMessage({ command: 'testCall', params, token_str, path_str });
+            }
+
+            window.addEventListener('message', event => {
+                const message = event.data;
+                if (message.command === 'testResult') {
+                    document.getElementById('testResult').textContent = JSON.stringify(message.result, null, 2);
+                    document.getElementById('testResultBox').style.display = 'block';
+                }
+            });
+        </script>
+    </body>
+    </html>`;
+  }
+
+  
+
+function sayHi(url: any, init = false) {  
+    //console.log(ventanaNueva);
+    let url_config = `${cloud}/info_api_parameters?developer_token=`
+    let pamameters_config = `&id_service=${url}&obex_project_id=${SelectedProject}`;
+    if ((url!=null && url!='') || init){
+    if (!init) {
+        try{
+            axios.get(url_config + AccesToken + pamameters_config, axiosConfig)
+                .then((response) => {
+                    let api_parameters = response.data.data || [];
+                    //console.log(api_parameters);
+                    if (!init) setTestData(`${cloud.replace(':3000','')}/ws/low_code.py/`+url,api_parameters); else
+                    //ventanaNueva.webview.html = getWebviewContent(`${url}`,`${SelectedProjectToken}`,api_parameters);
+                    setTestData("", [], init);
+
+                }
+                );
+            } catch {
+                sayHi(url, init);
+            }
 } else {
-	setTestData("", [], init);
+    setTestData("", [], init);
 }
 }
 }

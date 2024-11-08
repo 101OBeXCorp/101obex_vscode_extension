@@ -1,8 +1,8 @@
 {
-  "name": "101obex-api-extension-api-code",
-  "displayName": "AVAP API Version Control",
-  "description": "AVAP API Version Control",
-  "version": "1.30.80",
+  "name": "101obex-api-extension-api-specs",
+  "displayName": "AVAP API Specs",
+  "description": "AVAP API Specs",
+  "version": "1.30.75",
   "publisher": "101OBeXCorp",
   "engines": {
     "vscode": "^1.73.0"
@@ -12,12 +12,11 @@
   ],
   "extensionPack": [],
   "extensionDependencies": [
-    "101OBeXCorp.101obex-api-extension"
   ],
   "recommendations": [
     "101OBeXCorp.101obex-api-extension"
   ],
-  "icon": "images/AVAP_APIControVersion.png",
+  "icon": "images/AVAP_Specs.png",
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -26,22 +25,57 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "101obex-api-code",
-          "title": "AVAP API Control Version",
-          "icon": "images/icono_avap.png"
+          "id": "101obex-api-specs",
+          "title": "AVAP API Specs",
+          "icon": "images/AVAP-Specs-VC.svg"
         }
       ]
     },
     "views": {
-      "101obex-api-extension": [
+      "101obex-api-specs": [
         {
-          "id": "101obex-api-code.package-creation",
-          "name": "AVAP API Version Control",
+          "id": "101obex-api-specs.api-specs",
+          "name": "AVAP API Specs",
           "type": "tree"
         }
       ]
     },
+    "configuration": {
+      "title": "AVAP Specs",
+      "type": "object",
+      "properties": {
+        "avap.Specs.mandatory": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show specs from url instead of own projects specs",
+          "order": 8
+        },
+        "avap.Specs.url": {
+          "type": "string",
+          "default": "url",
+          "description": "Project url Specs",
+          "order": 9
+        },
+        "avap.Specs.authtoken": {
+          "type": "string",
+          "default": " ",
+          "description": "Authorization token to test paths",
+          "order": 10
+        }
+
+      }
+    },
     "commands": [
+      {
+        "command": "101obex-api-extension-specs.openSettings",
+        "title": "Open AVAP Specs configuration",
+        "icon": "$(settings)"
+      },
+      {
+        "command": "101obex-api-extension-api-specs.viewPath",
+        "title":"view Path Specs",
+        "icon": "images/AVAP-Specs-llaves.svg"
+      },
       {
         "command": "react-webview-creation.start",
         "title": "Start React Webview",
@@ -49,38 +83,38 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "101obex-api-extension-api-creation.refreshEntry-api-creator",
+        "command": "101obex-api-extension-api-specs.refreshEntry-api-creator",
         "title": "Refresh",
         "icon": "$(refresh)"
       },
       {
-        "command": "101obex-api-extension-api-creation.addAPI-api-creator",
+        "command": "101obex-api-extension-api-specs.addAPI-api-creator",
         "title": "Add new API",
         "icon": "$(plus)"
       },
       {
-        "command": "101obex-api-extension-api-creation.commitPush-api-creator",
+        "command": "101obex-api-extension-api-specs.commitPush-api-creator",
         "title": "Push Commit",
         "icon": "$(repo-push)"
       },
       {
-        "command": "101obex-api-extension-api-creation.checkout-api-creator",
+        "command": "101obex-api-extension-api-specs.checkout-api-creator",
         "title": "commit checkout",
         "icon": "$(repo-push)"
       },
 
       {
-        "command": "101obex-api-extension-api-creation.CloneAPI",
+        "command": "101obex-api-extension-api-specs.CloneAPI",
         "title": "Clone API",
         "icon": "$(repo-clone)"
       },
 
       {
-        "command": "101obex-api-extension-api-creation.CheckoutAPI",
+        "command": "101obex-api-extension-api-specs.CheckoutAPI",
         "title": "Checkout this Commit"
       },
       {
-        "command": "101obex-api-extension-api-creation.eraseAPI",
+        "command": "101obex-api-extension-api-specs.eraseAPI",
         "title": "Erase API",
         "icon": "$(terminal-kill)"
       }
@@ -88,45 +122,45 @@
     "menus": {
       "view/title": [
         {
-          "command": "101obex-api-extension-api-creation.refreshEntry-api-creator",
-          "when": "view == 101obex-api-code.package-creation",
+          "command":"101obex-api-extension-specs.openSettings",
+          "when":"view == 101obex-api-specs.api-specs",
           "group": "navigation"
         },
         {
-          "command": "101obex-api-extension-api-creation.addAPI-api-creator",
-          "when": "view == 101obex-api-code.package-creation",
-          "group": "navigation"
-        },
-        {
-          "command": "101obex-api-extension-api-creation.commitPush-api-creator",
-          "when": "view == 101obex-api-code.package-creation",
+          "command": "101obex-api-extension-api-specs.refreshEntry-api-creator",
+          "when": "view == 101obex-api-specs.api-specs",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "101obex-api-extension-api-creation.eraseAPI",
-          "when": "view ==  101obex-api-code.package-creation && viewItem == UNPUBLISHED",
+          "command": "101obex-api-extension-api-specs.eraseAPI",
+          "when": "view ==  101obex-api-specs.api-specs && viewItem == UNPUBLISHED",
           "group": "inline"
         },
         {
-          "command": "101obex-api-extension-api-creation.CloneAPI",
-          "when": "view == 101obex-api-code.package-creation && (viewItem == APICONF || viewItem == UNPUBLISHED)"
+          "command": "101obex-api-extension-api-specs.viewPath",
+          "when": "view ==  101obex-api-specs.api-specs && viewItem == PATH",
+          "group": "inline"
+        },
+        {
+          "command": "101obex-api-extension-api-specs.CloneAPI",
+          "when": "view == 101obex-api-specs.api-specs && (viewItem == APICONF || viewItem == UNPUBLISHED)"
         },
         
         {
-          "command": "101obex-api-extension-api-creation.CloneAPI",
-          "when": "view == 101obex-api-code.package-creation && (viewItem == APICONF || viewItem == UNPUBLISHED)",
+          "command": "101obex-api-extension-api-specs.CloneAPI",
+          "when": "view == 101obex-api-specs.api-specs && (viewItem == APICONF || viewItem == UNPUBLISHED)",
           "group": "inline"
         },
         {
-          "command": "101obex-api-extension-api-creation.CloneAPI",
-          "when": "view == 101obex-api-code.package-creation && viewItem == APICONF",
+          "command": "101obex-api-extension-api-specs.CloneAPI",
+          "when": "view == 101obex-api-specs.api-specs && viewItem == APICONF",
           "group": "inline"
         },
         {
-          "command": "101obex-api-extension-api-creation.CheckoutAPI",
-          "when": "view == 101obex-api-code.package-creation && viewItem == COMMITCONF"
+          "command": "101obex-api-extension-api-specs.CheckoutAPI",
+          "when": "view == 101obex-api-specs.api-specs && viewItem == COMMITCONF"
         }
       ]
     }

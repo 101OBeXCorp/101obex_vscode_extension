@@ -1,5 +1,13 @@
 # Change Log
 
+1.30.82 - Oct 30, 2024
+
+- Fix Repository filesystem recognition.
+
+1.30.81 - Oct 25, 2024
+
+- Make possible to clone an empty repository.
+
 1.30.80 - Oct 15, 2024
 
 - Remove unpublished API repository ability and several bugs fixed.
