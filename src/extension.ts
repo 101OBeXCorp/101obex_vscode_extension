@@ -551,6 +551,14 @@ export function activate(context: vscode.ExtensionContext) {
             { enableScripts: true }
             
           );
+
+
+        const iconPath = vscode.Uri.file(
+            vscode.Uri.joinPath(context.extensionUri, 'images', 'AVAP-Specs-llaves.svg').fsPath
+        );
+
+        // Asigna el icono al WebviewPanel
+        panel.iconPath = iconPath;
     
         //const cloud_params = `${cloud}/publishing/get_api_paremeters?obex_project_id=${SelectedProject}&ambient=${ambient}&endpoint=${apiSele}`
         
@@ -570,11 +578,14 @@ export function activate(context: vscode.ExtensionContext) {
                 };
 
                 panel.webview.postMessage({ command: 'testResult', result: response.data });
+
+                panel.webview.postMessage({ command: 'scrollToEnd' });
             }catch (error:any) {
                 panel.webview.postMessage({
                     command: 'testResult',
                     result: error.message || 'Error during API call'
                 });
+                panel.webview.postMessage({ command: 'scrollToEnd' });
             }
             }
         });
@@ -2368,14 +2379,20 @@ function getWebviewContentSwagg(apiData: any, apisele: any, developer_token:any,
     
 	return `
         
-    <!DOCTYPE html>
+ <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>API Path Detail</title>
         <style>
-            body {
+
+
+:root {
+    --vscode-settings-entryFocusBorder: #007acc; /* Azul típico de VSCode */
+}
+
+                       body {
                 font-family: var(--vscode-font-family);
                 color: var(--vscode-foreground);
                 background-color: var(--vscode-editor-background);
@@ -2386,38 +2403,107 @@ function getWebviewContentSwagg(apiData: any, apisele: any, developer_token:any,
                 grid-template-columns: 1fr 1fr;
                 max-width: 100vw;
                 margin: auto;
+                line-height: var(--vscode-settings-line-height);
             }
             h1 {
-                font-size: 1.4em;
+                font-size: 1.9em;
                 font-weight: bold;
                 color: var(--vscode-settings-headerForeground);
                 grid-column: 1 / -1;
-                margin-bottom: 16px;
+                margin-bottom: 0px;
+                padding-left: 15px;
             }
             .bento-box {
+                transition: border-color 0.3s ease;
                 padding: 12px;
                 background-color: var(--vscode-editor-background);
-                border: 1px solid #808080;//var(--vscode-settings-dropdownBorder);
-                border-radius: 6px;
+                border: var(--vscode-settings-dropdownBorder);
+                border-radius: 0px;
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
+                padding-bottom: 30px;
+                border-width: 1px;
+                border-style: solid;
+                border-color: transparent;
             }
+            .active-border {
+                border-color: var(--vscode-focusBorder);
+            }
+            .bento-box:hover{
+                background-color: #262728;
+            }
+            .bento-box:focus-within {
+                
+                border-color: var(--vscode-focusBorder); /* Color de borde al hacer foco */
+                background-color: #262728; /* Fondo al hacer foco */
+                color: var(--vscode-input-active-foreground); /* Color de texto al hacer foco */
+                border-width: 1px;
+                border-style: solid;
+            }
+
             .bento-box h2 {
                 font-size: 1em;
                 font-weight: bold;
                 color: var(--vscode-settings-headerForeground);
                 margin: 0;
             }
+            .bento-box h3 {
+                color: var(--vscode-settings-headerForeground);
+                font-family: var(--vscode-settings-header-font-family);
+                font-size: : var(--vscode-settings-header-font-size);
+                font-weight: 600;
+            }
             .tag {
                 display: inline-block;
-                background-color: var(--vscode-badge-background);
+                background-color: var(--vscode-entry-background);
                 color: var(--vscode-badge-foreground);
                 padding: 3px 8px;
                 border-radius: 3px;
                 font-size: 0.9em;
                 margin-right: 4px;
             }
+            .label {
+                display: flex;
+                align-items: center;
+                background-color: #313131;
+                
+                padding: 3px 8px;
+                border-radius: 3px;
+                
+                margin-right: 4px;
+                width: 50%;
+                height:23px;
+            }
+.config-input {
+    background-color: var(--vscode-input-background); /* Fondo de la entrada */
+    color: var(--vscode-input-foreground); /* Color del texto en la entrada */
+    border: 1px solid var(--vscode-input-border); /* Borde de la entrada */
+    border-radius: 4px; /* Bordes redondeados */
+    padding: 0.5em 0.75em; /* Espaciado interno */
+    font-size: 14px; /* Tamaño de fuente */
+    font-family: var(--vscode-font-family); /* Fuente utilizada en el editor */
+    width: 50%; /* Asegura que ocupe el ancho disponible */
+    box-sizing: border-box; /* Para incluir el padding en el cálculo del ancho */
+
+}
+            .active-border{
+                border-color: var(--vscode-focusBorder); /* Color de borde al hacer foco */
+                background-color: #262728; /* Fondo al hacer foco */
+                color: var(--vscode-input-active-foreground); /* Color de texto al hacer foco */
+                border-width: 1px;
+                border-style: solid;
+            }
+.config-input:focus {
+    outline: none; /* Eliminar el borde de enfoque predeterminado */
+    border-color: var(--vscode-focusBorder); /* Color de borde al hacer foco */
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-active-foreground); /* Color de texto al hacer foco */
+}
+
+.config-input::placeholder {
+    color: var(--vscode-input-placeholder-foreground); /* Color del texto del placeholder */
+}
             .list {
                 margin: 0;
                 padding: 0;
@@ -2435,6 +2521,7 @@ function getWebviewContentSwagg(apiData: any, apisele: any, developer_token:any,
                 border-radius: 4px;
                 white-space: pre-wrap;
                 font-size: 0.9em;
+                width:50%;
             }
             .full-width {
                 grid-column: 1 / -1;
@@ -2445,6 +2532,7 @@ function getWebviewContentSwagg(apiData: any, apisele: any, developer_token:any,
                 margin-bottom: 8px;
                 border: 1px solid var(--vscode-settings-textInputBorder);
                 border-radius: 4px;
+                height:23px;
             }
             .btn {
                 background-color: #1373d5; //var(--vscode-button-secondaryForeground);
@@ -2454,68 +2542,288 @@ function getWebviewContentSwagg(apiData: any, apisele: any, developer_token:any,
                 border-radius: 4px;
                 cursor: pointer;
                 font-size: 0.9em;
+                width:150px;
             }
             .btn:hover {
                 background-color: #2d8ef2; //var(--vscode-button-hoverBackground);
             }
+            .config-value {
+                font-family: 'Consolas', 'Courier New', monospace; /* Fuente monoespaciada */
+                background-color: var(--vscode-editor-background); /* Usar el fondo del editor */
+                color: var(--vscode-foreground); /* Usar el color de texto del editor */
+                padding: 0.2em 0.4em; /* Espaciado interno */
+                border-radius: 4px; /* Bordes redondeados */
+                font-size: 14px; /* Tamaño de fuente */
+                display: inline-block; /* Para que se ajuste al contenido */
+                box-shadow: inset 0 0 2px var(--vscode-editor-hoverHighlight); /* Resaltado suave */
+            }
+            .config-value-list{
+                                font-family: 'Consolas', 'Courier New', monospace; /* Fuente monoespaciada */
+                background-color: var(--vscode-editor-background); /* Usar el fondo del editor */
+                color: var(--vscode-foreground); /* Usar el color de texto del editor */
+                padding: 0.2em 0.4em; /* Espaciado interno */
+                border-radius: 4px; /* Bordes redondeados */
+                font-size: 14px; /* Tamaño de fuente */
+                display: inline-block; /* Para que se ajuste al contenido */
+                box-shadow: inset 0 0 2px var(--vscode-editor-hoverHighlight); /* Resaltado suave */
+                width: 100%;
+            }
+            .config-value-list:hover{
+                
+                background-color: var(--vscode-badge-background);
+                cursor: default; 
+            }
         </style>
-    </head>
-    <body>
+    <body onclick="">
         <h1>API Path Detail</h1>
-        <div class="bento-box">
-            <h2>Method</h2>
-            <p><strong>Type:</strong> ${method.toUpperCase()}</p>
-            <p><strong>Summary:</strong> ${details.summary}</p>
-            <p><strong>Description:</strong> ${details.description}</p>
-            <p><strong>Operation ID:</strong> ${details.operationId}</p>
+        <div class="bento-box full-width" onclick="showMessage()" id="summary">
+            <h3>Method</h3>
+            <span style="color:#bbbbbb">
+            The Method section in Swagger provides a summary that briefly describes the operation, a detailed description explaining its purpose and behavior, and an operation ID, which is a unique identifier used to reference the operation programmatically.</span>
+            <span><strong>Type:</strong></span><span class="label">${method.toUpperCase()}</span>
+            <span><strong>Summary:</strong></span><span class="label"> ${details.summary}</span>
+            <span><strong>Description:</strong></span><span class="label"> ${details.description}</span>
+            <span><strong>Operation ID:</strong></span><span class="label"> ${details.operationId}</span>
         </div>
         
-        <div class="bento-box full-width">
-            <h2>API Product</h2>
-            ${details.tags.map((tag:any) => `<span class="tag">${tag}</span>`).join('')}
-        </div>
-
-        <div class="bento-box">
-            <h2>Consumes</h2>
-            <ul class="list">${details.consumes.map((type:any) => `<li>${type}</li>`).join('')}</ul>
+        <div class="bento-box full-width" onclick="showMessage2()" id="product">
+            <h3>API Product</h3>
+            An API Product is a collection of one or more APIs bundled together for easier consumption, often with additional features like authentication, documentation, and usage management.
+            ${details.tags.map((tag:any) => `<span class="label">${tag}</span>`).join('')}
         </div>
         
-        <div class="bento-box">
-            <h2>Produces</h2>
-            <ul class="list">${details.produces.map((type:any) => `<li>${type}</li>`).join('')}</ul>
+        <div class="bento-box" onclick="showMessage3()" id="consumes">
+            <h3>Consumes</h3>
+            The Consumption section in Swagger typically refers to how the API is accessed and used by consumers. It includes details on authentication methods, API rate limits, required headers, and other usage constraints that developers need to follow to interact with the API. This section ensures that API consumers understand how to securely and efficiently make requests to the API.
+            <ul class="list">${details.consumes.map((type:any) => `<li class="config-value-list">${type}</li>`).join('')}</ul>
+        </div>
+            
+        <div class="bento-box" onclick="showMessage4()" id="produces">
+            <h3>Produces</h3>
+The Produces section in Swagger specifies the media types or formats that the API can return in its response. It defines what type of data (such as application/json, application/xml, etc.) the server can provide to the client when the request is successful. This helps consumers understand the format of the response they can expect when interacting with the API.
+            <ul class="list">${details.produces.map((type:any) => `<li class="config-value-list">${type}</li>`).join('')}</ul>
         </div>
 
-        <div class="bento-box full-width">
-            <h2>Parameters</h2>
+        <div class="bento-box full-width" onclick="showMessage5()" id="parameters">
+            <h3>Parameters</h3>
+            The Parameters section in Swagger defines the inputs required or allowed for an API operation. It specifies details such as the parameter's name, location (e.g., in the query, path, header, or body), data type, whether it's required, and a description of its purpose. This section helps consumers understand what data needs to be provided when making requests to the API.
             ${details.parameters.length ? 
-                `<ul class="list">${details.parameters.map((param : any) => `<li><strong>${param.name}</strong> (${param.in}) - ${param.description}</li>`).join('')}</ul>`
+                `<ul class="list config-value">${details.parameters.map((param : any) => `<li class="config-value-list"><strong>${param.name}</strong> (${param.in}) - ${param.description}</li>`).join('')}</ul>`
                 : '<p>No parameters.</p>'}
         </div>
 
-        <div class="bento-box full-width">
-            <h2>Responses</h2>
+        <div class="bento-box full-width" onclick="showMessage6()" id="responses">
+            <h3>Responses</h3>
+            <span style="margin-bottom:10px;">
+            The Responses section in Swagger defines the possible HTTP status codes and the corresponding responses that the API can return. It specifies the response content type, the structure of the response body, and any additional information like error messages or headers. This section helps API consumers understand the different outcomes of their requests and what data to expect in the response.
+            </span>
             ${Object.entries(details.responses).map(([status, response]: any) => `
-                <h3>Status ${status}</h3>
-                <div class="code">${response.description}</div>
+                <h2>Status ${status}</h2>
+                <div style="margin-bottom:10px;" class="code">${response.description}</div>
             `).join('')}
         </div>
 
-        <div class="bento-box full-width">
+        <div class="bento-box full-width" onclick="showMessage7()" id="test">
             <h2>Test Parameters</h2>
             ${details.parameters.map((param:any) => `
                 <label for="${param.name}">${param.name} (${param.in})</label>
-                <input type="text" id="${param.name}" class="input-field" placeholder="Enter ${param.name}">
+                <input class="config-input" type="text" id="${param.name}" class="input-field" placeholder="Enter ${param.name}">
             `).join('')}
-            <button class="btn" onclick="sendTestCall()">Run Test Call</button>
-        </div>
+            <button style="margin-top:20px;" class="btn" onclick="sendTestCall()">Run Test Call</button>
+                </div>
 
         <div class="bento-box full-width" id="testResultBox" style="display: none;">
             <h2>Test Call Result</h2>
             <pre id="testResult" class="code"></pre>
         </div>
 
+
+        <script>
+            
+            function showMessage() {
+
+
+                                const div0 = document.getElementById('summary');
+                div0.classList.remove('active-border');
+                                const div1 = document.getElementById('product');
+                div1.classList.remove('active-border');
+                                const div2 = document.getElementById('consumes');
+                div2.classList.remove('active-border');
+                                const div3 = document.getElementById('produces');
+                div3.classList.remove('active-border');
+                                const div4 = document.getElementById('parameters');
+                div4.classList.remove('active-border');
+                                const div5 = document.getElementById('responses');
+                div5.classList.remove('active-border');
+                                const div6 = document.getElementById('responses');
+                div6.classList.remove('active-border');
+                                                const div7 = document.getElementById('test');
+                div7.classList.remove('active-border');
+
+
+
+                                const div = document.getElementById('summary');
+                div.classList.add('active-border');
+            }
+
+            function showMessage2() {
+
+                                const div0 = document.getElementById('summary');
+                div0.classList.remove('active-border');
+                                const div1 = document.getElementById('product');
+                div1.classList.remove('active-border');
+                                const div2 = document.getElementById('consumes');
+                div2.classList.remove('active-border');
+                                const div3 = document.getElementById('produces');
+                div3.classList.remove('active-border');
+                                const div4 = document.getElementById('parameters');
+                div4.classList.remove('active-border');
+                                const div5 = document.getElementById('responses');
+                div5.classList.remove('active-border');
+                                const div6 = document.getElementById('responses');
+                div6.classList.remove('active-border');
+                                                const div7 = document.getElementById('test');
+                div7.classList.remove('active-border');
+
+                                const div = document.getElementById('product');
+                div.classList.toggle('active-border');
+            }
+
+            function showMessage3() {
+
+                                const div0 = document.getElementById('summary');
+                div0.classList.remove('active-border');
+                                const div1 = document.getElementById('product');
+                div1.classList.remove('active-border');
+                                const div2 = document.getElementById('consumes');
+                div2.classList.remove('active-border');
+                                const div3 = document.getElementById('produces');
+                div3.classList.remove('active-border');
+                                const div4 = document.getElementById('parameters');
+                div4.classList.remove('active-border');
+                                const div5 = document.getElementById('responses');
+                div5.classList.remove('active-border');
+                                const div6 = document.getElementById('responses');
+                div6.classList.remove('active-border');
+                                                const div7 = document.getElementById('test');
+                div7.classList.remove('active-border');
+
+                                const div = document.getElementById('consumes');
+                div.classList.toggle('active-border');
+            }
+
+            function showMessage4() {
+                                const div0 = document.getElementById('summary');
+                div0.classList.remove('active-border');
+                                const div1 = document.getElementById('product');
+                div1.classList.remove('active-border');
+                                const div2 = document.getElementById('consumes');
+                div2.classList.remove('active-border');
+                                const div3 = document.getElementById('produces');
+                div3.classList.remove('active-border');
+                                const div4 = document.getElementById('parameters');
+                div4.classList.remove('active-border');
+                                const div5 = document.getElementById('responses');
+                div5.classList.remove('active-border');
+                                const div6 = document.getElementById('responses');
+                div6.classList.remove('active-border');
+
+                                const div = document.getElementById('produces');
+                div.classList.toggle('active-border');
+                                                const div7 = document.getElementById('test');
+                div7.classList.remove('active-border');
+            }
+
+            function showMessage5() {
+                                const div0 = document.getElementById('summary');
+                div0.classList.remove('active-border');
+                                const div1 = document.getElementById('product');
+                div1.classList.remove('active-border');
+                                const div2 = document.getElementById('consumes');
+                div2.classList.remove('active-border');
+                                const div3 = document.getElementById('produces');
+                div3.classList.remove('active-border');
+                                const div4 = document.getElementById('parameters');
+                div4.classList.remove('active-border');
+                                const div5 = document.getElementById('responses');
+                div5.classList.remove('active-border');
+                                const div6 = document.getElementById('responses');
+                div6.classList.remove('active-border');
+                                                const div7 = document.getElementById('test');
+                div7.classList.remove('active-border');
+
+                const div = document.getElementById('parameters');
+                div.classList.toggle('active-border');
+            }
+
+            function showMessage6() {
+                
+                                const div0 = document.getElementById('summary');
+                div0.classList.remove('active-border');
+                                const div1 = document.getElementById('product');
+                div1.classList.remove('active-border');
+                                const div2 = document.getElementById('consumes');
+                div2.classList.remove('active-border');
+                                const div3 = document.getElementById('produces');
+                div3.classList.remove('active-border');
+                                const div4 = document.getElementById('parameters');
+                div4.classList.remove('active-border');
+                                const div5 = document.getElementById('responses');
+                div5.classList.remove('active-border');
+                                const div6 = document.getElementById('responses');
+                div6.classList.remove('active-border');
+                                const div7 = document.getElementById('test');
+                div7.classList.remove('active-border');
+
+                const div = document.getElementById('responses');
+                div.classList.toggle('active-border');
+            }
+                        function showMessage7() {
+                
+                                const div0 = document.getElementById('summary');
+                div0.classList.remove('active-border');
+                                const div1 = document.getElementById('product');
+                div1.classList.remove('active-border');
+                                const div2 = document.getElementById('consumes');
+                div2.classList.remove('active-border');
+                                const div3 = document.getElementById('produces');
+                div3.classList.remove('active-border');
+                                const div4 = document.getElementById('parameters');
+                div4.classList.remove('active-border');
+                                const div5 = document.getElementById('responses');
+                div5.classList.remove('active-border');
+                                const div6 = document.getElementById('responses');
+                div6.classList.remove('active-border');
+                                const div7 = document.getElementById('test');
+                div7.classList.remove('active-border');
+
+                const div = document.getElementById('test');
+                div.classList.toggle('active-border');
+            }
+
+            function clearMessage(){
+                                const div0 = document.getElementById('summary');
+                div0.classList.remove('active-border');
+                                const div1 = document.getElementById('product');
+                div1.classList.remove('active-border');
+                                const div2 = document.getElementById('consumes');
+                div2.classList.remove('active-border');
+                                const div3 = document.getElementById('produces');
+                div3.classList.remove('active-border');
+                                const div4 = document.getElementById('parameters');
+                div4.classList.remove('active-border');
+                                const div5 = document.getElementById('responses');
+                div5.classList.remove('active-border');
+                                const div6 = document.getElementById('responses');
+                div6.classList.remove('active-border');
+                                const div7 = document.getElementById('test');
+                div7.classList.remove('active-border');
+            }
+
+        </script>
         <script>
             const vscode = acquireVsCodeApi();
+
 
             function sendTestCall() {
                 const params = ${JSON.stringify(details.parameters)}.reduce((acc, param) => {
@@ -2527,13 +2835,23 @@ function getWebviewContentSwagg(apiData: any, apisele: any, developer_token:any,
                 vscode.postMessage({ command: 'testCall', params, token_str, path_str });
             }
 
+
+            
+
             window.addEventListener('message', event => {
                 const message = event.data;
                 if (message.command === 'testResult') {
                     document.getElementById('testResult').textContent = JSON.stringify(message.result, null, 2);
                     document.getElementById('testResultBox').style.display = 'block';
                 }
+
+                           if (message.command === 'scrollToEnd') {
+                // Desplazarse al final del contenido
+                window.scrollTo(0, document.body.scrollHeight);
+            }
             });
+
+
         </script>
     </body>
     </html>`;
