@@ -1,0 +1,15 @@
+// AVAP API Template
+
+// Creation of global variables
+
+addVar(message,'Hello World!')
+
+// Capturing api request parameters
+
+// Read / Write from database into variables
+
+// Add variables to result
+
+addResult(message)
+
+// marca

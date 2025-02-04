@@ -1,28 +1,28 @@
-# AVAP API Publisher
+# AVAP API Release Manager
 
-The AVAP API Publisher extension for Visual Studio Code simplifies the management, creation, and publishing of API products
+The AVAP API Release Manager extension for Visual Studio Code simplifies the management, creation, and publishing of API products
 
-The AVAP API Publisher extension for Visual Studio Code not only offers seamless integration with other extensions in the AVAP Dev Extensions family for publishing APIs developed in the AVAP language, but also enables you to leverage the publishing process for APIs developed in any other technology with an endpoint.
+The AVAP API Release Manager extension for Visual Studio Code not only offers seamless integration with other extensions in the AVAP Dev Extensions family for publishing APIs developed in the AVAP language, but also enables you to leverage the publishing process for APIs developed in any other technology with an endpoint.
 
-Maximize the benefits of AVAP technology without sacrificing your existing APIs. Publish your APIs developed in Java, Python, or other languages through the AVAP API Publisher extension for Visual Studio Code.
+Maximize the benefits of AVAP technology without sacrificing your existing APIs. Publish your APIs developed in Java, Python, or other languages through the AVAP API Release Manager extension for Visual Studio Code.
 
-To get started, check out : Working with AVAP API Publisher extension for Visual Studio Code at AVAP Alexandria, our resource site, www.alexandria.avapframework.com. You can also find more information at AVAP Developer Portal www.developer.avapframework.com.
+To get started, check out : Working with AVAP API Release Manager extension for Visual Studio Code at AVAP Alexandria, our resource site, www.alexandria.avapframework.com. You can also find more information at AVAP Developer Portal www.developer.avapframework.com.
 
 Find troubleshooting tips and additional technical information at AVAP Communities, www.communities.avapframework.com
 
-AVAP API Publisher requires the installation of the base extension, AVAP Dev Extensions for Visual Studio Code
+AVAP API Release Manager requires the installation of the base extension, AVAP Dev Extensions for Visual Studio Code
 
 ## Support for Developers
 
-The AVAP API Publisher extension for Visual Studio Code  offers support when running on vscode.dev. This includes free access to www.alexandria.avapframework.com and www.communities.avapframework.com.
+The AVAP API Release Manager extension for Visual Studio Code  offers support when running on vscode.dev. This includes free access to www.alexandria.avapframework.com and www.communities.avapframework.com.
 
 ## Installed Extensions
 
-The AVAP API Publisher extension for Visual Studio Code will not install any other extension. It is necessary to install the base extension: AVAP Dev Extensions for Visual Studio Code.
+The AVAP API Release Manager extension for Visual Studio Code will not install any other extension. It is necessary to install the base extension: AVAP Dev Extensions for Visual Studio Code.
 
 ## Quick start
 
-- Step 1. Install the AVAP API Publisher extension.
+- Step 1. Install the AVAP API Release Manager extension.
 
 - Step 2. You can now view all your API products, APIs, and tests per environment.
 
@@ -30,7 +30,7 @@ The AVAP API Publisher extension for Visual Studio Code will not install any oth
 
 ## Overview of the extension features
 
-The AVAP API Publisher extension for Visual Studio Code allows you to navigate between different API products in your project and publish new versions of your APIs. Additionally, it enables you to manage the execution and view the results of associated unit tests.
+The AVAP API Release Manager extension for Visual Studio Code allows you to navigate between different API products in your project and publish new versions of your APIs. Additionally, it enables you to manage the execution and view the results of associated unit tests.
 
 - Navigation system set for easy location of API products, APIs, and published versions.
 - Creation of API products.
@@ -50,7 +50,7 @@ AVAP CLI gives you access to the full AVAP management command set in an isolated
 
 ## License
 
-AVAP API Publisher extension for Microsoft Visual Studio Code
+AVAP API Release Manager extension for Microsoft Visual Studio Code
 
 Copyright (c) 101OBEX, CORP
 
